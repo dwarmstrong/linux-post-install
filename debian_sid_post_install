@@ -74,7 +74,22 @@ printf "\n'$REPLY' is invalid input. Please select 'Y(es)' or 'N(o)'...\n"
 }
 
 confirm_start() {
-    :
+while :
+do
+    read -n 1 -p "Run script now? [yN] > "
+    if [[ $REPLY == [yY] ]]
+    then
+        printf "\nLet's roll then ...\n"
+        sleep 2
+        break
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]
+    then
+        penguinista
+        exit
+    else
+        invalid_reply_yn
+    fi
+done
 }
 
 apt_prefer() {
@@ -149,7 +164,7 @@ printf "$( penguinista ) .: All done!\n"
 #: START
 test_condition
 greeting
-#confirm_start
+confirm_start
 
 #: APT
 #apt_prefer
