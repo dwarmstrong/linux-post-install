@@ -12,7 +12,11 @@ greeting() {
 }
 
 penguinista() {
-    :
+cat << _EOF_
+
+(O<
+(/)_
+_EOF_
 }
 
 test_root() {
@@ -106,11 +110,7 @@ config_timezone() {
 
 au_revoir() {
 clear
-cat << _EOF_
-All done!
-
-_EOF_
-penguinista
+printf "$( penguinista ) .: All done!\n"
 }
 
 #: START
