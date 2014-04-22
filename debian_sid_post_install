@@ -51,7 +51,13 @@ ip link | awk '/mtu/ {gsub(":",""); printf "\t%s", $2} END {printf "\n"}'
 }
 
 test_connect() {
-    :
+if ! $(ip addr show | grep "state UP" &>/dev/null)
+then
+    printf "\n$( penguinista ) .: $NAME requires an active network interface."
+    printf "\nINTERFACES FOUND\n"
+    interface_found
+    exit 1
+fi
 }
 
 test_condition() {
