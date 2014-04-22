@@ -6,9 +6,28 @@ DESCRIPTION="unstable/sid configuration"
 GITHUB="https://github.com/vonbrownie"
 SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
 # Notes
+# * Install Debian Wheezy Screenshot Tour
+#   http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
 
 greeting() {
-    :
+cat << _EOF_
+
+$NAME - $DESCRIPTION
+
+Howdy! Ideally this script is run following a fresh installation of
+Debian GNU/Linux.
+
+See: "Install Debian Wheezy Screenshot Tour"
+http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
+
+This system will be configured to track Debian's sid/unstable branch
+with the option of installing the lightweight Openbox window manager
++ extra apps suitable for a desktop environment.
+
+This script should be run with ROOT privileges. Please check it before
+use in a text editor and make any required modifications.
+
+_EOF_
 }
 
 penguinista() {
@@ -114,21 +133,22 @@ printf "$( penguinista ) .: All done!\n"
 }
 
 #: START
-test_condition
-confirm_start
+#test_condition
+greeting
+#confirm_start
 
 #: APT
-apt_prefer
-apt_source
-apt_key
+#apt_prefer
+#apt_source
+#apt_key
 
 #: CONFIGURE
-config_desktop
-config_blacklist
-config_alternative
-config_group
-config_timezone
+#config_desktop
+#config_blacklist
+#config_alternative
+#config_group
+#config_timezone
 
 #: FINISH
-apt_purge
-au_revoir
+#apt_purge
+#au_revoir
