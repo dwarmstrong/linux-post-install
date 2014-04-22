@@ -1,0 +1,134 @@
+#!/bin/bash
+set -u
+set -e
+NAME="debian_sid_post_install"
+DESCRIPTION="unstable/sid configuration"
+GITHUB="https://github.com/vonbrownie"
+SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
+# Notes
+
+greeting() {
+    :
+}
+
+penguinista() {
+    :
+}
+
+test_root() {
+    :
+}
+
+test_connect() {
+    :
+}
+
+test_condition() {
+test_root
+test_connect
+}
+
+invalid_reply() {
+    :
+}
+
+invalid_reply_yn() {
+    :
+}
+
+confirm_start() {
+    :
+}
+
+apt_prefer() {
+    :
+}
+
+apt_source() {
+    :
+}
+
+apt_key() {
+    :
+}
+
+apt_purge() {
+    :
+}
+
+pkg_console() {
+    :
+}
+
+pkg_desktop() {
+    :
+}
+
+pkg_openbox() {
+    :
+}
+
+pkg_theme() {
+    :
+}
+
+pkg_dvd() {
+    :
+}
+
+pkg_experiment() {
+    :
+}
+
+pkg_non_deb() {
+    :
+}
+
+config_desktop() {
+    :
+}
+
+config_blacklist() {
+    :
+}
+
+config_alternative() {
+    :
+}
+
+config_group() {
+    :
+}
+
+config_timezone() {
+    :
+}
+
+au_revoir() {
+clear
+cat << _EOF_
+All done!
+
+_EOF_
+penguinista
+}
+
+#: START
+test_condition
+confirm_start
+
+#: APT
+apt_prefer
+apt_source
+apt_key
+
+#: CONFIGURE
+config_desktop
+config_blacklist
+config_alternative
+config_group
+config_timezone
+
+#: FINISH
+apt_purge
+au_revoir

@@ -1,0 +1,6 @@
+dist/
+tar-*
+*.pid
+*.pyc
+*.swp
+__*
