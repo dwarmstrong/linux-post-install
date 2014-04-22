@@ -9,6 +9,21 @@ SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
 # * Install Debian Wheezy Screenshot Tour
 #   http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
 
+license_info() {
+cat << _EOF_
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License (GPLv2) published
+by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+:.
+
+_EOF_
+}
+
 greeting() {
 cat << _EOF_
 
@@ -24,10 +39,9 @@ This system will be configured to track Debian's sid/unstable branch
 with the option of installing the lightweight Openbox window manager
 + extra apps suitable for a desktop environment.
 
-This script should be run with ROOT privileges. Please check it before
-use in a text editor and make any required modifications.
-
+.: NOTE
 _EOF_
+license_info
 }
 
 penguinista() {
@@ -92,8 +106,32 @@ do
 done
 }
 
+config_prefer() {
+local PREFER
+PREFER="/etc/apt/preferences"
+cat > $PREFER << _EOF_
+# Configure default preferences in package installation
+# * unlisted repositories are auto-ranked 500
+# * installed packages are ranked 100
+
+Package: *
+Pin: release a=unstable
+Pin-Priority: 900
+
+Package: *
+Pin: release a=experimental
+Pin-Priority: 1
+_EOF_
+}
+
 apt_prefer() {
-    :
+local PREFER
+PREFER="/etc/apt/preferences"
+if [[ -e $PREFER ]]
+then
+    cp $PREFER ${PREFER}.$(date +%Y%m%dT%H%M%S).bak
+fi
+#config_prefer
 }
 
 apt_source() {
@@ -167,7 +205,7 @@ greeting
 confirm_start
 
 #: APT
-#apt_prefer
+apt_prefer
 #apt_source
 #apt_key
 
