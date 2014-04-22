@@ -46,6 +46,10 @@ then
 fi
 }
 
+interface_found() {
+ip link | awk '/mtu/ {gsub(":",""); printf "\t%s", $2} END {printf "\n"}'
+}
+
 test_connect() {
     :
 }
