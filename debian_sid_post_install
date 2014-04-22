@@ -39,7 +39,11 @@ _EOF_
 }
 
 test_root() {
-    :
+if [[ $UID -ne 0 ]]
+then
+    printf "\n$( penguinista ) .: $NAME requires ROOT privileges to do its job.\n"
+    exit 1
+fi
 }
 
 test_connect() {
@@ -133,7 +137,7 @@ printf "$( penguinista ) .: All done!\n"
 }
 
 #: START
-#test_condition
+test_condition
 greeting
 #confirm_start
 
