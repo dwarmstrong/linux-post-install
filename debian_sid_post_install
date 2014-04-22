@@ -66,11 +66,11 @@ test_connect
 }
 
 invalid_reply() {
-    :
+printf "\n'$REPLY' is invalid input...\n"
 }
 
 invalid_reply_yn() {
-    :
+printf "\n'$REPLY' is invalid input. Please select 'Y(es)' or 'N(o)'...\n"
 }
 
 confirm_start() {
