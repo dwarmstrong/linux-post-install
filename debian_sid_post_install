@@ -24,9 +24,10 @@ SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
 # for more details.
 
 greeting() {
+clear
 cat << _EOF_
 
-$NAME - $DESCRIPTION
+==== $NAME - $DESCRIPTION ====
 
 Howdy! Ideally this script is run following a fresh installation of
 Debian GNU/Linux.
@@ -34,7 +35,7 @@ Debian GNU/Linux.
 See: "Install Debian Wheezy Screenshot Tour"
 http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
 
-This system will be configured to track Debian's sid/unstable branch
+This system will be configured to track Debian's unstable/sid branch
 with the option of installing the lightweight Openbox window manager
 + extra apps suitable for a desktop environment.
 
@@ -154,13 +155,18 @@ apt-get update
 apt_source() {
 if [[ -e $LIST ]]
 then
-    mv $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
+    cp $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
 fi
 config_source
 }
 
 apt_key() {
-    :
+clear
+apt-get install -y debian-archive-keyring
+apt-get install deb-multimedia-keyring
+apt-get install pkg-mozilla-archive-keyring
+apt-get update
+apt-get dist-upgrade
 }
 
 apt_purge() {
