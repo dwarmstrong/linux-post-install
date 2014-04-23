@@ -124,7 +124,7 @@ if [[ -e $PREFER ]]
 then
     cp $PREFER ${PREFER}.$(date +%Y%m%dT%H%M%S).bak
 fi
-#config_prefer
+config_prefer
 }
 
 apt_source() {
