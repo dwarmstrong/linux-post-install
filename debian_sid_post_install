@@ -431,6 +431,11 @@ fi
 set -e
 }
 
+config_locale() {
+clear
+dpkg-reconfigure locales
+}
+
 config_timezone() {
     :
 }
