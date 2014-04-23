@@ -9,20 +9,15 @@ SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
 # * Install Debian Wheezy Screenshot Tour
 #   http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
 
-license_info() {
-cat << _EOF_
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License (GPLv2) published
-by the Free Software Foundation.
-
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-:.
-
-_EOF_
-}
+# LICENSE
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License (GPLv2) published
+# by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
 
 greeting() {
 cat << _EOF_
@@ -39,9 +34,7 @@ This system will be configured to track Debian's sid/unstable branch
 with the option of installing the lightweight Openbox window manager
 + extra apps suitable for a desktop environment.
 
-.: NOTE
 _EOF_
-license_info
 }
 
 penguinista() {
