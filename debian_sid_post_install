@@ -202,7 +202,32 @@ pkg_theme() {
 }
 
 pkg_dvd() {
-    :
+local DVD
+DVD="cd-discid k3b libdvdcss2 libdvdnav4 libdvdread4"
+clear
+cat << _EOF_
+K3b is a useful program for burning CD/DVDs. If this computer includes
+an optical drive it is a good program to have installed.
+
+_EOF_
+while :
+do
+    read -n 1 -p "Install k3b? [Yn] > "
+    if [[ "$REPLY" == [yY] || "$REPLY" == "" ]]
+    then
+        printf "\nOK. Installing k3b...\n"
+        sleep 2
+        apt-get install -y $DVD
+        break
+    elif [[ "$REPLY" == [nN] ]]
+    then
+        printf "\nOK. Skipping over k3b...\n"
+        sleep 2
+        break
+    else
+        invalid_reply_yn
+    fi  
+done
 }
 
 pkg_experiment() {
