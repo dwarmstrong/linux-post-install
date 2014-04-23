@@ -177,7 +177,13 @@ apt-get --purge remove $PURGE
 }
 
 pkg_console() {
-    :
+local CONSOLE
+CONSOLE="apt-file apt-listbugs apt-listchanges acpi acpi-support acpitool \
+anacron colordiff console-setup cowsay dkms dosfstools gpm htop \
+input-utils ntfs-3g lxsplit par2 p7zip-full unrar unzip rsync sudo sl \
+sysv-rc-conf tmux vim ssh-askpass keychain whois"
+clear
+echo "apt-get install -y $CONSOLE"
 }
 
 pkg_desktop() {
@@ -235,8 +241,8 @@ greeting
 confirm_start
 
 #: APT
-apt_prefer
-apt_source
+#apt_prefer
+#apt_source
 #apt_key
 
 #: CONFIGURE
