@@ -456,17 +456,18 @@ greeting
 confirm_start
 
 #: APT
-#apt_prefer
-#apt_source
-#apt_key
+apt_prefer
+apt_source
+apt_key
 
 #: CONFIGURE
-#config_desktop
-#config_blacklist
-#config_alternative
+config_desktop
+config_blacklist
+config_alternative
 config_group
-#config_timezone
+config_locale
+config_timezone
 
 #: FINISH
-#apt_purge
-#au_revoir
+apt_purge
+au_revoir
