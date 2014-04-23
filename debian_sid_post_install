@@ -353,6 +353,13 @@ do
 done
 }
 
+config_alternative() {
+clear
+update-alternatives --config editor
+clear
+update-alternatives --config x-terminal-emulator
+}
+
 config_desktop() {
 clear
 while :
@@ -380,6 +387,7 @@ case $REPLY in
         pkg_console
         pkg_openbox
         pkg_desktop
+        config_alternative
         break
         ;;
     *)
@@ -407,13 +415,6 @@ config_blacklist() {
 clear
 config_blacklist_pcspkr
 update-initramfs -u -k all
-}
-
-config_alternative() {
-clear
-update-alternatives --config editor
-clear
-update-alternatives --config x-terminal-emulator
 }
 
 config_group() {
@@ -463,7 +464,6 @@ apt_key
 #: CONFIGURE
 config_desktop
 config_blacklist
-config_alternative
 config_group
 config_locale
 config_timezone
