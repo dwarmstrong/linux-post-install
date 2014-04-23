@@ -189,10 +189,6 @@ clear
 apt-get install -y $CONSOLE
 }
 
-pkg_desktop() {
-    :
-}
-
 pkg_openbox() {
     :
 }
@@ -256,8 +252,44 @@ dpkg -i $ICONCR
 rm $ICONCR
 }
 
-config_desktop() {
+pkg_desktop() {
     :
+}
+
+config_desktop() {
+clear
+while :
+do
+cat << _EOF_
+Please select console-only or X environment:
+
+0) Do not install an X environment
+1) Openbox - lightweight window manager
+
+_EOF_
+
+read -n 1 -p "Your choice? [0-1] > "
+
+case $REPLY in
+    0)
+        printf "\nOK. No X environment will be installed...\n"
+        sleep 2
+        pkg_console
+        break
+        ;;
+    1)
+        printf "\nOK. Installing Openbox...\n"
+        sleep 2
+        pkg_console
+        pkg_openbox
+        pkg_desktop
+        break
+        ;;
+    *)
+        invalid_reply
+        ;;
+esac
+done
 }
 
 config_blacklist() {
@@ -269,7 +301,9 @@ config_alternative() {
 }
 
 config_group() {
+set +e
     :
+set -e
 }
 
 config_timezone() {
