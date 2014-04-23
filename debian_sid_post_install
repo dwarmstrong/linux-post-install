@@ -181,8 +181,9 @@ apt-get --purge remove $PURGE
 
 pkg_console() {
 local CONSOLE
-CONSOLE="apt-file apt-listbugs apt-listchanges acpi acpi-support acpitool \
-anacron colordiff console-setup cowsay dkms dosfstools gpm htop \
+CONSOLE="dkms linux-headers-$(uname -r) module-assistant \
+apt-file apt-listbugs apt-listchanges acpi acpi-support acpitool \
+anacron colordiff console-setup cowsay dnsutils dosfstools gpm htop \
 input-utils ntfs-3g lxsplit par2 p7zip-full unrar unzip rsync sudo sl \
 sysv-rc-conf tmux vim ssh-askpass keychain whois"
 clear
@@ -325,7 +326,7 @@ VIDEO="vlc ffmpeg"
 local VIEWERS
 VIEWERS="eog geeqie qpdfview"
 local SYSTEM
-SYSTEM="dkms linux-headers-$(uname -r) module-assistant gdmap"
+SYSTEM="gdmap"
 clear
 while :
 do
@@ -336,10 +337,9 @@ do
         sleep 2
         pkg_experiment
         pkg_third_party
-        apt-get install -y $SYSTEM $PROGRAM
         apt-get install -y $EDITORS $EMULATORS $ELECTRONICS $FILES \
         $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $TERMINAL \
-        $SCIENCE $SOUND $VIDEO $VIEWERS
+        $SCIENCE $SOUND $VIDEO $VIEWERS $SYSTEM
         pkg_dvd
         break
     elif [[ $REPLY == [nN] ]]
