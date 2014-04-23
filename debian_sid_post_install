@@ -386,7 +386,7 @@ esac
 done
 }
 
-config_blacklist() {
+config_blacklist_pcspkr() {
 local PCSPKR
 PCSPKR="/etc/modprobe.d/pcspkr-blacklist.conf"
 if [[ -e $PCSPKR ]]
@@ -398,7 +398,11 @@ cat >> $PCSPKR << _EOF_
 # note: always run 'update-initramfs -u -k all' after modifying modules
 blacklist pcspkr
 _EOF_
+}
+
+config_blacklist() {
 clear
+config_blacklist_pcspkr
 update-initramfs -u -k all
 }
 
