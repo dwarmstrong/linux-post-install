@@ -222,6 +222,13 @@ apt-get install -y $THEME $CONFIG
 }
 
 pkg_openbox() {
+local OPENBOX
+OPENBOX="openbox obconf catfish feh gksu gsimplecal menu pavucontrol \
+rxvt-unicode suckless-tools tint2 thunar thunar-volman xfce4-notifyd \
+xfce4-power-manager xfce4-settings xfce4-volumed xorg x11-utils \
+xbacklight xdotool xfonts-terminus xscreensaver zenity"
+clear
+apt-get install -y $OPENBOX
 pkg_openbox_theme
 }
 
