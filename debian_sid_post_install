@@ -407,7 +407,10 @@ update-initramfs -u -k all
 }
 
 config_alternative() {
-    :
+clear
+update-alternatives --config editor
+clear
+update-alternatives --config x-terminal-emulator
 }
 
 config_group() {
