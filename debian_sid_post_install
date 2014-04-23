@@ -387,7 +387,19 @@ done
 }
 
 config_blacklist() {
-    :
+local PCSPKR
+PCSPKR="/etc/modprobe.d/pcspkr-blacklist.conf"
+if [[ -e $PCSPKR ]]
+then
+    cp $PCSPKR ${PCSPKR}.$(date +%Y%m%dT%H%M%S).bak
+fi
+cat >> $PCSPKR << _EOF_
+# shutdown that annoying beep
+# note: always run 'update-initramfs -u -k all' after modifying modules
+blacklist pcspkr
+_EOF_
+clear
+update-initramfs -u -k all
 }
 
 config_alternative() {
@@ -418,7 +430,6 @@ confirm_start
 #apt_prefer
 #apt_source
 #apt_key
-pkg_third_party
 
 #: CONFIGURE
 #config_desktop
