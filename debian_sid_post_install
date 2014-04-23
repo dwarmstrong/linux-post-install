@@ -426,8 +426,12 @@ printf "\nHello ${USERNAME}!\n"
 sleep 2
 if [[ ! -d /home/${USERNAME} ]]
 then
-    echo "adduser $USERNAME"
+    adduser $USERNAME
 fi
+for i in ${UGROUPS[@]}
+do
+    adduser $USERNAME $i
+done
 set -e
 }
 
