@@ -127,17 +127,13 @@ fi
 config_prefer
 }
 
-apt_source() {
+config_source() {
 local LIST
 LIST="/etc/apt/sources.list"
 local DEB
 DEB="http://http.debian.net/debian/"
 local TEST
 TEST="jessie"
-if [[ -e $LIST ]]
-then
-    mv $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
-fi
 cat > $LIST << _EOF_
 ### unstable ###
 deb $DEB unstable main contrib non-free
@@ -159,6 +155,16 @@ deb http://www.deb-multimedia.org unstable main non-free
 _EOF_
 clear
 apt-get update
+}
+
+apt_source() {
+local LIST
+LIST="/etc/apt/sources.list"
+if [[ -e $LIST ]]
+then
+    mv $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
+fi
+config_source
 }
 
 apt_key() {
@@ -228,8 +234,8 @@ greeting
 confirm_start
 
 #: APT
-#apt_prefer
-#apt_source
+apt_prefer
+apt_source
 #apt_key
 
 #: CONFIGURE
