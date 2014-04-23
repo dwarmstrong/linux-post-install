@@ -222,11 +222,7 @@ apt-get install -y $THEME $CONFIG
 }
 
 pkg_openbox() {
-    :
-}
-
-pkg_theme() {
-    :
+pkg_openbox_theme
 }
 
 pkg_dvd() {
@@ -285,7 +281,66 @@ rm $ICONCR
 }
 
 pkg_desktop() {
-    :
+local EDITORS
+EDITORS="gedit vim"
+local ELECTRONICS
+ELECTRONICS="arduino"
+local FILES
+FILES="catfish file-roller lxsplit par2 p7zip-full rar unrar \
+thunar thunar-volman unzip xz-utils"
+local GRAPHICS
+GRAPHICS="feh gimp gimp-data-extras gimp-help-en imagemagick scrot"
+local NETWORK
+NETWORK="dnsutils network-manager-gnome ssh-askpass keychain pan rsync \
+transmission wireless-tools"
+local BROWSER
+BROWSER="flashplugin-nonfree icedtea-7-plugin openjdk-7-jre"
+local OFFICE
+OFFICE="libreoffice libreoffice-gtk libreoffice-help-en-us hunspell-en-ca"
+local PROGRAM
+PROGRAM="build-essential python-dev python-pip python-setuptools \
+python-virtualenv"
+local TERMINAL
+TERMINAL="rxvt-unicode suckless-tools tmux xfonts-terminus xterm"
+local SCIENCE
+SCIENCE="stellarium"
+local SOUND
+SOUND="gstreamer0.10-ffmpeg gstreamer0.10-plugins-base \
+gstreamer0.10-plugins-good gstreamer0.10-plugins-bad \
+gstreamer0.10-plugins-ugly gstreamer0.10-pulseaudio \
+aacgain alsa-utils flac id3 id3v2 lame libmp3lame0 \
+mp3gain pulseaudio pulseaudio-utils pavucontrol \
+rhythmbox vorbis-tools vorbisgain xfce4-volumed" 
+local VIDEO
+VIDEO="vlc ffmpeg"
+local VIEWERS
+VIEWERS="eog geeqie qpdfview"
+local SYSTEM
+SYSTEM="gdmap"
+clear
+while :
+do
+    read -n 1 -p "Do you want to install extra desktop applications? [Yn] > "
+    if [[ $REPLY == [yY] || $REPLY == "" ]]
+    then
+        printf "\nOK. Installing extras...\n"
+        sleep 2
+        pkg_experiment
+        pkg_third_party
+        apt-get install -y $PROGRAM $EDITORS $ELECTRONICS $FILES $GRAPHICS \
+        $NETWORK $BROWSER $OFFICE $PROGRAM $TERMINAL $SCIENCE $SOUND $VIDEO \
+        $VIEWERS $SYSTEM
+        pkg_dvd
+        break
+    elif [[ $REPLY == [nN] ]]
+    then
+        printf "\nOK. Skipping over applications...\n"
+        sleep 2
+        break
+    else
+        invalid_reply_yn
+    fi  
+done
 }
 
 config_desktop() {
