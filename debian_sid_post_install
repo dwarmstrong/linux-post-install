@@ -189,6 +189,38 @@ clear
 apt-get install -y $CONSOLE
 }
 
+pkg_openbox_theme() {
+#
+# Numix GTK3 Theme
+# ----------------
+# * Numix for GTK3.6+ - satya164.deviantart.com/art/Numix-GTK3-theme-360223962
+# * includes GTK2 + Openbox + Xfce support
+# * download, unzip, place archive in ~/.themes
+#
+# Faenza-Dark-Crunchbang Icons
+# ----------------------------
+# * download *.deb and install
+#   packages.crunchbang.org/waldorf/pool/main/faenza-crunchbang-icon-theme*
+#
+# Droid Sans Fonts
+# ----------------
+# * fonts-droid*.deb
+#
+# Theme Config Utils
+# ------------------
+# * Openbox: obconf
+# * GTK: lxappearance
+# * Xfce4: xfce4-settings-manager
+# * QT: qtconfig-qt4
+local THEME
+THEME="fonts-liberation fonts-droid \
+gtk2-engines gtk2-engines-murrine libgnomeui-0"
+local CONFIG
+CONFIG="obconf lxappearance qt4-qtconfig xfce4-settings"
+clear
+apt-get install -y $THEME $CONFIG
+}
+
 pkg_openbox() {
     :
 }
