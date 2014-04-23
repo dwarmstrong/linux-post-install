@@ -3,10 +3,13 @@ set -u
 set -e
 NAME="debian_sid_post_install"
 DESCRIPTION="unstable/sid configuration"
+# ---------- DEB OPTIONS ---------- #
+ARCH=$(dpkg --print-architecture)
 PREFER="/etc/apt/preferences"
 LIST="/etc/apt/sources.list"
 DEB="http://http.debian.net/debian/" 
 TEST="jessie"
+# --------------------------------- #
 GITHUB="https://github.com/vonbrownie"
 SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
 # Notes
@@ -183,7 +186,7 @@ anacron colordiff console-setup cowsay dkms dosfstools gpm htop \
 input-utils ntfs-3g lxsplit par2 p7zip-full unrar unzip rsync sudo sl \
 sysv-rc-conf tmux vim ssh-askpass keychain whois"
 clear
-echo "apt-get install -y $CONSOLE"
+apt-get install -y $CONSOLE
 }
 
 pkg_desktop() {
@@ -209,8 +212,23 @@ clear
 apt-get -t experimental -y install $EX
 }
 
-pkg_non_deb() {
-    :
+pkg_third_party() {
+# Crunchbang Linux
+# ================
+local CRUNCHBANG
+CRUNCHBANG="http://packages.crunchbang.org/waldorf/pool/main"
+# pnmixer - volume mixer for the system tray
+local PNMIXER
+PNMIXER="pnmixer_0.5.1-crunchbang1_${ARCH}.deb"
+wget ${CRUNCHBANG}/${PNMIXER}
+dpkg -i $PNMIXER
+rm $PNMIXER
+# crunchbang icons
+local ICONCR
+ICONCR="faenza-crunchbang-icon-theme_1.2-crunchang1_all.deb"
+wget ${CRUNCHBANG}/${ICONCR}
+dpkg -i $ICONCR
+rm $ICONCR
 }
 
 config_desktop() {
@@ -247,6 +265,7 @@ confirm_start
 #apt_prefer
 #apt_source
 #apt_key
+pkg_third_party
 
 #: CONFIGURE
 #config_desktop
