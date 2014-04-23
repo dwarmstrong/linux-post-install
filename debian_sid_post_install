@@ -203,7 +203,10 @@ pkg_dvd() {
 }
 
 pkg_experiment() {
-    :
+local EX
+EX="iceweasel"
+clear
+apt-get -t experimental -y install $EX
 }
 
 pkg_non_deb() {
