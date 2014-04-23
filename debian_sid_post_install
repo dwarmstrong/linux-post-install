@@ -307,8 +307,8 @@ BROWSER="flashplugin-nonfree icedtea-7-plugin openjdk-7-jre"
 local OFFICE
 OFFICE="libreoffice libreoffice-gtk libreoffice-help-en-us hunspell-en-ca"
 local PROGRAM
-PROGRAM="build-essential dkms linux-headers-$(uname -r) \
-python-dev python-pip python-setuptools python-virtualenv"
+PROGRAM="build-essential python-dev python-pip python-setuptools \
+python-virtualenv"
 local TERMINAL
 TERMINAL="rxvt-unicode suckless-tools tmux xfonts-terminus xterm"
 local SCIENCE
@@ -325,7 +325,7 @@ VIDEO="vlc ffmpeg"
 local VIEWERS
 VIEWERS="eog geeqie qpdfview"
 local SYSTEM
-SYSTEM="gdmap"
+SYSTEM="dkms linux-headers-$(uname -r) module-assistant gdmap"
 clear
 while :
 do
@@ -336,10 +336,10 @@ do
         sleep 2
         pkg_experiment
         pkg_third_party
-        apt-get install -y $PROGRAM
+        apt-get install -y $SYSTEM $PROGRAM
         apt-get install -y $EDITORS $EMULATORS $ELECTRONICS $FILES \
         $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $TERMINAL \
-        $SCIENCE $SOUND $VIDEO $VIEWERS $SYSTEM
+        $SCIENCE $SOUND $VIDEO $VIEWERS
         pkg_dvd
         break
     elif [[ $REPLY == [nN] ]]
