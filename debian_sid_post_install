@@ -437,7 +437,8 @@ dpkg-reconfigure locales
 }
 
 config_timezone() {
-    :
+clear
+dpkg-reconfigure tzdata
 }
 
 au_revoir() {
