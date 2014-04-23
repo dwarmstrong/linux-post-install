@@ -128,7 +128,37 @@ config_prefer
 }
 
 apt_source() {
-    :
+local LIST
+LIST="/etc/apt/sources.list"
+local DEB
+DEB="http://http.debian.net/debian/"
+local TEST
+TEST="jessie"
+if [[ -e $LIST ]]
+then
+    mv $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
+fi
+cat > $LIST << _EOF_
+### unstable ###
+deb $DEB unstable main contrib non-free
+deb-src $DEB unstable main contrib non-free
+
+### $TEST ###
+deb $DEB $TEST main contrib non-free
+#deb-src $DEB $TEST main contrib non-free
+
+### $TEST security ###
+deb http://security.debian.org/ $TEST/updates main contrib non-free
+#deb-src http://security.debian.org/ $TEST/updates main contrib non-free
+
+### experimental ###
+deb $DEB experimental main
+
+### multimedia ###
+deb http://www.deb-multimedia.org unstable main non-free
+_EOF_
+clear
+apt-get update
 }
 
 apt_key() {
@@ -198,7 +228,7 @@ greeting
 confirm_start
 
 #: APT
-apt_prefer
+#apt_prefer
 #apt_source
 #apt_key
 
