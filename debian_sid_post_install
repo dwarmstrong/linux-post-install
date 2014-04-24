@@ -27,11 +27,19 @@ SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
 
+penguinista() {
+cat << _EOF_
+
+(O<
+(/)_
+_EOF_
+}
+
 greeting() {
 clear
 cat << _EOF_
 
-==== $NAME - $DESCRIPTION ====
+$( penguinista ) .: $NAME -- $DESCRIPTION
 
 Howdy! Ideally this script is run following a fresh installation of
 Debian GNU/Linux.
@@ -43,14 +51,6 @@ This system will be configured to track Debian's unstable/sid branch
 with the option of installing the lightweight Openbox window manager
 + extra apps suitable for a desktop environment.
 
-_EOF_
-}
-
-penguinista() {
-cat << _EOF_
-
-(O<
-(/)_
 _EOF_
 }
 
@@ -292,6 +292,7 @@ then
     wget ${CRUNCHBANG}/${ICONCR}
     dpkg -i $ICONCR
     rm $ICONCR
+fi
 }
 
 config_alternative() {
