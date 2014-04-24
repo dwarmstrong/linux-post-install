@@ -2,7 +2,7 @@
 set -u
 set -e
 NAME="debian_sid_post_install"
-DESCRIPTION="unstable/sid configuration"
+DESCRIPTION="unstable/sid branch configuration"
 # ---------- DEB OPTIONS ---------- #
 ARCH=$(dpkg --print-architecture)
 APTCACHE="/var/cache/apt/archives"
@@ -39,7 +39,7 @@ greeting() {
 clear
 cat << _EOF_
 
-$( penguinista ) .: $NAME -- $DESCRIPTION
+$( penguinista ) .: $NAME -- $DESCRIPTION :.
 
 Howdy! Ideally this script is run following a fresh installation of
 Debian GNU/Linux.
