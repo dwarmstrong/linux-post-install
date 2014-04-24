@@ -288,6 +288,13 @@ dpkg -i $ICONCR
 rm $ICONCR
 }
 
+config_alternative() {
+clear
+update-alternatives --config editor
+clear
+update-alternatives --config x-terminal-emulator
+}
+
 pkg_desktop() {
 local EDITORS
 EDITORS="gedit vim"
@@ -351,13 +358,7 @@ do
         invalid_reply_yn
     fi  
 done
-}
-
-config_alternative() {
-clear
-update-alternatives --config editor
-clear
-update-alternatives --config x-terminal-emulator
+config_alternative
 }
 
 config_desktop() {
@@ -387,7 +388,6 @@ case $REPLY in
         pkg_console
         pkg_openbox
         pkg_desktop
-        config_alternative
         break
         ;;
     *)
