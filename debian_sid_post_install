@@ -5,6 +5,7 @@ NAME="debian_sid_post_install"
 DESCRIPTION="unstable/sid configuration"
 # ---------- DEB OPTIONS ---------- #
 ARCH=$(dpkg --print-architecture)
+APTCACHE="/var/cache/apt/archives"
 PREFER="/etc/apt/preferences"
 LIST="/etc/apt/sources.list"
 DEB="http://http.debian.net/debian/" 
@@ -277,15 +278,20 @@ CRUNCHBANG="http://packages.crunchbang.org/waldorf/pool/main"
 # pnmixer - volume mixer for the system tray
 local PNMIXER
 PNMIXER="pnmixer_0.5.1-crunchbang1_${ARCH}.deb"
-wget ${CRUNCHBANG}/${PNMIXER}
-dpkg -i $PNMIXER
-rm $PNMIXER
+if [[ ! -e ${APTCACHE}/${PNMIXER} ]]
+then
+    wget ${CRUNCHBANG}/${PNMIXER}
+    dpkg -i $PNMIXER
+    rm $PNMIXER
+fi
 # crunchbang icons
 local ICONCR
 ICONCR="faenza-crunchbang-icon-theme_1.2-crunchang1_all.deb"
-wget ${CRUNCHBANG}/${ICONCR}
-dpkg -i $ICONCR
-rm $ICONCR
+if [[ ! -e ${APTCACHE}/${ICONCR} ]]
+then
+    wget ${CRUNCHBANG}/${ICONCR}
+    dpkg -i $ICONCR
+    rm $ICONCR
 }
 
 config_alternative() {
@@ -419,6 +425,7 @@ update-initramfs -u -k all
 
 config_group() {
 set +e
+clear
 local UGROUPS
 UGROUPS="adm audio cdrom dialout dip floppy fuse netdev plugdev sudo \
 vboxusers video users"
