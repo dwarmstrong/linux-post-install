@@ -225,8 +225,8 @@ apt-get install -y $THEME $CONFIG
 
 pkg_openbox() {
 local OPENBOX
-OPENBOX="openbox obconf feh gksu gsimplecal menu pavucontrol \
-rxvt-unicode suckless-tools tint2 xorg x11-utils xbacklight \
+OPENBOX="openbox obconf feh gksu gsimplecal menu network-manager-gnome \
+pavucontrol rxvt-unicode suckless-tools tint2 xorg x11-utils xbacklight \
 xdotool xfonts-terminus xscreensaver zenity"
 #XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager \
 #xfce4-settings xfce4-volumed"
