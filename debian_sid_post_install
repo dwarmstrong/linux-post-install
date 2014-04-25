@@ -152,8 +152,6 @@ deb $DEB experimental main
 ### multimedia ###
 deb http://www.deb-multimedia.org unstable main non-free
 _EOF_
-clear
-apt-get update
 }
 
 apt_source() {
@@ -161,7 +159,9 @@ if [[ -e $LIST ]]
 then
     cp $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
 fi
+clear
 config_source
+apt-get update
 }
 
 apt_key() {
