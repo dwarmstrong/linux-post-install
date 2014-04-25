@@ -191,6 +191,13 @@ clear
 apt-get install -y $CONSOLE
 }
 
+pkg_xorg() {
+local XPKGS
+XPKGS="xorg x11-utils xbacklight xdotool xfonts-terminus"
+clear
+apt-get install -y $XPKGS
+}
+
 pkg_openbox_theme() {
 #
 # Numix GTK3 Theme
@@ -226,8 +233,7 @@ apt-get install -y $THEME $CONFIG
 pkg_openbox() {
 local OPENBOX
 OPENBOX="openbox obconf feh gksu gsimplecal menu network-manager-gnome \
-pavucontrol rxvt-unicode suckless-tools tint2 xorg x11-utils \
-xbacklight xdotool xfonts-terminus xscreensaver zenity"
+pavucontrol rxvt-unicode scrot suckless-tools tint2 xscreensaver zenity"
 #XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager \
 #xfce4-settings xfce4-volumed"
 clear
@@ -318,7 +324,7 @@ update-alternatives --config x-terminal-emulator
 
 pkg_desktop() {
 local GRAPHICS
-GRAPHICS="feh gimp gimp-data-extras gimp-help-en imagemagick scrot"
+GRAPHICS="gimp gimp-data-extras gimp-help-en imagemagick"
 local NETWORK
 NETWORK="dnsutils network-manager-gnome ssh-askpass keychain pan rsync \
 transmission wireless-tools"
