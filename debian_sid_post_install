@@ -193,7 +193,7 @@ apt-get install -y $CONSOLE
 
 pkg_xorg() {
 local XPKGS
-XPKGS="xorg x11-utils xbacklight xdotool xfonts-terminus"
+XPKGS="xorg x11-utils xbacklight xdotool xfonts-terminus xterm"
 clear
 apt-get install -y $XPKGS
 }
@@ -246,7 +246,7 @@ local LXDE
 LXDE="lxde-common spacefm udevil"
 local LX_EXTRA
 LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr \
-lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils \
+lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils eject \
 leafpad lightdm pmount qt4-qtconfig xarchiver"
 # Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data,
 # lxsession-default-apps, lxsession-logout
@@ -337,8 +337,6 @@ OFFICE="libreoffice libreoffice-gtk libreoffice-help-en-us hunspell-en-ca"
 local PROGRAM
 PROGRAM="build-essential python-dev python-pip python-setuptools \
 python-virtualenv"
-local TERMINAL
-TERMINAL="rxvt-unicode suckless-tools tmux xfonts-terminus xterm"
 local SOUND
 SOUND="gstreamer0.10-ffmpeg gstreamer0.10-plugins-base \
 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad \
@@ -363,7 +361,7 @@ do
         pkg_experiment
         pkg_third_party
         apt-get install -y $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM \
-        $TERMINAL $SOUND $VIDEO $VIEWERS $SYSTEM
+        $SOUND $VIDEO $VIEWERS $SYSTEM
         pkg_dvd
         break
     elif [[ $REPLY == [nN] ]]
