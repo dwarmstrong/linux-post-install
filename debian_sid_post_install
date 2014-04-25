@@ -402,6 +402,7 @@ case $REPLY in
         printf "\nOK. Installing Openbox...\n"
         sleep 2
         pkg_console
+        pkg_xorg
         pkg_openbox
         pkg_desktop
         break
@@ -410,6 +411,7 @@ case $REPLY in
         printf "\nOK. Installing LXDE...\n"
         sleep 2
         pkg_console
+        pkg_xorg
         pkg_lxde
         pkg_desktop
         break
