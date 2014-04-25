@@ -323,8 +323,7 @@ EDITORS="leafpad vim"
 local EMULATORS
 EMULATORS="virtualbox virtualbox-dkms virtualbox-qt"
 local FILES
-FILES="catfish file-roller lxsplit par2 p7zip-full rar unrar \
-thunar thunar-volman unzip xz-utils"
+FILES="file-roller lxsplit par2 p7zip-full unrar unzip xz-utils"
 local GRAPHICS
 GRAPHICS="feh gimp gimp-data-extras gimp-help-en imagemagick scrot"
 local NETWORK
