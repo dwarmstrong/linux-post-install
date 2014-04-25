@@ -223,8 +223,8 @@ pkg_theme() {
 # * QT: qtconfig-qt4
 # * Xfce4: xfce4-settings
 local THEME
-THEME="fonts-liberation fonts-droid \
-gtk2-engines gtk2-engines-murrine libgnomeui-0"
+THEME="fonts-liberation fonts-droid gtk2-engines gtk2-engines-murrine \
+libgnomeui-0 lxde-icon-theme"
 clear
 apt-get install -y $THEME
 }
@@ -243,12 +243,13 @@ pkg_theme
 
 pkg_lxde() {
 local LXDE
-LXDE="lxde-common"
+LXDE="lxde-common spacefm udevil"
 local LX_EXTRA
 LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr \
 lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils \
-leafpad lightdm qt4-qtconfig xarchiver"
-# Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data, lxsession-default-apps, lxsession-logout
+leafpad lightdm pmount qt4-qtconfig xarchiver"
+# Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data,
+# lxsession-default-apps, lxsession-logout
 clear
 pkg_openbox
 apt-get --no-install-recommends install -y $LXDE
