@@ -226,8 +226,8 @@ apt-get install -y $THEME $CONFIG
 pkg_openbox() {
 local OPENBOX
 OPENBOX="openbox obconf feh gksu gsimplecal menu network-manager-gnome \
-pavucontrol rxvt-unicode suckless-tools tint2 xorg x11-utils xbacklight \
-xdotool xfonts-terminus xscreensaver zenity"
+pavucontrol rxvt-unicode suckless-tools tint2 xorg x11-utils xarchiver \
+xbacklight xdotool xfonts-terminus xscreensaver zenity"
 #XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager \
 #xfce4-settings xfce4-volumed"
 clear
@@ -240,8 +240,7 @@ pkg_lxde() {
 local LXDE
 LXDE="lxde-common"
 local LX_EXTRA
-LX_EXTRA="lxappearance lxappearance-obconf lxpanel lxsession lxterminal desktop-file-utils leafpad lightdm"
-#EXTRA="lxinput lxmenu-data lxrandr lxshortcut lxtask"
+LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils leafpad lightdm"
 # Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data, lxsession-default-apps, lxsession-logout
 clear
 pkg_openbox
@@ -318,12 +317,10 @@ update-alternatives --config x-terminal-emulator
 }
 
 pkg_desktop() {
-local EDITORS
-EDITORS="leafpad vim"
 local EMULATORS
 EMULATORS="virtualbox virtualbox-dkms virtualbox-qt"
 local FILES
-FILES="file-roller lxsplit par2 p7zip-full unrar unzip xz-utils"
+FILES="lxsplit par2 p7zip-full unrar unzip xarchiver xz-utils"
 local GRAPHICS
 GRAPHICS="feh gimp gimp-data-extras gimp-help-en imagemagick scrot"
 local NETWORK
@@ -361,7 +358,7 @@ do
         sleep 2
         pkg_experiment
         pkg_third_party
-        apt-get install -y $EDITORS $EMULATORS $FILES \
+        apt-get install -y $EMULATORS $FILES \
         $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $TERMINAL \
         $SOUND $VIDEO $VIEWERS $SYSTEM
         pkg_dvd
