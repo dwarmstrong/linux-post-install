@@ -186,7 +186,7 @@ CONSOLE="dkms linux-headers-$(uname -r) module-assistant \
 apt-file apt-listbugs apt-listchanges acpi acpi-support acpitool \
 anacron colordiff console-setup cowsay dnsutils dosfstools gpm htop \
 input-utils ntfs-3g lxsplit par2 p7zip-full unrar unzip rsync sudo sl \
-sysv-rc-conf tmux vim ssh-askpass keychain whois"
+sysv-rc-conf tmux vim ssh-askpass keychain whois xz-utils"
 clear
 apt-get install -y $CONSOLE
 }
@@ -226,7 +226,7 @@ apt-get install -y $THEME $CONFIG
 pkg_openbox() {
 local OPENBOX
 OPENBOX="openbox obconf feh gksu gsimplecal menu network-manager-gnome \
-pavucontrol rxvt-unicode suckless-tools tint2 xorg x11-utils xarchiver \
+pavucontrol rxvt-unicode suckless-tools tint2 xorg x11-utils \
 xbacklight xdotool xfonts-terminus xscreensaver zenity"
 #XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager \
 #xfce4-settings xfce4-volumed"
@@ -240,7 +240,7 @@ pkg_lxde() {
 local LXDE
 LXDE="lxde-common"
 local LX_EXTRA
-LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils leafpad lightdm"
+LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils leafpad lightdm xarchiver"
 # Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data, lxsession-default-apps, lxsession-logout
 clear
 pkg_openbox
@@ -317,8 +317,6 @@ update-alternatives --config x-terminal-emulator
 }
 
 pkg_desktop() {
-local FILES
-FILES="lxsplit par2 p7zip-full unrar unzip xarchiver xz-utils"
 local GRAPHICS
 GRAPHICS="feh gimp gimp-data-extras gimp-help-en imagemagick scrot"
 local NETWORK
@@ -356,9 +354,8 @@ do
         sleep 2
         pkg_experiment
         pkg_third_party
-        apt-get install -y $FILES \
-        $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $TERMINAL \
-        $SOUND $VIDEO $VIEWERS $SYSTEM
+        apt-get install -y $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM \
+        $TERMINAL $SOUND $VIDEO $VIEWERS $SYSTEM
         pkg_dvd
         break
     elif [[ $REPLY == [nN] ]]
