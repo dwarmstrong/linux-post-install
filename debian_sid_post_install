@@ -339,8 +339,6 @@ PROGRAM="build-essential python-dev python-pip python-setuptools \
 python-virtualenv"
 local TERMINAL
 TERMINAL="rxvt-unicode suckless-tools tmux xfonts-terminus xterm"
-local SCIENCE
-SCIENCE="stellarium"
 local SOUND
 SOUND="gstreamer0.10-ffmpeg gstreamer0.10-plugins-base \
 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad \
@@ -364,9 +362,9 @@ do
         sleep 2
         pkg_experiment
         pkg_third_party
-        apt-get install -y $EDITORS $EMULATORS $ELECTRONICS $FILES \
+        apt-get install -y $EDITORS $EMULATORS $FILES \
         $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $TERMINAL \
-        $SCIENCE $SOUND $VIDEO $VIEWERS $SYSTEM
+        $SOUND $VIDEO $VIEWERS $SYSTEM
         pkg_dvd
         break
     elif [[ $REPLY == [nN] ]]
