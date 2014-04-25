@@ -376,11 +376,12 @@ cat << _EOF_
 Please select console-only or X environment:
 
 0) Do not install an X environment
-1) Openbox - lightweight window manager
+1) Openbox - window manager
+2) LXDE - desktop environment + Openbox
 
 _EOF_
 
-read -n 1 -p "Your choice? [0-1] > "
+read -n 1 -p "Your choice? [0-2] > "
 
 case $REPLY in
     0)
@@ -394,6 +395,14 @@ case $REPLY in
         sleep 2
         pkg_console
         pkg_openbox
+        pkg_desktop
+        break
+        ;;
+    2)
+        printf "\nOK. Installing LXDE...\n"
+        sleep 2
+        pkg_console
+        pkg_lxde
         pkg_desktop
         break
         ;;
