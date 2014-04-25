@@ -228,7 +228,8 @@ local OPENBOX
 OPENBOX="openbox obconf feh gksu gsimplecal menu pavucontrol \
 rxvt-unicode suckless-tools tint2 xorg x11-utils xbacklight \
 xdotool xfonts-terminus xscreensaver zenity"
-#XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager xfce4-settings xfce4-volumed"
+#XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager \
+#xfce4-settings xfce4-volumed"
 clear
 apt-get install -y $OPENBOX
 #apt-get install -y $XFCE_EXTRA
@@ -238,14 +239,14 @@ pkg_openbox_theme
 pkg_lxde() {
 local LXDE
 LXDE="lxde-common"
-local EXTRA
-EXTRA="lxpanel lxsession lxterminal desktop-file-utils lightdm"
-#EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxpanel lxrandr lxsession lxshortcut lxtask lxterminal lightdm"
+local LX_EXTRA
+LX_EXTRA="lxappearance lxappearance-obconf lxpanel lxsession lxterminal desktop-file-utils leafpad lightdm"
+#EXTRA="lxinput lxmenu-data lxrandr lxshortcut lxtask"
 # Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data, lxsession-default-apps, lxsession-logout
 clear
 pkg_openbox
 apt-get --no-install-recommends install -y $LXDE
-apt-get install -y $EXTRA
+apt-get install -y $LX_EXTRA
 }
 
 pkg_dvd() {
@@ -318,7 +319,7 @@ update-alternatives --config x-terminal-emulator
 
 pkg_desktop() {
 local EDITORS
-EDITORS="gedit vim"
+EDITORS="leafpad vim"
 local ELECTRONICS
 ELECTRONICS="arduino"
 local EMULATORS
