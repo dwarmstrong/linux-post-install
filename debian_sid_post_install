@@ -317,8 +317,6 @@ update-alternatives --config x-terminal-emulator
 }
 
 pkg_desktop() {
-local EMULATORS
-EMULATORS="virtualbox virtualbox-dkms virtualbox-qt"
 local FILES
 FILES="lxsplit par2 p7zip-full unrar unzip xarchiver xz-utils"
 local GRAPHICS
@@ -358,7 +356,7 @@ do
         sleep 2
         pkg_experiment
         pkg_third_party
-        apt-get install -y $EMULATORS $FILES \
+        apt-get install -y $FILES \
         $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $TERMINAL \
         $SOUND $VIDEO $VIEWERS $SYSTEM
         pkg_dvd
