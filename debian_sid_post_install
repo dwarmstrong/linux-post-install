@@ -198,7 +198,7 @@ clear
 apt-get install -y $XPKGS
 }
 
-pkg_openbox_theme() {
+pkg_theme() {
 #
 # Numix GTK3 Theme
 # ----------------
@@ -218,16 +218,15 @@ pkg_openbox_theme() {
 # Theme Config Utils
 # ------------------
 # * Openbox: obconf
-# * GTK: lxappearance
+# * GTK+LXDE: lxappearance
 # * Xfce4: xfce4-settings-manager
 # * QT: qtconfig-qt4
+# * Xfce4: xfce4-settings
 local THEME
 THEME="fonts-liberation fonts-droid \
 gtk2-engines gtk2-engines-murrine libgnomeui-0"
-local CONFIG
-CONFIG="obconf lxappearance qt4-qtconfig xfce4-settings"
 clear
-apt-get install -y $THEME $CONFIG
+apt-get install -y $THEME
 }
 
 pkg_openbox() {
@@ -239,14 +238,16 @@ pavucontrol rxvt-unicode scrot suckless-tools tint2 xscreensaver zenity"
 clear
 apt-get install -y $OPENBOX
 #apt-get install -y $XFCE_EXTRA
-pkg_openbox_theme
+pkg_theme
 }
 
 pkg_lxde() {
 local LXDE
 LXDE="lxde-common"
 local LX_EXTRA
-LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils leafpad lightdm xarchiver"
+LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr \
+lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils \
+leafpad lightdm qt4-qtconfig xarchiver"
 # Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data, lxsession-default-apps, lxsession-logout
 clear
 pkg_openbox
