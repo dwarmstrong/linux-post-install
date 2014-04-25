@@ -48,8 +48,8 @@ See: "Install Debian Wheezy Screenshot Tour"
 http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
 
 This system will be configured to track Debian's unstable/sid branch
-with the option of installing the lightweight Openbox window manager
-+ extra apps suitable for a desktop environment.
+with the option of installing the Openbox window manager, a lightweight
+desktop environment (LXDE) + extra desktop applications.
 
 _EOF_
 }
