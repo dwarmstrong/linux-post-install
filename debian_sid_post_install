@@ -228,10 +228,10 @@ local OPENBOX
 OPENBOX="openbox obconf feh gksu gsimplecal menu pavucontrol \
 rxvt-unicode suckless-tools tint2 xorg x11-utils xbacklight \
 xdotool xfonts-terminus xscreensaver zenity"
-XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager xfce4-settings xfce4-volumed"
+#XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager xfce4-settings xfce4-volumed"
 clear
 apt-get install -y $OPENBOX
-apt-get install -y $XFCE_EXTRA
+#apt-get install -y $XFCE_EXTRA
 pkg_openbox_theme
 }
 
