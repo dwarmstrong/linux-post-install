@@ -320,8 +320,6 @@ update-alternatives --config x-terminal-emulator
 pkg_desktop() {
 local EDITORS
 EDITORS="leafpad vim"
-local ELECTRONICS
-ELECTRONICS="arduino"
 local EMULATORS
 EMULATORS="virtualbox virtualbox-dkms virtualbox-qt"
 local FILES
