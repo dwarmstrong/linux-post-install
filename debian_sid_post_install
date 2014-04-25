@@ -234,6 +234,13 @@ apt-get install -y $OPENBOX
 pkg_openbox_theme
 }
 
+pkg_lxde() {
+local LXDE
+LXDE="lxde"
+clear
+apt-get install -y $LXDE
+}
+
 pkg_dvd() {
 local DVD
 DVD="cd-discid k3b libdvdcss2 libdvdnav4 libdvdread4"
