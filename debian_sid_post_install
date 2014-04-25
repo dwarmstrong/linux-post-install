@@ -225,21 +225,27 @@ apt-get install -y $THEME $CONFIG
 
 pkg_openbox() {
 local OPENBOX
-OPENBOX="openbox obconf catfish feh gksu gsimplecal menu pavucontrol \
-rxvt-unicode suckless-tools tint2 thunar thunar-volman xfce4-notifyd \
-xfce4-power-manager xfce4-settings xfce4-volumed xorg x11-utils \
-xbacklight xdotool xfonts-terminus xscreensaver zenity"
+OPENBOX="openbox obconf feh gksu gsimplecal menu pavucontrol \
+rxvt-unicode suckless-tools tint2 xorg x11-utils xbacklight \
+xdotool xfonts-terminus xscreensaver zenity"
+XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager xfce4-settings xfce4-volumed"
 clear
 apt-get install -y $OPENBOX
+apt-get install -y $XFCE_EXTRA
 pkg_openbox_theme
 }
 
 pkg_lxde() {
 local LXDE
-LXDE="lxde"
+LXDE="lxde-common"
+local EXTRA
+EXTRA="lxpanel lxsession lxterminal desktop-file-utils lightdm"
+#EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxpanel lxrandr lxsession lxshortcut lxtask lxterminal lightdm"
+# Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data, lxsession-default-apps, lxsession-logout
 clear
 pkg_openbox
-apt-get install -y $LXDE
+apt-get --no-install-recommends install -y $LXDE
+apt-get install -y $EXTRA
 }
 
 pkg_dvd() {
