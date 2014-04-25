@@ -238,6 +238,7 @@ pkg_lxde() {
 local LXDE
 LXDE="lxde"
 clear
+pkg_openbox
 apt-get install -y $LXDE
 }
 
