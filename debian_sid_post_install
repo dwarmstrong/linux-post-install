@@ -248,8 +248,6 @@ local LX_EXTRA
 LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr \
 lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils eject \
 leafpad lightdm pmount qt4-qtconfig xarchiver"
-# Lubuntu pkgs: lubuntu-lxpanel-icons, lxsession-data,
-# lxsession-default-apps, lxsession-logout
 clear
 pkg_openbox
 apt-get --no-install-recommends install -y $LXDE
@@ -384,12 +382,11 @@ cat << _EOF_
 Please select console-only or X environment:
 
 0) Do not install an X environment
-1) Openbox - window manager
-2) LXDE - desktop environment + Openbox
+1) Openbox - lightweight window manager
 
 _EOF_
 
-read -n 1 -p "Your choice? [0-2] > "
+read -n 1 -p "Your choice? [0-1] > "
 
 case $REPLY in
     0)
@@ -404,15 +401,6 @@ case $REPLY in
         pkg_console
         pkg_xorg
         pkg_openbox
-        pkg_desktop
-        break
-        ;;
-    2)
-        printf "\nOK. Installing LXDE...\n"
-        sleep 2
-        pkg_console
-        pkg_xorg
-        pkg_lxde
         pkg_desktop
         break
         ;;
