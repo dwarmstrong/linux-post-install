@@ -231,13 +231,13 @@ apt-get install -y $THEME
 
 pkg_openbox() {
 local OPENBOX
-OPENBOX="openbox obconf feh gksu gsimplecal menu network-manager-gnome \
-pavucontrol rxvt-unicode scrot suckless-tools tint2 xscreensaver zenity"
-#XFCE_EXTRA="thunar thunar-volman xfce4-notifyd xfce4-power-manager \
-#xfce4-settings xfce4-volumed"
+OPENBOX="openbox obconf eject feh gksu gsimplecal leafpad \
+lxappearance lxappearance-obconf menu network-manager-gnome \
+pavucontrol qt4-qtconfig rxvt-unicode spacefm udevil scrot \
+suckless-tools tint2 xarchiver xfce4-notifyd xfce4-power-manager \
+xfce4-settings xfce4-volumed xscreensaver zenity"
 clear
 apt-get install -y $OPENBOX
-#apt-get install -y $XFCE_EXTRA
 pkg_theme
 }
 
