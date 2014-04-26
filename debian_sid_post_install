@@ -241,19 +241,6 @@ apt-get install -y $OPENBOX
 pkg_theme
 }
 
-pkg_lxde() {
-local LXDE
-LXDE="lxde-common spacefm udevil"
-local LX_EXTRA
-LX_EXTRA="lxappearance lxappearance-obconf lxinput lxmenu-data lxrandr \
-lxshortcut lxpanel lxsession lxtask lxterminal desktop-file-utils eject \
-leafpad lightdm pmount qt4-qtconfig xarchiver"
-clear
-pkg_openbox
-apt-get --no-install-recommends install -y $LXDE
-apt-get install -y $LX_EXTRA
-}
-
 pkg_dvd() {
 local DVD
 DVD="cd-discid k3b libdvdcss2 libdvdnav4 libdvdread4"
