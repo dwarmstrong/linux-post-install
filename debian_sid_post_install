@@ -175,7 +175,9 @@ apt-get -y dist-upgrade
 
 apt_purge() {
 local PURGE
-PURGE="gdm3 gnome-system-tools notification-daemon tumbler* libtumbler*"
+PURGE="gdm3 gnome-system-tools gvfs* nautilus* libnautilus* \
+notification-daemon tumbler* libtumbler* thunar* libthunar* \
+udisk* libudisk*"
 clear
 apt-get --purge remove $PURGE
 }
