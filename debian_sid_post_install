@@ -287,21 +287,47 @@ CRUNCHBANG="http://packages.crunchbang.org/waldorf/pool/main"
 # pnmixer - volume mixer for the system tray
 local PNMIXER
 PNMIXER="pnmixer_0.5.1-crunchbang1_${ARCH}.deb"
-if [[ ! -e ${APTCACHE}/${PNMIXER} ]]
-then
-    wget ${CRUNCHBANG}/${PNMIXER}
-    dpkg -i $PNMIXER
-    rm $PNMIXER
-fi
 # crunchbang icons
 local ICONCR
 ICONCR="faenza-crunchbang-icon-theme_1.2-crunchang1_all.deb"
-if [[ ! -e ${APTCACHE}/${ICONCR} ]]
+clear
+while :
+do
+cat << _EOF_
+Some useful packages provided by third-party (non-Debian) sources...
+
+CRUNCHBANG LINUX
+Source: $CRUNCHBANG
+Packages: pnmixer - volume mixer for the system tray
+crunchbang icons - icon theme with tilish style
+
+_EOF_
+
+read -n 1 -p "Do you want to install these extra packages? [Yn] > "
+
+if [[ $REPLY == [yY] || $REPLY == "" ]]
 then
-    wget ${CRUNCHBANG}/${ICONCR}
-    dpkg -i $ICONCR
-    rm $ICONCR
-fi
+    if [[ ! -e ${APTCACHE}/${PNMIXER} ]]
+    then
+        wget ${CRUNCHBANG}/${PNMIXER}
+        dpkg -i $PNMIXER
+        rm $PNMIXER
+    fi
+    if [[ ! -e ${APTCACHE}/${ICONCR} ]]
+    then
+        wget ${CRUNCHBANG}/${ICONCR}
+        dpkg -i $ICONCR
+        rm $ICONCR
+    fi
+elif [[ $REPLY == [nN] ]]
+then
+    printf "\nOK. Skipping over these packages...\n"
+    sleep 2
+    break
+else
+    invalid_reply_yn
+fi  
+done
 }
 
 config_alternative() {
