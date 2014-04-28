@@ -341,15 +341,22 @@ pkg_desktop() {
 local GRAPHICS
 GRAPHICS="gimp gimp-data-extras gimp-help-en imagemagick"
 local NETWORK
-NETWORK="network-manager-gnome transmission"
+NETWORK="dnsutils network-manager-gnome ssh-askpass keychain pan rsync \
+transmission wireless-tools"
 local BROWSER
 BROWSER="flashplugin-nonfree icedtea-7-plugin openjdk-7-jre"
 local OFFICE
 OFFICE="libreoffice libreoffice-gtk libreoffice-help-en-us"
 local PROGRAM
-PROGRAM="build-essential python-dev python-pip python-virtualenv"
+PROGRAM="build-essential python-dev python-pip python-setuptools \
+python-virtualenv"
 local SOUND
-SOUND="rhythmbox pulseaudio pulseaudio-utils pavucontrol"
+SOUND="gstreamer0.10-ffmpeg gstreamer0.10-plugins-base \
+gstreamer0.10-plugins-good gstreamer0.10-plugins-bad \
+gstreamer0.10-plugins-ugly gstreamer0.10-pulseaudio \
+aacgain alsa-utils flac id3 id3v2 lame libmp3lame0 \
+mp3gain pulseaudio pulseaudio-utils pavucontrol \
+rhythmbox vorbis-tools vorbisgain xfce4-volumed"
 local VIDEO
 VIDEO="vlc ffmpeg"
 local VIEWERS
@@ -363,23 +370,31 @@ cat << _EOF_
 A selection of extra packages suitable for a desktop environment...
 
 GRAPHICS
-$GRAPHICS
+Packages: $GRAPHICS
+
 NETWORK
-$NETWORK
+Packages: $NETWORK
+
 BROWSER
-iceweasel $BROWSER
+Packages: iceweasel $BROWSER
+
 OFFICE
-$OFFICE
+Packages: $OFFICE
+
 PROGRAMMING
-$PROGRAM
+Packages: $PROGRAM
+
 SOUND
-$SOUND
+Packages: $SOUND
+
 VIDEO
-$VIDEO
+Packages: $VIDEO
+
 VIEWERS
-$VIEWERS
+Packages: $VIEWERS
+
 SYSTEM
-$SYSTEM
+Packages: $SYSTEM
 
 _EOF_
 
