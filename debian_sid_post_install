@@ -11,6 +11,7 @@ LIST="/etc/apt/sources.list"
 DEB="http://http.debian.net/debian/" 
 TEST="jessie"
 # --------------------------------- #
+PKGLIST=""
 GITHUB="https://github.com/vonbrownie"
 SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
 # Notes
@@ -73,6 +74,32 @@ and provide the location of the package list. See 'man dpkg' for details.
 
 _EOF_
 available_options
+}
+
+run_options() {
+while getopts ":hi:" OPT
+do
+    case $OPT in
+        h)
+            long_description
+            exit
+            ;;
+        i)
+            PKGLIST="$OPTARG"
+            break
+            ;;
+        :)
+            printf "\n$( penguinista ) .: Option '-$OPTARG' missing argument.\n"
+            available_options
+            exit 1
+            ;;
+        *)
+            printf "\n$( penguinista ) .: Invalid option '-$OPTARG'\n"
+            available_options
+            exit 1
+            ;;
+    esac
+done
 }
 
 test_root() {
