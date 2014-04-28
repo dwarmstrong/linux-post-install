@@ -378,8 +378,6 @@ else
     invalid_reply_yn
 fi  
 done
-# Create links for some default commands
-config_alternative
 }
 
 config_desktop() {
@@ -410,6 +408,7 @@ case $REPLY in
         pkg_xorg
         pkg_openbox
         pkg_desktop
+        config_alternative
         break
         ;;
     *)
