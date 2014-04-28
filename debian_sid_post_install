@@ -35,7 +35,7 @@ cat << _EOF_
 _EOF_
 }
 
-greeting() {
+long_description() {
 clear
 cat << _EOF_
 
@@ -50,6 +50,10 @@ http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
 This system will be configured to track Debian's unstable/sid branch
 with the option of installing the Openbox window manager + extra apps
 suitable for a desktop environment.
+
+If you wish to import and install a list of packages generated on another
+Debian unstable/sid system using 'dpkg --get-selections' select option '-p'
+and provide the location of the package list. See 'man dpkg' for details.
 
 _EOF_
 }
@@ -256,12 +260,14 @@ clear
 while :
 do
 cat << _EOF_
-If you wish to import and install a list of packages generated on another
-Debian system using 'dpkg --get-selections' select [0] and provide the
-location of the package list. See 'man dpkg' for details.
+If you wish to import and install a list of packages generated on
+another Debian unstable/sid system using 'dpkg --get-selections'
+select [0] and provide the location of the package list.
 
-0) Import a Debian package list
-1) No package list available
+See 'man dpkg' for details.
+
+0) Import a Debian package list for installation
+1) Do not use a package list
 2) Quit $NAME and return with a package list
 
 _EOF_
@@ -560,7 +566,7 @@ printf "$( penguinista ) .: All done!\n"
 
 #: START
 test_condition
-greeting
+long_description
 confirm_start
 
 #: APT
