@@ -54,6 +54,9 @@ cat << _EOF_
 
 $( penguinista ) .: $NAME -- $DESCRIPTION :.
 
+SYNOPSIS
+  $NAME [OPTION] [PKGLIST]
+
 Howdy! Ideally this script is run following a fresh installation of
 Debian GNU/Linux.
 
@@ -69,6 +72,7 @@ Debian unstable/sid system using 'dpkg --get-selections' select option '-p'
 and provide the location of the package list. See 'man dpkg' for details.
 
 _EOF_
+available_options
 }
 
 test_root() {
