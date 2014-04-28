@@ -68,6 +68,7 @@ This system will be configured to track Debian's unstable/sid branch
 with the option of installing the Openbox window manager + extra apps
 suitable for a desktop environment.
 
+## TIP ##
 If you wish to import and install a list of packages generated on another
 Debian unstable/sid system using 'dpkg --get-selections' select option '-p'
 and provide the location of the package list. See 'man dpkg' for details.
@@ -102,33 +103,6 @@ do
 done
 }
 
-test_root() {
-if [[ $UID -ne 0 ]]
-then
-    printf "\n$( penguinista ) .: $NAME requires ROOT privileges to do its job.\n"
-    exit 1
-fi
-}
-
-interface_found() {
-ip link | awk '/mtu/ {gsub(":",""); printf "\t%s", $2} END {printf "\n"}'
-}
-
-test_connect() {
-if ! $(ip addr show | grep "state UP" &>/dev/null)
-then
-    printf "\n$( penguinista ) .: $NAME requires an active network interface."
-    printf "\nINTERFACES FOUND\n"
-    interface_found
-    exit 1
-fi
-}
-
-test_condition() {
-test_root
-test_connect
-}
-
 invalid_reply() {
 printf "\n'$REPLY' is invalid input...\n"
 }
@@ -154,6 +128,33 @@ do
         invalid_reply_yn
     fi
 done
+}
+
+test_root() {
+if [[ $UID -ne 0 ]]
+then
+    printf "\n$( penguinista ) .: $NAME requires ROOT privileges to do its job.\n"
+    exit 1
+fi
+}
+
+interface_found() {
+ip link | awk '/mtu/ {gsub(":",""); printf "\t%s", $2} END {printf "\n"}'
+}
+
+test_connect() {
+if ! $(ip addr show | grep "state UP" &>/dev/null)
+then
+    printf "\n$( penguinista ) .: $NAME requires an active network interface."
+    printf "\nINTERFACES FOUND\n"
+    interface_found
+    exit 1
+fi
+}
+
+test_condition() {
+test_root
+test_connect
 }
 
 config_prefer() {
@@ -219,6 +220,21 @@ apt-get install deb-multimedia-keyring
 apt-get install pkg-mozilla-archive-keyring
 apt-get update
 apt-get -y dist-upgrade
+}
+
+apt_pkg_list() {
+local PKGS
+PKGS=$(mktemp)
+clear
+if [[ ! -z $PKGLIST ]]
+then
+    apt-cache dumpavail > "$PKGS"
+    dpkg --merge-avail "$PKGS"
+    rm -f "$PKGS"
+    dpkg --clear-selections
+    dpkg --set-selections < $PKGLIST
+    apt-get dselect-upgrade
+fi
 }
 
 apt_purge() {
@@ -295,51 +311,6 @@ local EX
 EX="iceweasel"
 clear
 apt-get -t experimental -y install $EX
-}
-
-pkg_list() {
-local PKGS
-PKGS=$(mktemp)
-clear
-while :
-do
-cat << _EOF_
-If you wish to import and install a list of packages generated on
-another Debian unstable/sid system using 'dpkg --get-selections'
-select [0] and provide the location of the package list.
-
-See 'man dpkg' for details.
-
-0) Import a Debian package list for installation
-1) Do not use a package list
-2) Quit $NAME and return with a package list
-
-_EOF_
-
-read -n 1 -p "Your choice? [0-2] > "
-
-case $REPLY in
-    0)
-        # read a string fro $PKGLIST
-        apt-cache dumpavail > "$PKGS"
-        dpkg --merge-avail "$PKGS"
-        rm -f "$PKGS"
-        dpkg --clear-selections
-        dpkg --set-selections < $PKGLIST
-        apt-get dselect-upgrade
-        break
-        ;;
-    1)
-        break
-        ;;
-    2)
-        exit
-        ;;
-    *)
-        invalid_reply
-        ;;
-esac
-done
 }
 
 pkg_third_party() {
@@ -539,7 +510,6 @@ case $REPLY in
         pkg_openbox
         pkg_theme
         pkg_experiment
-        #pkg_list #TEST
         pkg_third_party
         pkg_desktop
         pkg_dvd
@@ -609,14 +579,16 @@ printf "$( penguinista ) .: All done!\n"
 }
 
 #: START
-test_condition
+run_options "$@"
 long_description
 confirm_start
+test_condition
 
 #: APT
 apt_prefer
 apt_source
 apt_key
+apt_pkg_list
 
 #: CONFIGURE
 config_desktop
