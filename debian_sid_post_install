@@ -242,40 +242,54 @@ clear
 apt-get install -y $THEME
 }
 
-pkg_dvd() {
-local DVD
-DVD="cd-discid k3b libdvdcss2 libdvdnav4 libdvdread4"
-clear
-cat << _EOF_
-K3b is a useful program for burning CD/DVDs. If this computer includes
-an optical drive it is a good program to have installed.
-
-_EOF_
-while :
-do
-    read -n 1 -p "Install k3b? [Yn] > "
-    if [[ "$REPLY" == [yY] || "$REPLY" == "" ]]
-    then
-        printf "\nOK. Installing k3b...\n"
-        sleep 2
-        apt-get install -y $DVD
-        break
-    elif [[ "$REPLY" == [nN] ]]
-    then
-        printf "\nOK. Skipping over k3b...\n"
-        sleep 2
-        break
-    else
-        invalid_reply_yn
-    fi  
-done
-}
-
 pkg_experiment() {
 local EX
 EX="iceweasel"
 clear
 apt-get -t experimental -y install $EX
+}
+
+pkg_list() {
+local PKGS
+PKGS=$(mktemp)
+clear
+while :
+do
+cat << _EOF_
+If you wish to import and install a list of packages generated on another
+Debian system using 'dpkg --get-selections' select [0] and provide the
+location of the package list. See 'man dpkg' for details.
+
+0) Import a Debian package list
+1) No package list available
+2) Quit $NAME and return with a package list
+
+_EOF_
+
+read -n 1 -p "Your choice? [0-2] > "
+
+case $REPLY in
+    0)
+        # read a string fro $PKGLIST
+        apt-cache dumpavail > "$PKGS"
+        dpkg --merge-avail "$PKGS"
+        rm -f "$PKGS"
+        dpkg --clear-selections
+        dpkg --set-selections < $PKGLIST
+        apt-get dselect-upgrade
+        break
+        ;;
+    1)
+        break
+        ;;
+    2)
+        exit
+        ;;
+    *)
+        invalid_reply
+        ;;
+esac
+done
 }
 
 pkg_third_party() {
@@ -327,13 +341,6 @@ else
     invalid_reply_yn
 fi  
 done
-}
-
-config_alternative() {
-clear
-update-alternatives --config editor
-clear
-update-alternatives --config x-terminal-emulator
 }
 
 pkg_desktop() {
@@ -415,6 +422,42 @@ else
     invalid_reply_yn
 fi  
 done
+}
+
+pkg_dvd() {
+local DVD
+DVD="cd-discid k3b libdvdcss2 libdvdnav4 libdvdread4"
+clear
+cat << _EOF_
+K3b is a useful program for burning CD/DVDs. If this computer includes
+an optical drive it is a good program to have installed.
+
+_EOF_
+while :
+do
+    read -n 1 -p "Install k3b? [Yn] > "
+    if [[ "$REPLY" == [yY] || "$REPLY" == "" ]]
+    then
+        printf "\nOK. Installing k3b...\n"
+        sleep 2
+        apt-get install -y $DVD
+        break
+    elif [[ "$REPLY" == [nN] ]]
+    then
+        printf "\nOK. Skipping over k3b...\n"
+        sleep 2
+        break
+    else
+        invalid_reply_yn
+    fi  
+done
+}
+
+config_alternative() {
+clear
+update-alternatives --config editor
+clear
+update-alternatives --config x-terminal-emulator
 }
 
 config_desktop() {
