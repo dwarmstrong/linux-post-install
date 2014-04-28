@@ -46,6 +46,7 @@ EXAMPLE
   Install packages from 'pkg-list.txt' located in the
   same directory as $NAME:
   $ $NAME -i pkg-list.txt
+
 _EOF_
 }
 
@@ -226,7 +227,7 @@ apt_pkg_list() {
 local PKGS
 PKGS=$(mktemp)
 clear
-if [[ ! -z $PKGLIST ]]
+if [[ ! -z $PKGLIST && -e $PKGLIST ]]
 then
     apt-cache dumpavail > "$PKGS"
     dpkg --merge-avail "$PKGS"
