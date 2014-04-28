@@ -315,22 +315,15 @@ pkg_desktop() {
 local GRAPHICS
 GRAPHICS="gimp gimp-data-extras gimp-help-en imagemagick"
 local NETWORK
-NETWORK="dnsutils network-manager-gnome ssh-askpass keychain pan rsync \
-transmission wireless-tools"
+NETWORK="network-manager-gnome transmission"
 local BROWSER
 BROWSER="flashplugin-nonfree icedtea-7-plugin openjdk-7-jre"
 local OFFICE
-OFFICE="libreoffice libreoffice-gtk libreoffice-help-en-us hunspell-en-ca"
+OFFICE="libreoffice libreoffice-gtk libreoffice-help-en-us"
 local PROGRAM
-PROGRAM="build-essential python-dev python-pip python-setuptools \
-python-virtualenv"
+PROGRAM="build-essential python-dev python-pip python-virtualenv"
 local SOUND
-SOUND="gstreamer0.10-ffmpeg gstreamer0.10-plugins-base \
-gstreamer0.10-plugins-good gstreamer0.10-plugins-bad \
-gstreamer0.10-plugins-ugly gstreamer0.10-pulseaudio \
-aacgain alsa-utils flac id3 id3v2 lame libmp3lame0 \
-mp3gain pulseaudio pulseaudio-utils pavucontrol \
-rhythmbox vorbis-tools vorbisgain xfce4-volumed" 
+SOUND="rhythmbox pulseaudio pulseaudio-utils pavucontrol"
 local VIDEO
 VIDEO="vlc ffmpeg"
 local VIEWERS
