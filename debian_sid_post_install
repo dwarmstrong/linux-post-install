@@ -404,8 +404,6 @@ if [[ $REPLY == [yY] || $REPLY == "" ]]
 then
     printf "\nOK. Installing extras...\n"
     sleep 2
-    pkg_experiment
-    pkg_third_party
     apt-get install -y $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $SOUND \
     $VIDEO $VIEWERS $SYSTEM
     pkg_dvd
@@ -448,6 +446,9 @@ case $REPLY in
         pkg_console
         pkg_xorg
         pkg_openbox
+        pkg_experiment
+        #pkg_list #TEST
+        pkg_third_party
         pkg_desktop
         config_alternative
         break
