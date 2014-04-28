@@ -200,6 +200,17 @@ clear
 apt-get install -y $XPKGS
 }
 
+pkg_openbox() {
+local OPENBOX
+OPENBOX="openbox obconf eject feh gksu gsimplecal leafpad \
+lxappearance lxappearance-obconf menu network-manager-gnome \
+pavucontrol qt4-qtconfig rxvt-unicode spacefm udevil scrot \
+suckless-tools tint2 xarchiver xfce4-notifyd xfce4-power-manager \
+xfce4-settings xfce4-volumed xscreensaver zenity"
+clear
+apt-get install -y $OPENBOX
+}
+
 pkg_theme() {
 #
 # Numix GTK3 Theme
@@ -229,18 +240,6 @@ THEME="fonts-liberation fonts-droid gtk2-engines gtk2-engines-murrine \
 libgnomeui-0 lxde-icon-theme"
 clear
 apt-get install -y $THEME
-}
-
-pkg_openbox() {
-local OPENBOX
-OPENBOX="openbox obconf eject feh gksu gsimplecal leafpad \
-lxappearance lxappearance-obconf menu network-manager-gnome \
-pavucontrol qt4-qtconfig rxvt-unicode spacefm udevil scrot \
-suckless-tools tint2 xarchiver xfce4-notifyd xfce4-power-manager \
-xfce4-settings xfce4-volumed xscreensaver zenity"
-clear
-apt-get install -y $OPENBOX
-pkg_theme
 }
 
 pkg_dvd() {
@@ -406,7 +405,6 @@ then
     sleep 2
     apt-get install -y $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $SOUND \
     $VIDEO $VIEWERS $SYSTEM
-    pkg_dvd
     break
 elif [[ $REPLY == [nN] ]]
 then
@@ -446,10 +444,12 @@ case $REPLY in
         pkg_console
         pkg_xorg
         pkg_openbox
+        pkg_theme
         pkg_experiment
         #pkg_list #TEST
         pkg_third_party
         pkg_desktop
+        pkg_dvd
         config_alternative
         break
         ;;
