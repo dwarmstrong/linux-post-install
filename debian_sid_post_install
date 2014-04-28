@@ -302,7 +302,7 @@ pkg_theme() {
 # * Xfce4: xfce4-settings
 local THEME
 THEME="fonts-liberation fonts-droid gtk2-engines gtk2-engines-murrine \
-libgnomeui-0 lxde-icon-theme"
+libgnomeui-0"
 clear
 apt-get install -y $THEME
 }
@@ -354,6 +354,7 @@ then
         dpkg -i $ICONCR
         rm $ICONCR
     fi
+    break
 elif [[ $REPLY == [nN] ]]
 then
     printf "\nOK. Skipping over these packages...\n"
