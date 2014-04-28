@@ -336,30 +336,56 @@ VIDEO="vlc ffmpeg"
 local VIEWERS
 VIEWERS="eog geeqie qpdfview"
 local SYSTEM
-SYSTEM="gdmap"
+SYSTEM="gdmap synaptic"
 clear
 while :
 do
-    read -n 1 -p "Do you want to install extra desktop applications? [Yn] > "
-    if [[ $REPLY == [yY] || $REPLY == "" ]]
-    then
-        printf "\nOK. Installing extras...\n"
-        sleep 2
-        pkg_experiment
-        pkg_third_party
-        apt-get install -y $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM \
-        $SOUND $VIDEO $VIEWERS $SYSTEM
-        pkg_dvd
-        break
-    elif [[ $REPLY == [nN] ]]
-    then
-        printf "\nOK. Skipping over applications...\n"
-        sleep 2
-        break
-    else
-        invalid_reply_yn
-    fi  
+cat << _EOF_
+A selection of extra packages suitable for a desktop environment...
+
+GRAPHICS
+$GRAPHICS
+NETWORK
+$NETWORK
+BROWSER
+iceweasel $BROWSER
+OFFICE
+$OFFICE
+PROGRAMMING
+$PROGRAM
+SOUND
+$SOUND
+VIDEO
+$VIDEO
+VIEWERS
+$VIEWERS
+SYSTEM
+$SYSTEM
+
+_EOF_
+
+read -n 1 -p "Do you want to install these extra applications? [Yn] > "
+
+if [[ $REPLY == [yY] || $REPLY == "" ]]
+then
+    printf "\nOK. Installing extras...\n"
+    sleep 2
+    pkg_experiment
+    pkg_third_party
+    apt-get install -y $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $SOUND \
+    $VIDEO $VIEWERS $SYSTEM
+    pkg_dvd
+    break
+elif [[ $REPLY == [nN] ]]
+then
+    printf "\nOK. Skipping over applications...\n"
+    sleep 2
+    break
+else
+    invalid_reply_yn
+fi  
 done
+# Create links for some default commands
 config_alternative
 }
 
