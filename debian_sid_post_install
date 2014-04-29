@@ -3,7 +3,6 @@ set -u
 set -e
 NAME="debian_sid_post_install"
 DESCRIPTION="unstable/sid branch configuration"
-LIST="/etc/apt/sources.list"
 PKGLIST=""
 GITHUB="https://github.com/vonbrownie"
 SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
@@ -181,11 +180,18 @@ Pin-Priority: 1
 _EOF_
 }
 
-config_source() {
+apt_source() {
+local LIST
+LIST="/etc/apt/sources.list"
 local DEB
 DEB="http://http.debian.net/debian/"
 local TEST
 TEST="jessie"
+if [[ -e $LIST ]]
+then
+    cp $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
+fi
+clear
 cat > $LIST << _EOF_
 ### unstable ###
 deb $DEB unstable main contrib non-free
@@ -205,15 +211,6 @@ deb $DEB experimental main
 ### multimedia ###
 deb http://www.deb-multimedia.org unstable main non-free
 _EOF_
-}
-
-apt_source() {
-if [[ -e $LIST ]]
-then
-    cp $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
-fi
-clear
-config_source
 apt-get update
 }
 
