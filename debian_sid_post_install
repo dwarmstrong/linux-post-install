@@ -3,7 +3,6 @@ set -u
 set -e
 NAME="debian_sid_post_install"
 DESCRIPTION="unstable/sid branch configuration"
-PREFER="/etc/apt/preferences"
 LIST="/etc/apt/sources.list"
 PKGLIST=""
 GITHUB="https://github.com/vonbrownie"
@@ -160,7 +159,13 @@ test_connect
 test_pkg_list
 }
 
-config_prefer() {
+apt_prefer() {
+local PREFER
+PREFER="/etc/apt/preferences"
+if [[ -e $PREFER ]]
+then
+    cp $PREFER ${PREFER}.$(date +%Y%m%dT%H%M%S).bak
+fi
 cat > $PREFER << _EOF_
 # Configure default preferences in package installation
 # * unlisted repositories are auto-ranked 500
@@ -174,14 +179,6 @@ Package: *
 Pin: release a=experimental
 Pin-Priority: 1
 _EOF_
-}
-
-apt_prefer() {
-if [[ -e $PREFER ]]
-then
-    cp $PREFER ${PREFER}.$(date +%Y%m%dT%H%M%S).bak
-fi
-config_prefer
 }
 
 config_source() {
