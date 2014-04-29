@@ -352,12 +352,12 @@ _EOF_
 
     if [[ $REPLY == [yY] || $REPLY == "" ]]
     then
-        echo "wget ${CRUNCHBANG}/${PNMIXER_DEB}"
-        echo "dpkg -i $PNMIXER_DEB"
-        echo "rm $PNMIXER_DEB"
-        echo "wget ${CRUNCHBANG}/${CB_ICON_DEB}"
-        echo "dpkg -i $CB_ICON_DEB"
-        echo "rm $CB_ICON_DEB"
+        wget ${CRUNCHBANG}/${PNMIXER_DEB}
+        wget ${CRUNCHBANG}/${CB_ICON_DEB}
+        dpkg -i $PNMIXER_DEB
+        dpkg -i $CB_ICON_DEB
+        rm $PNMIXER_DEB
+        rm $CB_ICON_DEB
         break
     elif [[ $REPLY == [nN] ]]
     then
