@@ -72,7 +72,6 @@ suitable for a desktop environment.
 If you wish to import and install a list of packages generated on another
 Debian unstable/sid system using 'dpkg --get-selections' select option '-p'
 and provide the location of the package list. See 'man dpkg' for details.
-
 _EOF_
 available_options
 }
@@ -152,9 +151,18 @@ then
 fi
 }
 
+test_pkg_list() {
+if [[ ! -z $PKGLIST && ! -e $PKGLIST ]]
+then
+    printf "\n$( penguinista ) .: '$PKGLIST' not found.\n"
+    exit 1
+fi
+}
+
 test_condition() {
 test_root
 test_connect
+test_pkg_list
 }
 
 config_prefer() {
@@ -368,7 +376,6 @@ _EOF_
 done
 fi  
 }
-
 
 pkg_desktop() {
 local GRAPHICS
