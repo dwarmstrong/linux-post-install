@@ -5,7 +5,6 @@ NAME="debian_sid_post_install"
 DESCRIPTION="unstable/sid branch configuration"
 # ---------- DEB OPTIONS ---------- #
 ARCH=$(dpkg --print-architecture)
-APTCACHE="/var/cache/apt/archives"
 PREFER="/etc/apt/preferences"
 LIST="/etc/apt/sources.list"
 DEB="http://http.debian.net/debian/" 
