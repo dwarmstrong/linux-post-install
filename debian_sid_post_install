@@ -322,6 +322,8 @@ apt-get -t experimental -y install $EX
 }
 
 pkg_third_party() {
+local ARCH
+ARCH=$(dpkg --print-architecture)
 local DPKG
 DPKG="/var/lib/dpkg/info"
 # Crunchbang Linux
@@ -352,7 +354,6 @@ Packages: pnmixer - volume mixer for the system tray
 crunchbang icons - icon theme with tilish style
 
 _EOF_
-
 
     read -n 1 -p "Do you want to install these extra packages? [Yn] > "
 
