@@ -5,7 +5,6 @@ NAME="debian_sid_post_install"
 DESCRIPTION="unstable/sid branch configuration"
 PREFER="/etc/apt/preferences"
 LIST="/etc/apt/sources.list"
-TEST="jessie"
 PKGLIST=""
 GITHUB="https://github.com/vonbrownie"
 SOURCE="${GITHUB}/linux-post-install/blob/master/debian_sid_post_install"
@@ -188,6 +187,8 @@ config_prefer
 config_source() {
 local DEB
 DEB="http://http.debian.net/debian/"
+local TEST
+TEST="jessie"
 cat > $LIST << _EOF_
 ### unstable ###
 deb $DEB unstable main contrib non-free
