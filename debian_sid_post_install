@@ -315,20 +315,28 @@ apt-get -t experimental -y install $EX
 }
 
 pkg_third_party() {
+local DPKG
+DPKG="/var/lib/dpkg/info"
 # Crunchbang Linux
 # ================
 local CRUNCHBANG
 CRUNCHBANG="http://packages.crunchbang.org/waldorf/pool/main"
 # pnmixer - volume mixer for the system tray
 local PNMIXER
-PNMIXER="pnmixer_0.5.1-crunchbang1_${ARCH}.deb"
+PNMIXER="pnmixer"
+local PNMIXER_DEB
+PNMIXER_DEB="pnmixer_0.5.1-crunchbang1_${ARCH}.deb"
 # crunchbang icons
-local ICONCR
-ICONCR="faenza-crunchbang-icon-theme_1.2-crunchang1_all.deb"
-clear
-while :
-do
-cat << _EOF_
+local CB_ICON
+CB_ICON="faenza-crunchbang-icon-theme"
+local CB_ICON_DEB
+CB_ICON_DEB="faenza-crunchbang-icon-theme_1.2-crunchang1_all.deb"
+if [[ ! -e "${DPKG}/${PNMIXER}.list" || ! -e "${DPKG}/${CB_ICON}.list" ]]
+then
+    clear
+    while :
+    do
+    cat << _EOF_
 Some useful packages provided by third-party (non-Debian) sources...
 
 CRUNCHBANG LINUX
@@ -338,33 +346,30 @@ crunchbang icons - icon theme with tilish style
 
 _EOF_
 
-read -n 1 -p "Do you want to install these extra packages? [Yn] > "
 
-if [[ $REPLY == [yY] || $REPLY == "" ]]
-then
-    if [[ ! -e ${APTCACHE}/${PNMIXER} ]]
+    read -n 1 -p "Do you want to install these extra packages? [Yn] > "
+
+    if [[ $REPLY == [yY] || $REPLY == "" ]]
     then
-        wget ${CRUNCHBANG}/${PNMIXER}
-        dpkg -i $PNMIXER
-        rm $PNMIXER
-    fi
-    if [[ ! -e ${APTCACHE}/${ICONCR} ]]
+        echo "wget ${CRUNCHBANG}/${PNMIXER_DEB}"
+        echo "dpkg -i $PNMIXER_DEB"
+        echo "rm $PNMIXER_DEB"
+        echo "wget ${CRUNCHBANG}/${CB_ICON_DEB}"
+        echo "dpkg -i $CB_ICON_DEB"
+        echo "rm $CB_ICON_DEB"
+        break
+    elif [[ $REPLY == [nN] ]]
     then
-        wget ${CRUNCHBANG}/${ICONCR}
-        dpkg -i $ICONCR
-        rm $ICONCR
+        printf "\nOK. Skipping over these packages...\n"
+        sleep 2
+        break
+    else
+        invalid_reply_yn
     fi
-    break
-elif [[ $REPLY == [nN] ]]
-then
-    printf "\nOK. Skipping over these packages...\n"
-    sleep 2
-    break
-else
-    invalid_reply_yn
-fi  
 done
+fi  
 }
+
 
 pkg_desktop() {
 local GRAPHICS
