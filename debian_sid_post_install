@@ -35,8 +35,7 @@ OPTIONS
   -h    print command syntax and options
   -i    import a Debian package list for installation
 EXAMPLE
-  Install packages from 'pkg-list.txt' located in the
-  same directory as $NAME:
+  Install packages from 'pkg-list.txt':
   $ $NAME -i pkg-list.txt
 
 _EOF_
@@ -375,28 +374,20 @@ pkg_desktop() {
 local GRAPHICS
 GRAPHICS="gimp gimp-data-extras gimp-help-en imagemagick"
 local NETWORK
-NETWORK="dnsutils network-manager-gnome ssh-askpass keychain pan rsync \
-transmission wireless-tools"
+NETWORK="network-manager-gnome transmission"
 local BROWSER
 BROWSER="flashplugin-nonfree icedtea-7-plugin openjdk-7-jre"
 local OFFICE
-OFFICE="libreoffice libreoffice-gtk libreoffice-help-en-us"
+OFFICE="libreoffice"
 local PROGRAM
 PROGRAM="build-essential python-dev python-pip python-setuptools \
 python-virtualenv"
 local SOUND
-SOUND="gstreamer0.10-ffmpeg gstreamer0.10-plugins-base \
-gstreamer0.10-plugins-good gstreamer0.10-plugins-bad \
-gstreamer0.10-plugins-ugly gstreamer0.10-pulseaudio \
-aacgain alsa-utils flac id3 id3v2 lame libmp3lame0 \
-mp3gain pulseaudio pulseaudio-utils pavucontrol \
-rhythmbox vorbis-tools vorbisgain xfce4-volumed"
+SOUND="rhythmbox pulseaudio pulseaudio-utils pavucontrol"
 local VIDEO
 VIDEO="vlc ffmpeg"
 local VIEWERS
-VIEWERS="eog geeqie qpdfview"
-local SYSTEM
-SYSTEM="gdmap synaptic"
+VIEWERS="eog qpdfview"
 clear
 while :
 do
@@ -427,9 +418,6 @@ Packages: $VIDEO
 VIEWERS
 Packages: $VIEWERS
 
-SYSTEM
-Packages: $SYSTEM
-
 _EOF_
 
 read -n 1 -p "Do you want to install these extra applications? [Yn] > "
@@ -439,7 +427,7 @@ then
     printf "\nOK. Installing extras...\n"
     sleep 2
     apt-get install -y $GRAPHICS $NETWORK $BROWSER $OFFICE $PROGRAM $SOUND \
-    $VIDEO $VIEWERS $SYSTEM
+    $VIDEO $VIEWERS
     break
 elif [[ $REPLY == [nN] ]]
 then
