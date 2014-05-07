@@ -251,8 +251,8 @@ local CONSOLE
 CONSOLE="dkms linux-headers-$(uname -r) module-assistant \
 apt-file apt-listbugs apt-listchanges acpi acpi-support acpitool \
 anacron colordiff console-setup cowsay cryptsetup dnsutils dosfstools \
-gpm htop input-utils ntfs-3g lxsplit par2 p7zip-full unrar unzip rsync \
-sudo sl sysv-rc-conf tmux vim ssh-askpass keychain whois xz-utils"
+gpm htop input-utils ntfs-3g lxsplit par2 pmount p7zip-full unrar unzip \
+rsync sudo sl tmux vim ssh-askpass keychain whois xz-utils"
 clear
 apt-get install -y $CONSOLE
 }
