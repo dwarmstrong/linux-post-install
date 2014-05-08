@@ -2,7 +2,7 @@
 linux-post-install
 ==================
 
-Post-install configuration of Debian ``unstable/sid``.
+Post-install configuration of Debian GNU/Linux.
 
 Author
 ======
