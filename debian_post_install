@@ -2,7 +2,13 @@
 set -u
 set -e
 NAME="debian_post_install"
-DESCRIPTION="unstable/sid branch configuration"
+DESCRIPTION="stable|unstable branch configuration"
+SYNOPSIS="$NAME [OPTION] [PKGLIST]"
+STABLE="wheezy"
+TESTING="jessie"
+PREFER="/etc/apt/preferences"
+LIST="/etc/apt/sources.list"
+DEB="http://http.debian.net/debian/"
 PKGLIST=""
 GITHUB="https://github.com/vonbrownie"
 SOURCE="${GITHUB}/linux-post-install/blob/master/debian_post_install"
@@ -48,7 +54,7 @@ cat << _EOF_
 $( penguinista ) .: $NAME -- $DESCRIPTION :.
 
 SYNOPSIS
-  $NAME [OPTION] [PKGLIST]
+  $SYNOPSIS
 
 Howdy! Ideally this script is run following a fresh installation of
 Debian GNU/Linux.
@@ -56,9 +62,9 @@ Debian GNU/Linux.
 See: "Install Debian Wheezy Screenshot Tour"
 http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
 
-This system will be configured to track Debian's unstable/sid branch
-with the option of installing the Openbox window manager + extra apps
-suitable for a desktop environment.
+This system will be configured to track a choice of Debian's stable "$STABLE"
+or unstable "sid"  branch with the option of installing the Openbox window manager
++ extra apps suitable for a desktop environment.
 
 ## TIP ##
 If you wish to import and install a list of packages generated on another
@@ -157,9 +163,27 @@ test_connect
 test_pkg_list
 }
 
-apt_prefer() {
-local PREFER
-PREFER="/etc/apt/preferences"
+apt_prefer_stable() {
+if [[ -e $PREFER ]]
+then
+    cp $PREFER ${PREFER}.$(date +%Y%m%dT%H%M%S).bak
+fi
+cat > $PREFER << _EOF_
+# Configure default preferences in package installation
+# * unlisted repositories are auto-ranked 500
+# * installed packages are ranked 100
+
+Package: *
+Pin: release n=$STABLE
+Pin-Priority: 900
+
+Package: *
+Pin: release a=experimental
+Pin-Priority: 1
+_EOF_
+}
+
+apt_prefer_unstable() {
 if [[ -e $PREFER ]]
 then
     cp $PREFER ${PREFER}.$(date +%Y%m%dT%H%M%S).bak
@@ -179,13 +203,35 @@ Pin-Priority: 1
 _EOF_
 }
 
-apt_source() {
-local LIST
-LIST="/etc/apt/sources.list"
-local DEB
-DEB="http://http.debian.net/debian/"
-local TEST
-TEST="jessie"
+apt_source_stable() {
+if [[ -e $LIST ]]
+then
+    cp $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
+fi
+clear
+cat > $LIST << _EOF_
+### $STABLE ###
+deb $DEB $STABLE main contrib non-free
+deb-src $DEB $STABLE main contrib non-free
+
+### $TESTING ###
+deb $DEB $TESTING main contrib non-free
+#deb-src $DEB $TESTING main contrib non-free
+
+### $TESTING security ###
+deb http://security.debian.org/ $TESTING/updates main contrib non-free
+#deb-src http://security.debian.org/ $TESTING/updates main contrib non-free
+
+### experimental ###
+deb $DEB experimental main
+
+### multimedia ###
+deb http://www.deb-multimedia.org $STABLE main non-free
+_EOF_
+apt-get update
+}
+
+apt_source_unstable() {
 if [[ -e $LIST ]]
 then
     cp $LIST ${LIST}.$(date +%Y%m%dT%H%M%S).bak
@@ -196,13 +242,13 @@ cat > $LIST << _EOF_
 deb $DEB unstable main contrib non-free
 deb-src $DEB unstable main contrib non-free
 
-### $TEST ###
-deb $DEB $TEST main contrib non-free
-#deb-src $DEB $TEST main contrib non-free
+### $TESTING ###
+deb $DEB $TESTING main contrib non-free
+#deb-src $DEB $TESTING main contrib non-free
 
-### $TEST security ###
-deb http://security.debian.org/ $TEST/updates main contrib non-free
-#deb-src http://security.debian.org/ $TEST/updates main contrib non-free
+### $TESTING security ###
+deb http://security.debian.org/ $TESTING/updates main contrib non-free
+#deb-src http://security.debian.org/ $TESTING/updates main contrib non-free
 
 ### experimental ###
 deb $DEB experimental main
