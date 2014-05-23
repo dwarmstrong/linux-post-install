@@ -362,13 +362,6 @@ clear
 apt-get install -y $THEME
 }
 
-pkg_experiment() {
-local EX
-EX="iceweasel"
-clear
-apt-get -t experimental -y install $EX
-}
-
 pkg_third_party() {
 local ARCH
 ARCH=$(dpkg --print-architecture)
@@ -430,7 +423,7 @@ pkg_desktop() {
 local GRAPHICS
 GRAPHICS="gimp gimp-data-extras gimp-help-en"
 local NETWORK
-NETWORK="transmission"
+NETWORK="iceweasel transmission"
 local BROWSER
 BROWSER="flashplugin-nonfree icedtea-7-plugin openjdk-7-jre"
 local OFFICE
@@ -595,7 +588,6 @@ case $REPLY in
         pkg_xorg
         pkg_openbox
         pkg_theme
-        pkg_experiment
         pkg_third_party
         pkg_desktop
         pkg_dvd
