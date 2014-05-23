@@ -68,7 +68,7 @@ or unstable "sid"  branch with the option of installing the Openbox window manag
 
 ## TIP ##
 If you wish to import and install a list of packages generated on another
-Debian unstable/sid system using 'dpkg --get-selections' select option '-p'
+Debian $STABLE|sid system using 'dpkg --get-selections' select option '-p'
 and provide the location of the package list. See 'man dpkg' for details.
 _EOF_
 available_options
@@ -176,10 +176,6 @@ cat > $PREFER << _EOF_
 Package: *
 Pin: release n=$STABLE
 Pin-Priority: 900
-
-Package: *
-Pin: release a=experimental
-Pin-Priority: 1
 _EOF_
 }
 
@@ -214,16 +210,31 @@ cat > $LIST << _EOF_
 deb $DEB $STABLE main contrib non-free
 deb-src $DEB $STABLE main contrib non-free
 
+### $STABLE security ###
+deb http://security.debian.org/ $STABLE/updates main contrib non-free
+#deb-src http://security.debian.org/ $STABLE/updates main contrib non-free
+
+### ${STABLE}-updates ###
+deb $DEB ${STABLE}-updates main non-free contrib
+#deb-src deb $DEB ${STABLE}-updates main non-free contrib 
+
+### backports ###
+deb $DEB ${STABLE}-backports main contrib non-free
+
 ### $TESTING ###
-deb $DEB $TESTING main contrib non-free
+#deb $DEB $TESTING main contrib non-free
 #deb-src $DEB $TESTING main contrib non-free
 
 ### $TESTING security ###
-deb http://security.debian.org/ $TESTING/updates main contrib non-free
+#deb http://security.debian.org/ $TESTING/updates main contrib non-free
 #deb-src http://security.debian.org/ $TESTING/updates main contrib non-free
 
+### unstable ###
+#deb $DEB unstable main contrib non-free
+#deb-src $DEB unstable main contrib non-free
+
 ### experimental ###
-deb $DEB experimental main
+#deb $DEB experimental main
 
 ### multimedia ###
 deb http://www.deb-multimedia.org $STABLE main non-free
@@ -513,6 +524,42 @@ do
 done
 }
 
+config_branch() {
+clear
+while :
+do
+cat << _EOF_
+Please select the default Debian branch for packages:
+
+0) stable/$STABLE
+1) unstable/sid
+
+_EOF_
+
+read -n 1 -p "Your choice? [0-1] > "
+
+case $REPLY in
+    0)
+        printf "\nOK. System will be configured to track the stable branch...\n"
+        sleep 2
+        apt_prefer_stable
+        apt_source_stable
+        break
+        ;;
+    1)
+        printf "\nOK. System will be configured to track the unstable branch...\n"
+        sleep 2
+        apt_prefer_unstable
+        apt_source_unstable
+        break
+        ;;
+    *)
+        invalid_reply
+        ;;
+esac
+done
+}
+
 config_alternative() {
 clear
 update-alternatives --config editor
@@ -624,8 +671,7 @@ confirm_start
 test_condition
 
 #: APT
-apt_prefer
-apt_source
+config_branch
 apt_key
 apt_pkg_list
 
