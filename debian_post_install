@@ -9,6 +9,7 @@ TESTING="jessie"
 PREFER="/etc/apt/preferences"
 LIST="/etc/apt/sources.list"
 DEB="http://http.debian.net/debian/"
+BRANCH=""
 PKGLIST=""
 GITHUB="https://github.com/vonbrownie"
 SOURCE="${GITHUB}/linux-post-install/blob/master/debian_post_install"
@@ -220,6 +221,7 @@ deb $DEB ${STABLE}-updates main non-free contrib
 
 ### backports ###
 deb $DEB ${STABLE}-backports main contrib non-free
+deb http://mozilla.debian.net/ ${STABLE}-backports iceweasel-release
 
 ### $TESTING ###
 #deb $DEB $TESTING main contrib non-free
@@ -360,6 +362,15 @@ THEME="fonts-liberation fonts-droid gtk2-engines gtk2-engines-murrine \
 libgnomeui-0"
 clear
 apt-get install -y $THEME
+}
+
+pkg_backports() {
+local BACKPORTS
+BACKPORTS="iceweasel"
+if [[ $BRANCH == $STABLE ]]
+then
+    apt-get install -y -t ${STABLE}-backports $BACKPORTS
+fi
 }
 
 pkg_third_party() {
@@ -535,6 +546,7 @@ case $REPLY in
     0)
         printf "\nOK. System will be configured to track the stable branch...\n"
         sleep 2
+        BRANCH="$STABLE"
         apt_prefer_stable
         apt_source_stable
         break
@@ -588,6 +600,7 @@ case $REPLY in
         pkg_xorg
         pkg_openbox
         pkg_theme
+        pkg_backports
         pkg_third_party
         pkg_desktop
         pkg_dvd
