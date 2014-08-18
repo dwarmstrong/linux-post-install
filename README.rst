@@ -10,7 +10,7 @@ See: `Debian Wheezy Minimal Install <http://www.circuidipity.com/install-debian-
 
 Import a list of packages using option '-i' that duplicate the configuration from another system running Debian.
 
-See: `Duplicate Debian package selection on multiple machines <http://www.circuidipity.com/dpkg-duplicate.html>`_
+See: `Duplicate Debian package selection on multiple machines <http://www.circuidipity.com/dpkg-duplicate.html>`_ (circuidipity.com)
 
 (example)# ./debian-post-install-main.sh -i package-list.txt
 
