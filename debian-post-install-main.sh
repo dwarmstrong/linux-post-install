@@ -16,6 +16,7 @@ script_description="stable|testing|unstable branch configuration"
 script_synopsis="$script_name [OPTION] [PACKAGE_LIST]"
 script_git="https://github.com/vonbrownie"
 script_src="$script_git/linux-post-install/blob/master/$script_name"
+goto_sleep="sleep 4"
 
 # Script global directory variables
 tmp_dir="/tmp/tmp.debian-post-install"
@@ -63,6 +64,11 @@ echo -e '\e[0m'
 echo_cyan() {
 echo -e "\E[1;36m$1"
 echo -e '\e[0m'
+}
+
+func_done() {
+echo_green "\n... done!\n"
+$goto_sleep
 }
 
 penguinista() {
@@ -164,7 +170,7 @@ do
     if [[ $REPLY == [yY] ]]
     then
         echo_green "\nLet's roll then ...\n"
-        sleep 2
+        $goto_sleep
         break
     elif [[ $REPLY == [nN] || $REPLY == "" ]]
     then
@@ -222,6 +228,9 @@ if [[ -e $apt_preferences ]]
 then
     cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
 fi
+clear
+echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
+$goto_sleep
 cat > $apt_preferences << _EOF_
 # Configure default preferences in package installation
 # * unlisted repositories are auto-ranked 500
@@ -231,6 +240,7 @@ Package: *
 Pin: release n=$deb_stable
 Pin-Priority: 900
 _EOF_
+func_done
 }
 
 apt_preferences_testing() {
@@ -238,6 +248,9 @@ if [[ -e $apt_preferences ]]
 then
     cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
 fi
+clear
+echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
+$goto_sleep
 cat > $apt_preferences << _EOF_
 # Configure default preferences in package installation
 # * unlisted repositories are auto-ranked 500
@@ -247,6 +260,7 @@ Package: *
 Pin: release n=$deb_testing
 Pin-Priority: 900
 _EOF_
+func_done
 }
 
 apt_preferences_unstable() {
@@ -254,6 +268,9 @@ if [[ -e $apt_preferences ]]
 then
     cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
 fi
+clear
+echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
+$goto_sleep
 cat > $apt_preferences << _EOF_
 # Configure default preferences in package installation
 # * unlisted repositories are auto-ranked 500
@@ -267,6 +284,15 @@ Package: *
 Pin: release a=experimental
 Pin-Priority: 1
 _EOF_
+func_done
+}
+
+apt_update() {
+clear
+echo_green "\n$( penguinista ) .: Updating package list ...\n"
+$goto_sleep
+apt-get update
+func_done
 }
 
 apt_sources_stable() {
@@ -275,6 +301,8 @@ then
     cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
 clear
+echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
+$goto_sleep
 cat > $apt_sources_list << _EOF_
 ### $deb_stable ###
 deb $deb_archive $deb_stable main contrib non-free
@@ -296,7 +324,8 @@ deb http://mozilla.debian.net/ ${deb_stable}-backports iceweasel-release
 deb http://www.deb-multimedia.org $deb_stable main non-free
 
 _EOF_
-apt-get update
+func_done
+apt_update
 }
 
 apt_sources_testing() {
@@ -305,6 +334,8 @@ then
     cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
 clear
+echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
+$goto_sleep
 cat > $apt_sources_list << _EOF_
 ### $deb_testing ###
 deb $deb_archive $deb_testing main contrib non-free
@@ -318,7 +349,8 @@ deb http://security.debian.org/ ${deb_testing}/updates main contrib non-free
 deb http://www.deb-multimedia.org $deb_testing main non-free
 
 _EOF_
-apt-get update
+func_done
+apt_update
 }
 
 apt_sources_unstable() {
@@ -327,6 +359,8 @@ then
     cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
 clear
+echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
+$goto_sleep
 cat > $apt_sources_list << _EOF_
 ### unstable ###
 deb $deb_archive unstable main contrib non-free
@@ -339,30 +373,41 @@ deb $deb_archive experimental main
 deb http://www.deb-multimedia.org unstable main non-free
 
 _EOF_
-apt-get update
+func_done
+apt_update
 }
 
 apt_keys() {
 clear
+echo_green "\n$( penguinista ) .: Installing archive keys ...\n"
+$goto_sleep
 apt-get install -y debian-archive-keyring
 apt-get install deb-multimedia-keyring
 apt-get install pkg-mozilla-archive-keyring
-apt-get update
+func_done
+apt_update
+clear
+echo_green "\n$( penguinista ) .: Upgrading system ...\n"
+$goto_sleep 
 apt-get -y dist-upgrade
+func_done
 }
 
 apt_package_list() {
 local deb_packages
 deb_packages=$(mktemp)
-clear
 if [[ ! -z $deb_package_list && -e $deb_package_list ]]
 then
+    clear
+    echo_green "\n$( penguinista ) .: Importing $deb_package_list and installing packages ...\n"
+    $goto_sleep
     apt-cache dumpavail > "$deb_packages"
     dpkg --merge-avail "$deb_packages"
     rm -f "$deb_packages"
     dpkg --clear-selections
     dpkg --set-selections < $deb_package_list
     apt-get dselect-upgrade
+    func_done
 fi
 }
 
@@ -371,7 +416,11 @@ local deb_package_purge
 deb_package_purge="gdm3 gnome-system-tools nautilus* libnautilus* \
 notification-daemon tumbler* libtumbler*"
 clear
+echo_green "\n$( penguinista ) .: Purging packages ...\n"
+echo_red "$deb_package_purge"
+sleep 10
 apt-get --purge remove $deb_package_purge
+func_done
 }
 
 package_console() {
@@ -380,34 +429,43 @@ console_pkgs="build-essential dkms module-assistant colordiff \
 cryptsetup htop iproute iw lxsplit par2 pmount p7zip-full unrar \
 unzip rsync sudo sl tmux vim whois xz-utils wpasupplicant"
 clear
+echo_green "\n$( penguinista ) .: Installing console packages ...\n"
+$goto_sleep
 apt-get install -y $console_pkgs
+func_done
 }
 
 package_xorg() {
 local xorg_pkgs
 xorg_pkgs="xorg x11-utils xbacklight xdotool xfonts-terminus xterm rxvt-unicode"
 clear
+echo_green "\n$( penguinista ) .: Installing X packages ...\n"
+$goto_sleep
 apt-get install -y $xorg_pkgs
+func_done
 }
 
 package_openbox() {
 local openbox_pkgs
-openbox_pkgs="openbox obconf eject feh flashplugin-nonfree gksu gsimplecal \
-iceweasel icedtea-7-plugin openjdk-7-jre leafpad lxappearance \
+openbox_pkgs="openbox obconf eject feh gksu gsimplecal leafpad \
 lxappearance-obconf menu mirage network-manager-gnome pavucontrol \
-qt4-qtconfig scrot suckless-tools tint2 thunar-volman vlc xarchiver \
-xfce4-notifyd xfce4-power-manager xfce4-settings xfce4-volumed \
-xscreensaver zenity"
+scrot suckless-tools tint2 thunar-volman xarchiver xfce4-notifyd \
+xfce4-power-manager xfce4-settings xfce4-volumed xscreensaver zenity"
 clear
+echo_green "\n$( penguinista ) .: Installing Openbox ...\n"
+$goto_sleep
 apt-get install -y $openbox_pkgs
+func_done
 }
 
 package_theme() {
 local ubuntu_ver
+local desktop_theme
 local cb_archive
 local cb_icons
 local cb_icons_deb
 ubuntu_ver="trusty"
+desktop_theme="Numix"
 cb_archive="http://packages.crunchbang.org/waldorf/pool/main"
 cb_icons="faenza-crunchbang-icon-theme"
 cb_icons_deb="${cb_icons}_1.2-crunchang1_all.deb"
@@ -416,27 +474,38 @@ cb_icons_deb="${cb_icons}_1.2-crunchang1_all.deb"
 # -------------
 # * http://numixproject.org/
 # * includes GTK2 + GTK3.6+ + Openbox + Xfce support
-apt-get install -y gtk2-engines gtk2-engines-murrine libgnomeui-0
+clear
+echo_green "\n$( penguinista ) .: Installing $desktop_theme theme ...\n"
+$goto_sleep
 echo "### numix theme ###" >> $apt_sources_list
 echo "deb http://ppa.launchpad.net/numix/ppa/ubuntu $ubuntu_ver main" >> $apt_sources_list 
 echo "deb-src http://ppa.launchpad.net/numix/ppa/ubuntu $ubuntu_ver main" >> $apt_sources_list 
 apt-get update
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0F164EEB
 apt-get update
+apt-get install -y gtk2-engines gtk2-engines-murrine libgnomeui-0
 apt-get install -y numix-gtk-theme
+func_done
 
 # Icons - Faenza-Dark-Crunchbang
 # ------------------------------
 if [[ ! -e "${dpkg_info}/${cb_icons}.list" ]]
 then
     clear
+    echo_green "\n$( penguinista ) .: Installing $cb_icons ...\n"
+    $goto_sleep
     wget -P $tmp_dir ${cb_archive}/${cb_icons_deb}
     dpkg -i ${tmp_dir}/$cb_icons_deb
+    func_done
 fi
 
 # Fonts - Droid Sans
 # ------------------
+clear
+echo_green "\n$( penguinista ) .: Installing fonts ...\n"
+$goto_sleep
 apt-get install -y fonts-liberation fonts-droid
+func_done
 
 # Theme Config Utils
 # ------------------
@@ -445,8 +514,12 @@ apt-get install -y fonts-liberation fonts-droid
 # * Xfce4: xfce4-settings-manager
 # * QT: qtconfig-qt4
 # * Xfce4: xfce4-settings
+clear
+echo_green "\n$( penguinista ) .: Installing theme configuration utilities ...\n"
+$goto_sleep
 apt-get install -y obconf lxappearance lxappearance-obconf \
 qt4-qtconfig xfce4-settings
+func_done
 }
 
 package_backport() {
@@ -454,34 +527,48 @@ local backport_pkgs
 backport_pkgs="iceweasel"
 if [[ $deb_branch == $deb_stable ]]
 then
+    clear
+    echo_green "\n$( penguinista ) .: Installing backported packages ...\n"
+    $goto_sleep
     apt-get install -y -t ${deb_stable}-backports $backport_pkgs
+    func_done
 fi
 }
 
 package_extra() {
+local extra_debs
 local cb_archive
 local cb_pnmixer
 local cb_pnmixer_deb
+extra_debs="flashplugin-nonfree iceweasel icedtea-7-plugin openjdk-7-jre \
+rxvt-unicode vlc"
 cb_archive="http://packages.crunchbang.org/waldorf/pool/main"
 cb_pnmixer="pnmixer"
 cb_pnmixer_deb="${cb_pnmixer}_0.5.1-crunchbang1_${deb_arch}.deb"
 
+clear
+echo_green "\n$( penguinista ) .: Installing extra packages ...\n"
+$goto_sleep
+
+# extra debian pkgs
+apt-get -y install $extra_debs
+
 # pnmixer - volume mixer for the system tray
 if [[ ! -e "${dpkg_info}/${cb_pnmixer}.list" ]]
 then
-    clear
     wget -P $tmp_dir ${cb_archive}/${cb_pnmixer_deb}
     dpkg -i ${tmp_dir}/$cb_pnmixer_deb
 fi
+
+func_done
 }
 
 config_branch() {
 clear
 while :
 do
+echo_green "$( penguinista ) .: Please select the default Debian branch for packages:"
 cat << _EOF_
-Please select the default Debian branch for packages:
-
 0) ${deb_stable}/stable
 1) ${deb_testing}/testing
 2) ${deb_unstable}/unstable
@@ -492,24 +579,24 @@ read -n 1 -p "Your choice? [0-2] > "
 
 case $REPLY in
     0)
-        echo_green "\nOK. System will be configured to track the stable branch...\n"
-        sleep 2
+        echo_green "\nOK. System will be configured to track the stable branch ...\n"
+        $goto_sleep
         deb_branch="$deb_stable"
         apt_preferences_stable
         apt_sources_stable
         break
         ;;
     1)
-        echo_green "\nOK. System will be configured to track the testing branch...\n"
-        sleep 2
+        echo_green "\nOK. System will be configured to track the testing branch ...\n"
+        $goto_sleep
         deb_branch="$deb_testing"
         apt_preferences_testing
         apt_sources_testing
         break
         ;;
     2)
-        echo_green "\nOK. System will be configured to track the unstable branch...\n"
-        sleep 2
+        echo_green "\nOK. System will be configured to track the unstable branch ...\n"
+        $goto_sleep
         deb_branch="$deb_unstable"
         apt_preferences_unstable
         apt_sources_unstable
@@ -533,9 +620,8 @@ config_desktop() {
 clear
 while :
 do
+echo_green "$( penguinista ) .: Please select console-only or Openbox:"
 cat << _EOF_
-Please select console-only or X environment:
-
 0) Do not install an X environment
 1) Openbox - lightweight window manager
 
@@ -545,14 +631,14 @@ read -n 1 -p "Your choice? [0-1] > "
 
 case $REPLY in
     0)
-        echo_green "\nOK. No X environment will be installed...\n"
-        sleep 2
+        echo_green "\nOK. No X environment will be installed ...\n"
+        $goto_sleep
         package_console
         break
         ;;
     1)
-        echo_green "\nOK. Installing Openbox...\n"
-        sleep 2
+        echo_green "\nOK. Installing Openbox ...\n"
+        $goto_sleep
         package_console
         package_xorg
         package_openbox
@@ -597,9 +683,10 @@ user_groups="adm audio cdrom dialout dip floppy fuse netdev plugdev sudo \
 vboxusers video users"
 
 clear
+echo_green "$( penguinista ) .: Configuring users and groups ...\n"
 read -p "What will be your (non-root) user name? > " user_name
 echo_green "\nHello ${user_name}!\n"
-sleep 2
+$goto_sleep
 if [[ ! -d /home/${user_name} ]]
 then
     adduser $user_name
