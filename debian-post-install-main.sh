@@ -20,8 +20,7 @@ script_src="$script_git/linux-post-install/blob/master/$script_name"
 # Script global directory variables
 tmp_dir="/tmp/tmp.debian-post-install"
 current_dir="."
-profile_dir="${current_dir}/profiles/debian/"
-log_file="${current_dir}/debian-post-install-log.txt"
+extras_dir="${current_dir}/extras/"
 
 # Debian variables
 deb_stable="wheezy"
@@ -88,9 +87,8 @@ _EOF_
 
 long_description() {
 clear
+echo_yellow "$( penguinista ) .: $script_name -- $script_description :."
 cat << _EOF_
-$( penguinista ) .: $script_name -- $script_description :.
-
 SYNOPSIS
   $script_synopsis
 SOURCE
@@ -118,8 +116,11 @@ http://www.circuidipity.com/dpkg-duplicate.html
 
 ... and run this script with option '-i' and the location of the package list.
 
+EXAMPLE
+  Install packages from 'package-list.txt':
+  (as_root)# ./$script_name -i package-list.txt
+
 _EOF_
-available_options
 }
 
 run_options() {
@@ -135,12 +136,12 @@ do
             break
             ;;
         :)
-            printf "\n$( penguinista ) .: Option '-$OPTARG' missing argument.\n"
+            echo_red "\n$( penguinista ) .: Option '-$OPTARG' missing argument.\n"
             available_options
             exit 1
             ;;
         *)
-            printf "\n$( penguinista ) .: Invalid option '-$OPTARG'\n"
+            echo_red "\n$( penguinista ) .: Invalid option '-$OPTARG'\n"
             available_options
             exit 1
             ;;
@@ -149,11 +150,11 @@ done
 }
 
 invalid_reply() {
-printf "\n'$REPLY' is invalid input...\n"
+echo_red "\n'$REPLY' is invalid input...\n"
 }
 
 invalid_reply_yn() {
-printf "\n'$REPLY' is invalid input. Please select 'Y(es)' or 'N(o)'...\n"
+echo_red "\n'$REPLY' is invalid input. Please select 'Y(es)' or 'N(o)'...\n"
 }
 
 confirm_start() {
@@ -162,7 +163,7 @@ do
     read -n 1 -p "Run script now? [yN] > "
     if [[ $REPLY == [yY] ]]
     then
-        printf "\nLet's roll then ...\n"
+        echo_green "\nLet's roll then ...\n"
         sleep 2
         break
     elif [[ $REPLY == [nN] || $REPLY == "" ]]
@@ -178,7 +179,7 @@ done
 test_root() {
 if [[ $UID -ne 0 ]]
 then
-    printf "\n$( penguinista ) .: $script_name requires ROOT privileges to do its job.\n"
+    echo_red "\n$( penguinista ) .: $script_name requires ROOT privileges to do its job.\n"
     exit 1
 else
     if [[ ! -d "$tmp_dir" ]]
@@ -195,7 +196,7 @@ ip link | awk '/mtu/ {gsub(":",""); printf "\t%s", $2} END {printf "\n"}'
 test_connect() {
 if ! $(ip addr show | grep "state UP" &>/dev/null)
 then
-    printf "\n$( penguinista ) .: $script_name requires an active network interface."
+    echo_red "\n$( penguinista ) .: $script_name requires an active network interface."
     printf "\nINTERFACES FOUND\n"
     interface_found
     exit 1
@@ -205,7 +206,7 @@ fi
 test_package_list() {
 if [[ ! -z $deb_package_list && ! -e $deb_package_list ]]
 then
-    printf "\n$( penguinista ) .: '$deb_package_list' not found.\n"
+    echo_red "\n$( penguinista ) .: '$deb_package_list' not found.\n"
     exit 1
 fi
 }
@@ -491,7 +492,7 @@ read -n 1 -p "Your choice? [0-2] > "
 
 case $REPLY in
     0)
-        printf "\nOK. System will be configured to track the stable branch...\n"
+        echo_green "\nOK. System will be configured to track the stable branch...\n"
         sleep 2
         deb_branch="$deb_stable"
         apt_preferences_stable
@@ -499,7 +500,7 @@ case $REPLY in
         break
         ;;
     1)
-        printf "\nOK. System will be configured to track the testing branch...\n"
+        echo_green "\nOK. System will be configured to track the testing branch...\n"
         sleep 2
         deb_branch="$deb_testing"
         apt_preferences_testing
@@ -507,7 +508,7 @@ case $REPLY in
         break
         ;;
     2)
-        printf "\nOK. System will be configured to track the unstable branch...\n"
+        echo_green "\nOK. System will be configured to track the unstable branch...\n"
         sleep 2
         deb_branch="$deb_unstable"
         apt_preferences_unstable
@@ -544,13 +545,13 @@ read -n 1 -p "Your choice? [0-1] > "
 
 case $REPLY in
     0)
-        printf "\nOK. No X environment will be installed...\n"
+        echo_green "\nOK. No X environment will be installed...\n"
         sleep 2
         package_console
         break
         ;;
     1)
-        printf "\nOK. Installing Openbox...\n"
+        echo_green "\nOK. Installing Openbox...\n"
         sleep 2
         package_console
         package_xorg
@@ -597,7 +598,7 @@ vboxusers video users"
 
 clear
 read -p "What will be your (non-root) user name? > " user_name
-printf "\nHello ${user_name}!\n"
+echo_green "\nHello ${user_name}!\n"
 sleep 2
 if [[ ! -d /home/${user_name} ]]
 then
@@ -620,9 +621,14 @@ clear
 dpkg-reconfigure tzdata
 }
 
+cleanup() {
+apt_package_purge
+rm -rf $tmp_dir
+}
+
 au_revoir() {
 clear
-printf "$( penguinista ) .: All done!\n"
+echo_yellow "$( penguinista ) .: All done!\n"
 }
 
 #: START
@@ -644,5 +650,5 @@ config_locale
 config_timezone
 
 #: FINISH
-apt_package_purge
+cleanup
 au_revoir
