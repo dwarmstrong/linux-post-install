@@ -12,10 +12,10 @@ set -eu
 
 # Script variables
 script_name="c720-sidbook-post-install-main.sh"
-script_description="configure chromebook with Debian's sid/unstable branch"
-script_synopsis="$script_name [OPTION] [PACKAGE_LIST]"
+script_description="configure Debian's _sid_ branch on Acer C720 Chromebook"
 script_git="https://github.com/vonbrownie"
-script_src="$script_git/linux-post-install/blob/master/$script_name"
+script_src="source: $script_git/linux-post-install/blob/master/$script_name"
+script_synopsis="usage: $script_name [ OPTION ] [ PACKAGE_LIST ]"
 goto_sleep="sleep 4"
 
 # Script global directory variables
@@ -101,37 +101,28 @@ _EOF_
 long_description() {
 clear
 echo_yellow "$( penguinista ) .: $script_name -- $script_description :."
+echo_cyan "$script_src"
+echo_cyan "$script_synopsis"
+available_options
 cat << _EOF_
-SYNOPSIS
-  $script_synopsis
-SOURCE
-  $script_src
-
 Howdy! Ideally this script is run following a fresh installation of
-Debian GNU/Linux.
+Debian GNU/Linux on the Acer C720 Chromebook.
 
-See: "Debian Wheezy Minimal Install"
-http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
+See "From Chromebook to Sidbook" for details:
+http://www.circuidipity.com/c720-sidbook.html
 
-See: "Install Debian using grml-debootstrap"
-http://www.circuidipity.com/grml-debootstrap.html
-
-This script configures the Acer C720 Chromebook to track Debian's ${deb_unstable}/unstable
-branch with the option of installing the Openbox window manager + extra apps
-suitable for a desktop environment.
+This script configures the Acer C720 Chromebook to track Debian's
+_sid_/unstable branch with the option of installing the Openbox
+window manager + extra apps suitable for a desktop environment.
 
 ## TIP ##
-Import a list of packages that duplicate the configuration from another system
-running Debian ${deb_unstable}/unstable.
+Import a list of packages that duplicate the configuration from
+another system running Debian _sid_.
 
 See: "Duplicate Debian package selection on multiple machines"
 http://www.circuidipity.com/dpkg-duplicate.html
 
-... and run this script with option '-i' and the location of the package list.
-
-EXAMPLE
-  Install packages from 'package-list.txt':
-  (as_root)# ./$script_name -i package-list.txt
+... and run script with option '-i' and name of package list.
 
 _EOF_
 }
