@@ -222,6 +222,7 @@ if [[ -e $apt_preferences ]]
 then
     cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
 fi
+
 clear
 echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
 $goto_sleep
@@ -242,6 +243,7 @@ if [[ -e $apt_preferences ]]
 then
     cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
 fi
+
 clear
 echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
 $goto_sleep
@@ -262,6 +264,7 @@ if [[ -e $apt_preferences ]]
 then
     cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
 fi
+
 clear
 echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
 $goto_sleep
@@ -294,6 +297,7 @@ if [[ -e $apt_sources_list ]]
 then
     cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
+
 clear
 echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
 $goto_sleep
@@ -327,6 +331,7 @@ if [[ -e $apt_sources_list ]]
 then
     cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
+
 clear
 echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
 $goto_sleep
@@ -352,6 +357,7 @@ if [[ -e $apt_sources_list ]]
 then
     cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
+
 clear
 echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
 $goto_sleep
@@ -390,6 +396,7 @@ func_done
 apt_package_list() {
 local deb_packages
 deb_packages=$(mktemp)
+
 if [[ ! -z $deb_package_list && -e $deb_package_list ]]
 then
     clear
@@ -409,6 +416,7 @@ apt_package_purge() {
 local deb_package_purge
 deb_package_purge="gdm3 gnome-system-tools nautilus* libnautilus* \
 notification-daemon tumbler* libtumbler*"
+
 clear
 echo_green "\n$( penguinista ) .: Purging packages ...\n"
 echo_red "$deb_package_purge"
@@ -422,6 +430,7 @@ local console_pkgs
 console_pkgs="build-essential dkms module-assistant colordiff \
 cryptsetup htop iproute iw lxsplit par2 pmount p7zip-full unrar \
 unzip rsync sudo sl tmux vim whois xz-utils wpasupplicant"
+
 clear
 echo_green "\n$( penguinista ) .: Installing console packages ...\n"
 $goto_sleep
@@ -432,6 +441,7 @@ func_done
 package_xorg() {
 local xorg_pkgs
 xorg_pkgs="xorg x11-utils xbacklight xdotool xfonts-terminus xterm rxvt-unicode"
+
 clear
 echo_green "\n$( penguinista ) .: Installing X packages ...\n"
 $goto_sleep
@@ -445,6 +455,7 @@ openbox_pkgs="openbox obconf eject feh gksu gsimplecal leafpad \
 lxappearance-obconf menu mirage network-manager-gnome pavucontrol \
 scrot suckless-tools tint2 thunar-volman xarchiver xfce4-notifyd \
 xfce4-power-manager xfce4-settings xfce4-volumed xscreensaver zenity"
+
 clear
 echo_green "\n$( penguinista ) .: Installing Openbox ...\n"
 $goto_sleep
@@ -519,6 +530,7 @@ func_done
 package_backport() {
 local backport_pkgs
 backport_pkgs="iceweasel"
+
 if [[ $deb_branch == $deb_stable ]]
 then
     clear
@@ -553,7 +565,6 @@ then
     wget -P $tmp_dir ${cb_archive}/${cb_pnmixer_deb}
     dpkg -i ${tmp_dir}/$cb_pnmixer_deb
 fi
-
 func_done
 }
 
@@ -606,6 +617,7 @@ done
 config_alternative() {
 clear
 update-alternatives --config editor
+
 clear
 update-alternatives --config x-terminal-emulator
 }
