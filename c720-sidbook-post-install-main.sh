@@ -21,7 +21,17 @@ goto_sleep="sleep 4"
 # Script global directory variables
 tmp_dir="/tmp/tmp.debian-post-install"
 current_dir="."
-extras_dir="${current_dir}/extra/c720_chromebook/sidbook/"
+extra_dir="${current_dir}/extra/c720_chromebook/sidbook/"
+extra_etc="${extra_dir}/etc/"
+extra_lib="${extra_dir}/lib/"
+extra_scripts="${extra_dir}/scripts/"
+
+# Configuration variables
+sidbook_touchpad="${extra_etc}/X11/xorg.conf.d/50-c720-touchpad.conf"
+sidbook_grub="${extra_etc}/default/grub"
+sidbook_wakeup="${extra_etc}/tmpfiles.d/cros-acpi-wakeup.conf"
+sidbook_sound_suspend="${extra_lib}/systemd/system-sleep/cros-sound-suspend.sh"
+sidbook_kern_mods="${extra_scripts}/sid-c720-kern-mods.sh"
 
 # Debian variables
 deb_unstable="sid"
