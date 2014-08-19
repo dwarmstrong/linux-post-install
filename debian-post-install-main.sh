@@ -13,9 +13,9 @@ set -eu
 # Script variables
 script_name="debian-post-install-main.sh"
 script_description="stable|testing|unstable branch configuration"
-script_synopsis="$script_name [OPTION] [PACKAGE_LIST]"
 script_git="https://github.com/vonbrownie"
-script_src="$script_git/linux-post-install/blob/master/$script_name"
+script_src="source: ${script_git}/linux-post-install/blob/master/${script_name}"
+script_synopsis="usage: $script_name [ OPTION ] [ PACKAGE_LIST ]"
 goto_sleep="sleep 4"
 
 # Script global directory variables
@@ -94,12 +94,10 @@ _EOF_
 long_description() {
 clear
 echo_yellow "$( penguinista ) .: $script_name -- $script_description :."
+echo_cyan "$script_src"
+echo_cyan "$script_synopsis"
+available_options
 cat << _EOF_
-SYNOPSIS
-  $script_synopsis
-SOURCE
-  $script_src
-
 Howdy! Ideally this script is run following a fresh installation of
 Debian GNU/Linux.
 
@@ -109,22 +107,18 @@ http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html
 "Install Debian using grml-debootstrap"
 http://www.circuidipity.com/grml-debootstrap.html
 
-This system will be configured to track a choice of Debian's ${deb_stable}/stable,
-${deb_testing}/testing, or ${deb_unstable}/unstable branch with the option of installing the
+This system will be configured to track a choice of Debian's _${deb_stable}_/stable,
+_${deb_testing}_/testing, or _${deb_unstable}_/unstable branch with the option of installing the
 Openbox window manager + extra apps suitable for a desktop environment.
 
 ## TIP ##
-Import a list of packages that duplicate the configuration from another system
-running Debian.
+Import a list of packages that duplicate the configuration from another
+system running Debian.
 
 See: "Duplicate Debian package selection on multiple machines"
 http://www.circuidipity.com/dpkg-duplicate.html
 
-... and run this script with option '-i' and the location of the package list.
-
-EXAMPLE
-  Install packages from 'package-list.txt':
-  (as_root)# ./$script_name -i package-list.txt
+... and run script with option '-i' and name of package list.
 
 _EOF_
 }
