@@ -14,7 +14,7 @@ set -eu
 script_name="c720-sidbook-post-install-main.sh"
 script_description="configure Debian's _sid_ branch on Acer C720 Chromebook"
 script_git="https://github.com/vonbrownie"
-script_src="source: $script_git/linux-post-install/blob/master/$script_name"
+script_src="source: ${script_git}/linux-post-install/blob/master/${script_name}"
 script_synopsis="usage: $script_name [ OPTION ] [ PACKAGE_LIST ]"
 goto_sleep="sleep 4"
 
@@ -41,6 +41,7 @@ deb_archive="http://http.debian.net/debian/"
 deb_arch=$(dpkg --print-architecture)
 dpkg_info="/var/lib/dpkg/info"
 deb_package_list=""
+chr_friendly_kern_ver="3.13.10"
 
 # Functions
 echo_red() {
@@ -112,12 +113,12 @@ See "From Chromebook to Sidbook" for details:
 http://www.circuidipity.com/c720-sidbook.html
 
 This script configures the Acer C720 Chromebook to track Debian's
-_sid_/unstable branch with the option of installing the Openbox
+_${deb_unstable}_/unstable branch with the option of installing the Openbox
 window manager + extra apps suitable for a desktop environment.
 
 ## TIP ##
 Import a list of packages that duplicate the configuration from
-another system running Debian _sid_.
+another system running Debian _${deb_unstable}_.
 
 See: "Duplicate Debian package selection on multiple machines"
 http://www.circuidipity.com/dpkg-duplicate.html
@@ -226,6 +227,7 @@ if [[ -e $apt_preferences ]]
 then
     cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
 fi
+
 clear
 echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
 $goto_sleep
@@ -258,6 +260,7 @@ if [[ -e $apt_sources_list ]]
 then
     cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
+
 clear
 echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
 $goto_sleep
@@ -286,6 +289,7 @@ apt-get install deb-multimedia-keyring
 apt-get install pkg-mozilla-archive-keyring
 func_done
 apt_update
+
 clear
 echo_green "\n$( penguinista ) .: Upgrading system ...\n"
 $goto_sleep 
@@ -296,6 +300,7 @@ func_done
 apt_package_list() {
 local deb_packages
 deb_packages=$(mktemp)
+
 if [[ ! -z $deb_package_list && -e $deb_package_list ]]
 then
     clear
@@ -315,6 +320,7 @@ apt_package_purge() {
 local deb_package_purge
 deb_package_purge="gdm3 gnome-system-tools nautilus* libnautilus* \
 notification-daemon tumbler* libtumbler*"
+
 clear
 echo_green "\n$( penguinista ) .: Purging packages ...\n"
 echo_red "$deb_package_purge"
@@ -328,6 +334,7 @@ local console_pkgs
 console_pkgs="build-essential dkms module-assistant colordiff \
 cryptsetup htop iproute iw lxsplit par2 pmount p7zip-full unrar \
 unzip rsync sudo sl tmux vim whois xz-utils wpasupplicant"
+
 clear
 echo_green "\n$( penguinista ) .: Installing console packages ...\n"
 $goto_sleep
@@ -338,10 +345,37 @@ func_done
 package_xorg() {
 local xorg_pkgs
 xorg_pkgs="xorg x11-utils xbacklight xdotool xfonts-terminus xterm rxvt-unicode"
+
 clear
 echo_green "\n$( penguinista ) .: Installing X packages ...\n"
 $goto_sleep
 apt-get install -y $xorg_pkgs
+func_done
+}
+
+package_kernel() {
+local deb_snapshot
+local chr_friendly_kern
+local chr_friendly_head
+local chr_friendly_head_common
+local chr_friendly_kbuild
+deb_snapshot="http://snapshot.debian.org/archive/debian"
+chr_friendly_kern="linux-image-3.13-1-${deb_arch}_${chr_friendly_kern_ver}-1_${deb_arch}.deb"
+chr_friendly_head="linux-headers-3.13-1-${deb_arch}_${chr_friendly_kern_ver}-1_${deb_arch}.deb"
+chr_friendly_head_common="linux-headers-3.13-1-common_${chr_friendly_kern_ver}-1_${deb_arch}.deb"
+chr_friendly_kbuild="linux-kbuild-3.13_3.13.6-1_${deb_arch}.deb"
+
+clear
+echo_green "\n$( penguinista ) .: Installing $chr_friendly_kern_ver kernel ...\n"
+$goto_sleep
+wget ${deb_snapshot}/20140320T042639Z/pool/main/l/linux-tools/${chr_friendly_kbuild}
+dpkg -i $chr_friendly_kbuild
+wget ${deb_snapshot}/20140416T101543Z/pool/main/l/linux/${chr_friendly_head_common}
+dpkg -i $chr_friendly_head_common
+wget ${deb_snapshot}/20140416T101543Z/pool/main/l/linux/${chr_friendly_head}
+dpkg -i $chr_friendly_head
+wget ${deb_snapshot}/20140416T101543Z/pool/main/l/linux/${chr_friendly_kern}
+dpkg -i $chr_friendly_kern
 func_done
 }
 
@@ -351,6 +385,7 @@ openbox_pkgs="openbox obconf eject feh gksu gsimplecal leafpad \
 lxappearance-obconf menu mirage network-manager-gnome pavucontrol \
 scrot suckless-tools tint2 thunar-volman xarchiver xfce4-notifyd \
 xfce4-power-manager xfce4-settings xfce4-volumed xscreensaver zenity"
+
 clear
 echo_green "\n$( penguinista ) .: Installing Openbox ...\n"
 $goto_sleep
@@ -446,7 +481,6 @@ then
     wget -P $tmp_dir ${cb_archive}/${cb_pnmixer_deb}
     dpkg -i ${tmp_dir}/$cb_pnmixer_deb
 fi
-
 func_done
 }
 
@@ -462,6 +496,7 @@ func_done
 config_alternative() {
 clear
 update-alternatives --config editor
+
 clear
 update-alternatives --config x-terminal-emulator
 }
@@ -491,6 +526,7 @@ case $REPLY in
         $goto_sleep
         package_console
         package_xorg
+        package_kernel
         package_openbox
         package_theme
         package_backport
