@@ -1,10 +1,13 @@
 #!/bin/bash
+set -e
+
 # * Modified for Debian sid/unstable from ChrUbuntu's cros-haswell-modules.sh
 #   https://googledrive.com/host/0B0YvUuHHn3MndlNDbXhPRlB2eFE/cros-haswell-modules.sh
 # * ... and the Arch Linux C720 adaptation ...
 #   http://pastie.org/pastes/8763538/text
 
-set -e
+# Script variables
+goto_sleep="sleep 4"
 
 # Test for ROOT privileges
 if [[ $UID -ne 0 ]]
@@ -18,8 +21,10 @@ TEMPBUILD=$(mktemp -d)
 cd $TEMPBUILD
 
 # Determine kernel version
-KERNPKG=$(uname -r)
-KERNVER=$(uname -v | awk '{print $4}' | cut -d '-' -f 1)
+#KERNPKG=$(uname -r)
+#KERNVER=$(uname -v | awk '{print $4}' | cut -d '-' -f 1)
+KERNVER="3.13.10"
+KERNPKG="3.13-1-amd64"
 
 # Install necessary deps to build a kernel
 echo "Installing build dependencies..."
