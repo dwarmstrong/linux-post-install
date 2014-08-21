@@ -33,7 +33,7 @@ apt_src_list="/etc/apt/sources.list"
 deb_archive="http://http.debian.net/debian/"
 dpkg_info="/var/lib/dpkg/info"
 deb_branch=""
-deb_package_list=""
+deb_pkg_list=""
 
 # Functions
 echo_red() {
