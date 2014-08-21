@@ -2,9 +2,9 @@
 set -eu
 
 # Copyright (c) 2014 Daniel Wayne Armstrong. All rights reserved.
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License (GPLv2) published
-# by the Free Software Foundation.
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License (GPLv2) published by
+# the Free Software Foundation.
 #
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
@@ -12,7 +12,7 @@ set -eu
 
 # Script variables
 script_name="debian-post-install-main.sh"
-script_description="stable|testing|unstable branch configuration"
+script_description="_stable|testing|unstable_ branch configuration"
 script_git="https://github.com/vonbrownie"
 script_src="source: ${script_git}/linux-post-install/blob/master/${script_name}"
 script_synopsis="usage: $script_name [ OPTION ] [ PACKAGE_LIST ]"
@@ -21,16 +21,16 @@ goto_sleep="sleep 4"
 # Script global directory variables
 tmp_dir="/tmp/tmp.debian-post-install"
 current_dir="."
-extras_dir="${current_dir}/extras/"
+extra_dir="${current_dir}/extra"
 
 # Debian variables
 deb_stable="wheezy"
 deb_testing="jessie"
 deb_unstable="sid"
-apt_preferences="/etc/apt/preferences"
-apt_sources_list="/etc/apt/sources.list"
-deb_archive="http://http.debian.net/debian/"
 deb_arch=$(dpkg --print-architecture)
+apt_pref="/etc/apt/preferences"
+apt_src_list="/etc/apt/sources.list"
+deb_archive="http://http.debian.net/debian/"
 dpkg_info="/var/lib/dpkg/info"
 deb_branch=""
 deb_package_list=""
@@ -85,7 +85,7 @@ OPTIONS
   -h    print command syntax and options
   -i    import a Debian package list for installation
 EXAMPLE
-  Install packages from 'package-list.txt':
+  Install packages from _package-list.txt_:
   (as_root)# ./$script_name -i package-list.txt
 
 _EOF_
@@ -93,7 +93,7 @@ _EOF_
 
 long_description() {
 clear
-echo_yellow "$( penguinista ) .: $script_name -- $script_description :."
+echo_yellow "$( penguinista ) .: $script_name - $script_description :."
 echo_cyan "$script_src"
 echo_cyan "$script_synopsis"
 available_options
@@ -132,7 +132,7 @@ do
             exit 0
             ;;
         i)
-            deb_package_list="$OPTARG"
+            deb_pkg_list="$OPTARG"
             break
             ;;
         :)
@@ -150,11 +150,11 @@ done
 }
 
 invalid_reply() {
-echo_red "\n'$REPLY' is invalid input...\n"
+echo_red "\n'$REPLY' is invalid input ...\n"
 }
 
 invalid_reply_yn() {
-echo_red "\n'$REPLY' is invalid input. Please select 'Y(es)' or 'N(o)'...\n"
+echo_red "\n'$REPLY' is invalid input. Please select 'Y(es)' or 'N(o)' ...\n"
 }
 
 confirm_start() {
@@ -203,10 +203,10 @@ then
 fi
 }
 
-test_package_list() {
-if [[ ! -z $deb_package_list && ! -e $deb_package_list ]]
+test_pkg_list() {
+if [[ ! -z $deb_pkg_list && ! -e $deb_pkg_list ]]
 then
-    echo_red "\n$( penguinista ) .: '$deb_package_list' not found.\n"
+    echo_red "\n$( penguinista ) .: '$deb_pkg_list' not found.\n"
     exit 1
 fi
 }
@@ -214,61 +214,61 @@ fi
 test_conditions() {
 test_root
 test_connect
-test_package_list
+test_pkg_list
 }
 
-apt_preferences_stable() {
-if [[ -e $apt_preferences ]]
+apt_pref_stable() {
+if [[ -e $apt_pref ]]
 then
-    cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
+    cp $apt_pref ${apt_pref}.$(date +%Y%m%dT%H%M%S).bak
 fi
 
 clear
-echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
+echo_green "\n$( penguinista ) .: Configuring $apt_pref ...\n"
 $goto_sleep
-cat > $apt_preferences << _EOF_
+cat > $apt_pref << _EOF_
 # Configure default preferences in package installation
 # * unlisted repositories are auto-ranked 500
 # * installed packages are ranked 100
 
 Package: *
-Pin: release n=$deb_stable
+Pin: release n=${deb_stable}
 Pin-Priority: 900
 _EOF_
 func_done
 }
 
-apt_preferences_testing() {
-if [[ -e $apt_preferences ]]
+apt_pref_testing() {
+if [[ -e $apt_pref ]]
 then
-    cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
+    cp $apt_pref ${apt_pref}.$(date +%Y%m%dT%H%M%S).bak
 fi
 
 clear
-echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
+echo_green "\n$( penguinista ) .: Configuring $apt_pref ...\n"
 $goto_sleep
-cat > $apt_preferences << _EOF_
+cat > $apt_pref << _EOF_
 # Configure default preferences in package installation
 # * unlisted repositories are auto-ranked 500
 # * installed packages are ranked 100
 
 Package: *
-Pin: release n=$deb_testing
+Pin: release n=${deb_testing}
 Pin-Priority: 900
 _EOF_
 func_done
 }
 
-apt_preferences_unstable() {
-if [[ -e $apt_preferences ]]
+apt_pref_unstable() {
+if [[ -e $apt_pref ]]
 then
-    cp $apt_preferences ${apt_preferences}.$(date +%Y%m%dT%H%M%S).bak
+    cp $apt_pref ${apt_pref}.$(date +%Y%m%dT%H%M%S).bak
 fi
 
 clear
-echo_green "\n$( penguinista ) .: Configuring $apt_preferences ...\n"
+echo_green "\n$( penguinista ) .: Configuring $apt_pref ...\n"
 $goto_sleep
-cat > $apt_preferences << _EOF_
+cat > $apt_pref << _EOF_
 # Configure default preferences in package installation
 # * unlisted repositories are auto-ranked 500
 # * installed packages are ranked 100
@@ -292,23 +292,23 @@ apt-get update
 func_done
 }
 
-apt_sources_stable() {
-if [[ -e $apt_sources_list ]]
+apt_src_stable() {
+if [[ -e $apt_src_list ]]
 then
-    cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
+    cp $apt_src_list ${apt_src_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
 
 clear
-echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
+echo_green "\n$( penguinista ) .: Configuring $apt_src_list ...\n"
 $goto_sleep
-cat > $apt_sources_list << _EOF_
+cat > $apt_src_list << _EOF_
 ### $deb_stable ###
 deb $deb_archive $deb_stable main contrib non-free
 deb-src $deb_archive $deb_stable main contrib non-free
 
 ### $deb_stable security ###
-deb http://security.debian.org/ $deb_stable/updates main contrib non-free
-#deb-src http://security.debian.org/ $deb_stable/updates main contrib non-free
+deb http://security.debian.org/ ${deb_stable}/updates main contrib non-free
+#deb-src http://security.debian.org/ ${deb_stable}/updates main contrib non-free
 
 ### ${deb_stable}-updates ###
 deb $deb_archive ${deb_stable}-updates main non-free contrib
@@ -326,16 +326,16 @@ func_done
 apt_update
 }
 
-apt_sources_testing() {
-if [[ -e $apt_sources_list ]]
+apt_src_testing() {
+if [[ -e $apt_src_list ]]
 then
-    cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
+    cp $apt_src_list ${apt_src_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
 
 clear
-echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
+echo_green "\n$( penguinista ) .: Configuring $apt_src_list ...\n"
 $goto_sleep
-cat > $apt_sources_list << _EOF_
+cat > $apt_src_list << _EOF_
 ### $deb_testing ###
 deb $deb_archive $deb_testing main contrib non-free
 deb-src $deb_archive $deb_testing main contrib non-free
@@ -352,16 +352,16 @@ func_done
 apt_update
 }
 
-apt_sources_unstable() {
-if [[ -e $apt_sources_list ]]
+apt_src_unstable() {
+if [[ -e $apt_src_list ]]
 then
-    cp $apt_sources_list ${apt_sources_list}.$(date +%Y%m%dT%H%M%S).bak
+    cp $apt_src_list ${apt_src_list}.$(date +%Y%m%dT%H%M%S).bak
 fi
 
 clear
-echo_green "\n$( penguinista ) .: Configuring $apt_sources_list ...\n"
+echo_green "\n$( penguinista ) .: Configuring $apt_src_list ...\n"
 $goto_sleep
-cat > $apt_sources_list << _EOF_
+cat > $apt_src_list << _EOF_
 ### unstable ###
 deb $deb_archive unstable main contrib non-free
 deb-src $deb_archive unstable main contrib non-free
@@ -386,6 +386,7 @@ apt-get install deb-multimedia-keyring
 apt-get install pkg-mozilla-archive-keyring
 func_done
 apt_update
+
 clear
 echo_green "\n$( penguinista ) .: Upgrading system ...\n"
 $goto_sleep 
@@ -393,39 +394,39 @@ apt-get -y dist-upgrade
 func_done
 }
 
-apt_package_list() {
-local deb_packages
-deb_packages=$(mktemp)
+apt_pkg_list() {
+local deb_pkgs
+deb_pkgs=$(mktemp)
 
-if [[ ! -z $deb_package_list && -e $deb_package_list ]]
+if [[ ! -z $deb_pkg_list && -e $deb_pkg_list ]]
 then
     clear
-    echo_green "\n$( penguinista ) .: Importing $deb_package_list and installing packages ...\n"
+    echo_green "\n$( penguinista ) .: Importing $deb_pkg_list and installing packages ...\n"
     $goto_sleep
-    apt-cache dumpavail > "$deb_packages"
-    dpkg --merge-avail "$deb_packages"
-    rm -f "$deb_packages"
+    apt-cache dumpavail > "$deb_pkgs"
+    dpkg --merge-avail "$deb_pkgs"
+    rm -f "$deb_pkgs"
     dpkg --clear-selections
-    dpkg --set-selections < $deb_package_list
+    dpkg --set-selections < $deb_pkg_list
     apt-get dselect-upgrade
     func_done
 fi
 }
 
-apt_package_purge() {
-local deb_package_purge
-deb_package_purge="gdm3 gnome-system-tools nautilus* libnautilus* \
+apt_pkg_purge() {
+local deb_pkg_purge
+deb_pkg_purge="gdm3 gnome-system-tools nautilus* libnautilus* \
 notification-daemon tumbler* libtumbler*"
 
 clear
 echo_green "\n$( penguinista ) .: Purging packages ...\n"
-echo_red "$deb_package_purge"
-sleep 10
-apt-get --purge remove $deb_package_purge
+echo_red "$deb_pkg_purge"
+$goto_sleep
+apt-get --purge remove $deb_pkg_purge
 func_done
 }
 
-package_console() {
+pkg_console() {
 local console_pkgs
 console_pkgs="build-essential dkms module-assistant colordiff \
 cryptsetup htop iproute iw lxsplit par2 pmount p7zip-full unrar \
@@ -438,9 +439,10 @@ apt-get install -y $console_pkgs
 func_done
 }
 
-package_xorg() {
+pkg_xorg() {
 local xorg_pkgs
-xorg_pkgs="xorg x11-utils xbacklight xdotool xfonts-terminus xterm rxvt-unicode"
+xorg_pkgs="xorg x11-utils xbacklight xbindkeys xdotool xfonts-terminus \
+xterm rxvt-unicode"
 
 clear
 echo_green "\n$( penguinista ) .: Installing X packages ...\n"
