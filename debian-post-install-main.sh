@@ -627,7 +627,7 @@ esac
 done
 }
 
-config_alternative() {
+conf_alternative() {
 clear
 update-alternatives --config editor
 
@@ -635,7 +635,7 @@ clear
 update-alternatives --config x-terminal-emulator
 }
 
-config_desktop() {
+conf_desktop() {
 clear
 while :
 do
@@ -652,19 +652,19 @@ case $REPLY in
     0)
         echo_green "\nOK. No X environment will be installed ...\n"
         $goto_sleep
-        package_console
+        pkg_console
         break
         ;;
     1)
         echo_green "\nOK. Installing Openbox ...\n"
         $goto_sleep
-        package_console
-        package_xorg
-        package_openbox
-        package_theme
-        package_backport
-        package_extra
-        config_alternative
+        pkg_console
+        pkg_xorg
+        pkg_openbox
+        pkg_theme
+        pkg_backport
+        pkg_extra
+        conf_alternative
         break
         ;;
     *)
