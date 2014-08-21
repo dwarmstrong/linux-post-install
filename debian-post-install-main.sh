@@ -599,7 +599,6 @@ case $REPLY in
         deb_branch="$deb_stable"
         apt_pref_stable
         apt_src_stable
-        func_done
         break
         ;;
     1)
@@ -608,7 +607,6 @@ case $REPLY in
         deb_branch="$deb_testing"
         apt_pref_testing
         apt_src_testing
-        func_done
         break
         ;;
     2)
@@ -617,7 +615,6 @@ case $REPLY in
         deb_branch="$deb_unstable"
         apt_pref_unstable
         apt_src_unstable
-        func_done
         break
         ;;
     *)
