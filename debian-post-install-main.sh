@@ -451,31 +451,42 @@ apt-get install -y $xorg_pkgs
 func_done
 }
 
-package_openbox() {
-local openbox_pkgs
-openbox_pkgs="openbox obconf eject feh gksu gsimplecal leafpad \
-lxappearance-obconf menu mirage network-manager-gnome pavucontrol \
-scrot suckless-tools tint2 thunar-volman xarchiver xfce4-notifyd \
-xfce4-power-manager xfce4-settings xfce4-volumed xscreensaver zenity"
+pkg_openbox() {
+local ob_pkgs
+ob_pkgs="openbox obconf eject feh gksu gsimplecal leafpad \
+menu mirage network-manager-gnome pavucontrol scrot suckless-tools \
+tint2 thunar-volman xarchiver xfce4-notifyd xfce4-power-manager \
+xfce4-settings xfce4-volumed xscreensaver zenity"
 
 clear
 echo_green "\n$( penguinista ) .: Installing Openbox ...\n"
 $goto_sleep
-apt-get install -y $openbox_pkgs
+apt-get install -y $ob_pkgs
 func_done
 }
 
-package_theme() {
+pkg_theme() {
 local ubuntu_ver
 local desktop_theme
+local numix_ppa
+local theme_pkgs
+local desktop_theme_pkg
 local cb_archive
 local cb_icons
 local cb_icons_deb
+local deb_fonts
+local deb_theme_conf
 ubuntu_ver="trusty"
 desktop_theme="Numix"
+numix_ppa="http://ppa.launchpad.net/numix/ppa/ubuntu $ubuntu_ver main"
+theme_pkgs="gtk2-engines gtk2-engines-murrine libgnomeui-0"
+desktop_theme_pkg="numix-gtk-theme"
 cb_archive="http://packages.crunchbang.org/waldorf/pool/main"
 cb_icons="faenza-crunchbang-icon-theme"
 cb_icons_deb="${cb_icons}_1.2-crunchang1_all.deb"
+deb_fonts="fonts-liberation fonts-droid"
+deb_theme_conf="obconf lxappearance lxappearance-obconf \
+qt4-qtconfig xfce4-settings"
 
 # Theme - Numix
 # -------------
@@ -484,14 +495,15 @@ cb_icons_deb="${cb_icons}_1.2-crunchang1_all.deb"
 clear
 echo_green "\n$( penguinista ) .: Installing $desktop_theme theme ...\n"
 $goto_sleep
-echo "### numix theme ###" >> $apt_sources_list
-echo "deb http://ppa.launchpad.net/numix/ppa/ubuntu $ubuntu_ver main" >> $apt_sources_list 
-echo "deb-src http://ppa.launchpad.net/numix/ppa/ubuntu $ubuntu_ver main" >> $apt_sources_list 
+echo "" >> $apt_src_list
+echo "### numix theme ###" >> $apt_src_list
+echo "deb $numix_ppa" >> $apt_src_list
+echo "deb-src $numix_ppa" >> $apt_src_list
 apt-get update
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0F164EEB
 apt-get update
-apt-get install -y gtk2-engines gtk2-engines-murrine libgnomeui-0
-apt-get install -y numix-gtk-theme
+apt-get install -y $theme_pkgs
+apt-get install -y $desktop_theme_pkg
 func_done
 
 # Icons - Faenza-Dark-Crunchbang
@@ -502,7 +514,7 @@ then
     echo_green "\n$( penguinista ) .: Installing $cb_icons ...\n"
     $goto_sleep
     wget -P $tmp_dir ${cb_archive}/${cb_icons_deb}
-    dpkg -i ${tmp_dir}/$cb_icons_deb
+    dpkg -i ${tmp_dir}/${cb_icons_deb}
     func_done
 fi
 
@@ -511,25 +523,24 @@ fi
 clear
 echo_green "\n$( penguinista ) .: Installing fonts ...\n"
 $goto_sleep
-apt-get install -y fonts-liberation fonts-droid
+apt-get install -y $deb_fonts
 func_done
 
 # Theme Config Utils
 # ------------------
-# * Openbox: obconf
+# * Openbox: obconf, lxappearance-obconf
 # * GTK+LXDE: lxappearance
 # * Xfce4: xfce4-settings-manager
-# * QT: qtconfig-qt4
+# * QT: qt4-qtconfig
 # * Xfce4: xfce4-settings
 clear
-echo_green "\n$( penguinista ) .: Installing theme configuration utilities ...\n"
+echo_green "\n$( penguinista ) .: Installing theme utilities ...\n"
 $goto_sleep
-apt-get install -y obconf lxappearance lxappearance-obconf \
-qt4-qtconfig xfce4-settings
+apt-get install -y $deb_theme_conf
 func_done
 }
 
-package_backport() {
+pkg_backport() {
 local backport_pkgs
 backport_pkgs="iceweasel"
 
