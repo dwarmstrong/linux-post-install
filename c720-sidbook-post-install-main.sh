@@ -382,8 +382,8 @@ pkg_openbox() {
 local ob_pkgs
 ob_pkgs="openbox obconf eject feh gksu gsimplecal leafpad \
 menu mirage network-manager-gnome pavucontrol scrot suckless-tools \
-tint2 thunar-volman xarchiver xfce4-notifyd xfce4-power-manager \
-xfce4-settings xfce4-volumed xscreensaver zenity"
+tint2 xarchiver xfce4-notifyd xfce4-power-manager xfce4-settings \
+xfce4-volumed xscreensaver zenity"
 
 clear
 echo_green "\n$( penguinista ) .: Installing Openbox ...\n"
