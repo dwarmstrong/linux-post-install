@@ -291,20 +291,20 @@ func_done
 }
 
 apt_pkg_list() {
+# Add extra packages to sidbook derived from a list of installed packages
+# on another Debian system
 local deb_pkgs
 deb_pkgs=$(mktemp)
 
 if [[ ! -z $deb_pkg_list && -e $deb_pkg_list ]]
 then
     clear
-    echo_green "\n$( penguinista ) .: Importing $deb_pkg_list and installing packages ...\n"
+    echo_green "\n$( penguinista ) .: Importing $deb_pkg_list and installing extra packages ...\n"
     $goto_sleep
-    apt-cache dumpavail > "$deb_pkgs"
-    dpkg --merge-avail "$deb_pkgs"
-    rm -f "$deb_pkgs"
-    dpkg --clear-selections
+    apt-get -y install dselect
+    dselect update
     dpkg --set-selections < $deb_pkg_list
-    apt-get dselect-upgrade
+    apt-get -y dselect-upgrade
     func_done
 fi
 }
