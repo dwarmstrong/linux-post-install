@@ -674,7 +674,7 @@ esac
 done
 }
 
-config_blacklist_pcspkr() {
+conf_blacklist_pcspkr() {
 local pcspkr_conf
 pcspkr_conf="/etc/modprobe.d/pcspkr-blacklist.conf"
 
@@ -689,14 +689,15 @@ blacklist pcspkr
 _EOF_
 }
 
-config_blacklist() {
+conf_blacklist() {
 clear
 config_blacklist_pcspkr
 update-initramfs -u -k all
 }
 
-config_group() {
+conf_group() {
 set +e
+
 local user_groups
 user_groups="adm audio cdrom dialout dip floppy fuse netdev plugdev sudo \
 vboxusers video users"
@@ -706,6 +707,11 @@ echo_green "$( penguinista ) .: Configuring users and groups ...\n"
 read -p "What will be your (non-root) user name? > " user_name
 echo_green "\nHello ${user_name}!\n"
 $goto_sleep
+
+# Default groups
+clear
+echo_green "$( penguinista ) .: Adding $user_name to groups ...\n"
+$goto_sleep
 if [[ ! -d /home/${user_name} ]]
 then
     adduser $user_name
@@ -714,6 +720,8 @@ for i in ${user_groups[@]}
 do
     adduser $user_name $i
 done
+func_done
+
 set -e
 }
 
