@@ -688,7 +688,7 @@ _EOF_
 
 conf_blacklist() {
 clear
-config_blacklist_pcspkr
+conf_blacklist_pcspkr
 update-initramfs -u -k all
 }
 
