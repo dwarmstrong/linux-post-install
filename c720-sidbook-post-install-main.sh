@@ -110,7 +110,7 @@ installs the lightweight Openbox window manager + extra apps suitable for a desk
 environment.
 
 ## TIP ##
-Import a list of packages that duplicate the configuration from another system running
+Install extra packages by importing a list of packages from another system running
 Debian _${deb_unstable}_.
 
 See: "Duplicate Debian package selection on multiple machines"
@@ -324,10 +324,9 @@ func_done
 
 pkg_console() {
 local console_pkgs
-console_pkgs="build-essential dkms module-assistant colordiff \
-cryptsetup htop iproute iw lxsplit par2 pmount pulseaudio-utils \
-p7zip-full unrar unzip rsync sudo sl tmux vim whois xz-utils \
-wpasupplicant"
+console_pkgs="build-essential dkms module-assistant colordiff cryptsetup \
+dselect htop iproute iw lxsplit par2 pmount pulseaudio-utils p7zip-full \
+unrar unzip rsync sudo sl tmux vim whois xz-utils wpasupplicant"
 
 clear
 echo_green "\n$( penguinista ) .: Installing console packages ...\n"
