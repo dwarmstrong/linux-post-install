@@ -725,18 +725,18 @@ func_done
 set -e
 }
 
-config_locale() {
+conf_locale() {
 clear
 dpkg-reconfigure locales
 }
 
-config_timezone() {
+conf_timezone() {
 clear
 dpkg-reconfigure tzdata
 }
 
 cleanup() {
-apt_package_purge
+apt_pkg_purge
 rm -rf $tmp_dir
 }
 
@@ -752,16 +752,16 @@ confirm_start
 test_conditions
 
 #: APT
-config_branch
+conf_branch
 apt_keys
-apt_package_list
+apt_pkg_list
 
 #: CONFIGURE
-config_desktop
-config_blacklist
-config_group
-config_locale
-config_timezone
+conf_desktop
+conf_blacklist
+conf_group
+conf_locale
+conf_timezone
 
 #: FINISH
 cleanup
