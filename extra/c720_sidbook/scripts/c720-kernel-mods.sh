@@ -121,5 +121,8 @@ echo_green "\n$( penguinista ) .: Installing xserver-xorg-input-synaptics ..."
 apt-get -y install xserver-xorg-input-synaptics
 func_done
 
+# Cleanup
+rm -rf $TEMPBUILD
+
 echo_green "\nTouchpad will be enabled after reboot!"
 $goto_sleep
