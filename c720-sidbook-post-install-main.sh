@@ -414,19 +414,14 @@ func_done
 }
 
 pkg_extra() {
-local extra_debs
 local cb_archive
 local cb_pnmixer
-extra_debs="flashplugin-nonfree iceweasel icedtea-7-plugin openjdk-7-jre \
-rxvt-unicode vlc"
 cb_archive="http://packages.crunchbang.org/waldorf/pool/main"
 cb_pnmixer="pnmixer_0.5.1-crunchbang1_${deb_arch}.deb"
 
 clear
 echo_green "\n$( penguinista ) .: Installing extra packages ...\n"
 $goto_sleep
-# extra debian pkgs
-apt-get -y install $extra_debs
 
 # pnmixer - volume mixer for the system tray
 if [[ ! -e "${dpkg_info}/pnmixer.list" ]]
