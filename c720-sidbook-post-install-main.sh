@@ -92,8 +92,7 @@ See "From Chromebook to Sidbook" for details:
 http://www.circuidipity.com/c720-sidbook.html
 
 This script configures the Chromebook to track Debian's _${deb_unstable}_/unstable branch and
-installs the lightweight Openbox window manager + extra apps suitable for a desktop
-environment.
+installs the lightweight Openbox window manager. 
 
 _EOF_
 }
