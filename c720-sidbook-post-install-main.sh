@@ -256,25 +256,6 @@ apt-get -y dist-upgrade
 func_done
 }
 
-apt_pkg_list() {
-# Add extra packages to sidbook derived from a list of installed packages
-# on another Debian system
-local deb_pkgs
-deb_pkgs=$(mktemp)
-
-if [[ ! -z $deb_pkg_list && -e $deb_pkg_list ]]
-then
-    clear
-    echo_green "\n$( penguinista ) .: Importing $deb_pkg_list and installing extra packages ...\n"
-    $goto_sleep
-    apt-get -y install dselect
-    dselect update
-    dpkg --set-selections < $deb_pkg_list
-    apt-get -y dselect-upgrade
-    func_done
-fi
-}
-
 apt_pkg_purge() {
 local deb_pkg_purge
 deb_pkg_purge="gdm3 gnome-system-tools nautilus* libnautilus* \
