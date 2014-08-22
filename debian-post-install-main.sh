@@ -97,15 +97,6 @@ This system will be configured to track a choice of Debian's _${deb_stable}_/sta
 _${deb_testing}_/testing, or _${deb_unstable}_/unstable branch with the option of installing the
 Openbox window manager + extra apps suitable for a desktop environment.
 
-## TIP ##
-Import a list of packages that duplicate the configuration from another
-system running Debian.
-
-See: "Duplicate Debian package selection on multiple machines"
-http://www.circuidipity.com/dpkg-duplicate.html
-
-... and run script with option '-i' and name of package list.
-
 _EOF_
 }
 
