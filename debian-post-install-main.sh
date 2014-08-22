@@ -360,25 +360,6 @@ apt-get -y dist-upgrade
 func_done
 }
 
-apt_pkg_list() {
-local deb_pkgs
-deb_pkgs=$(mktemp)
-
-if [[ ! -z $deb_pkg_list && -e $deb_pkg_list ]]
-then
-    clear
-    echo_green "\n$( penguinista ) .: Importing $deb_pkg_list and installing packages ...\n"
-    $goto_sleep
-    apt-cache dumpavail > "$deb_pkgs"
-    dpkg --merge-avail "$deb_pkgs"
-    rm -f "$deb_pkgs"
-    dpkg --clear-selections
-    dpkg --set-selections < $deb_pkg_list
-    apt-get dselect-upgrade
-    func_done
-fi
-}
-
 apt_pkg_purge() {
 local deb_pkg_purge
 deb_pkg_purge="gdm3 gnome-system-tools nautilus* libnautilus* \
