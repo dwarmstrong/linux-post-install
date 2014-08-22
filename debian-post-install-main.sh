@@ -693,7 +693,6 @@ test_conditions
 #: APT
 conf_branch
 apt_keys
-apt_pkg_list
 
 #: CONFIGURE
 conf_desktop
