@@ -34,7 +34,6 @@ apt_pref="/etc/apt/preferences"
 apt_src_list="/etc/apt/sources.list"
 deb_archive="http://http.debian.net/debian/"
 dpkg_info="/var/lib/dpkg/info"
-deb_pkg_list=""
 
 # Functions
 echo_red() {
@@ -80,24 +79,11 @@ cat << _EOF_
 _EOF_
 }
 
-available_options() {
-cat << _EOF_
-OPTIONS
-  -h    print command syntax and options
-  -i    import a Debian package list for installation
-EXAMPLE
-  Install packages from _package-list.txt_:
-  (as_root)# ./$script_name -i package-list.txt
-
-_EOF_
-}
-
 long_description() {
 clear
 echo_yellow "$( penguinista ) .: $script_name - $script_description :."
 echo_cyan "$script_src"
 echo_cyan "$script_synopsis"
-available_options
 cat << _EOF_
 Howdy! Ideally this script is run following a fresh installation of Debian GNU/Linux
 on the Acer C720 Chromebook.
@@ -135,12 +121,10 @@ do
             ;;
         :)
             echo_red "\n$( penguinista ) .: Option '-$OPTARG' missing argument.\n"
-            available_options
             exit 1
             ;;
         *)
             echo_red "\n$( penguinista ) .: Invalid option '-$OPTARG'\n"
-            available_options
             exit 1
             ;;
     esac
