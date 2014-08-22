@@ -95,7 +95,7 @@ http://www.circuidipity.com/grml-debootstrap.html
 
 This system will be configured to track a choice of Debian's _${deb_stable}_/stable,
 _${deb_testing}_/testing, or _${deb_unstable}_/unstable branch with the option of installing the
-Openbox window manager + extra apps suitable for a desktop environment.
+Openbox window manager.
 
 _EOF_
 }
