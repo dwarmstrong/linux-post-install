@@ -95,15 +95,6 @@ This script configures the Chromebook to track Debian's _${deb_unstable}_/unstab
 installs the lightweight Openbox window manager + extra apps suitable for a desktop
 environment.
 
-## TIP ##
-Install extra packages by importing a list of packages from another system running
-Debian _${deb_unstable}_.
-
-See: "Duplicate Debian package selection on multiple machines"
-http://www.circuidipity.com/dpkg-duplicate.html
-
-... and run script with option '-i' and name of package list.
-
 _EOF_
 }
 
