@@ -450,6 +450,7 @@ echo_green "$( penguinista ) .: Tracking Debian _${deb_unstable}_ ...\n"
 $goto_sleep
 apt_pref_unstable
 apt_src_unstable
+func_done
 }
 
 conf_touchpad() {
