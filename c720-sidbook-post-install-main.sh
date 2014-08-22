@@ -15,7 +15,7 @@ script_name="c720-sidbook-post-install-main.sh"
 script_description="configure Debian's _sid_ branch on the Acer C720 Chromebook"
 script_git="https://github.com/vonbrownie"
 script_src="source: ${script_git}/linux-post-install/blob/master/${script_name}"
-script_synopsis="usage: $script_name [ OPTION ] [ PACKAGE_LIST ]"
+script_synopsis="usage: $script_name"
 goto_sleep="sleep 4"
 
 # Script global directory variables
