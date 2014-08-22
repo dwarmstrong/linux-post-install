@@ -6,14 +6,6 @@ Post-install configuration of Debian GNU/Linux. Track the *wheezy/stable*, *jess
 
 See: `Debian Wheezy Minimal Install <http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html>`_ and `Install Debian using grml-debootstrap <http://www.circuidipity.com/grml-debootstrap.html>`_ (circuidipity.com)
 
-**TIP**
-
-Import a list of packages using option '-i' that duplicate the configuration from another system running Debian.
-
-See: `Duplicate Debian package selection on multiple machines <http://www.circuidipity.com/dpkg-duplicate.html>`_ (circuidipity.com)
-
-(example)# ./debian-post-install-main.sh -i package-list.txt
-
 Author
 ======
 
