@@ -178,18 +178,9 @@ then
 fi
 }
 
-test_pkg_list() {
-if [[ ! -z $deb_pkg_list && ! -e $deb_pkg_list ]]
-then
-    echo_red "\n$( penguinista ) .: '$deb_pkg_list' not found.\n"
-    exit 1
-fi
-}
-
 test_conditions() {
 test_root
 test_connect
-test_pkg_list
 }
 
 apt_pref_stable() {
