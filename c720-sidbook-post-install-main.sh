@@ -271,8 +271,8 @@ func_done
 pkg_console() {
 local console_pkgs
 console_pkgs="build-essential dkms module-assistant colordiff cryptsetup \
-dselect htop iproute iw lxsplit par2 pmount pulseaudio-utils p7zip-full \
-unrar unzip rsync sudo sl tmux vim whois xz-utils wpasupplicant"
+dselect htop iproute iw lxsplit mlocate par2 pmount pulseaudio-utils \
+p7zip-full unrar unzip rsync sudo sl tmux vim whois xz-utils wpasupplicant"
 
 clear
 echo_green "\n$( penguinista ) .: Installing console packages ...\n"
