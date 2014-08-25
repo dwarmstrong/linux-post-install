@@ -497,6 +497,7 @@ then
     cp $wakeup_conf ${wakeup_conf}.$(date +%Y%m%dT%H%M%S).bak
 fi
 cp $sdbk_snd_suspend $snd_suspend
+chmod 755 $snd_suspend
 cp $sdbk_wakeup $wakeup_conf
 func_done
 }
