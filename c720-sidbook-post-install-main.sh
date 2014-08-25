@@ -491,13 +491,13 @@ $goto_sleep
 if [[ -e $snd_suspend ]]
 then
     cp $snd_suspend ${snd_suspend}.$(date +%Y%m%dT%H%M%S).bak
-    cp $sdbk_snd_suspend $snd_suspend
 fi
 if [[ -e $wakeup_conf ]]
 then
     cp $wakeup_conf ${wakeup_conf}.$(date +%Y%m%dT%H%M%S).bak
-    cp $sdbk_wakeup $wakeup_conf
 fi
+cp $sdbk_snd_suspend $snd_suspend
+cp $sdbk_wakeup $wakeup_conf
 func_done
 }
 
