@@ -480,7 +480,7 @@ local snd_suspend
 local wakeup_conf
 local sdbk_wakeup
 local sdbk_snd_suspend
-snd_suspend="/lib/system-sleep/cros-sound-suspend.sh"
+snd_suspend="/lib/systemd/system-sleep/cros-sound-suspend.sh"
 wakeup_conf="/etc/tmpfiles.d/cros-acpi-wakeup.conf"
 sdbk_wakeup="${extra_etc}/tmpfiles.d/cros-acpi-wakeup.conf"
 sdbk_snd_suspend="${extra_lib}/systemd/system-sleep/cros-sound-suspend.sh"
