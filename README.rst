@@ -16,16 +16,14 @@ Configures the **Acer C720 Chromebook** to track Debian's *sid* branch and insta
 
 See: `From Chromebook to Sidbook <http://www.circuidipity.com/c720-sidbook.html>`_ (circuidipity.com)
 
-Install and Use
-===============
+Usage
+=====
 
-To install *linux-post-install* from source:
+Download the contents of *linux-post-install*, navigate to the folder, and run:
 
 .. code-block:: console
 
-    $ wget -c https://github.com/vonbrownie/linux-post-install/releases/download/vX.X.X/linux-post-install-0.9.0.tar.gz
-    $ tar -xvzf linuxpost-install-0.9.0.tar.gz
-    $ cd linux-post-install-0.9.0
+    $ cd SCRIPTS_LOCATION
     $ sudo ./SCRIPT-post-install-main.sh
 
 Author
