@@ -2,7 +2,7 @@
 linux-post-install
 ==================
 
-Post-install configuration of Debian GNU/Linux.
+Scripts to configure a fresh installation of Debian GNU/Linux.
 
 **debian-post-install-main.sh**
 
@@ -27,8 +27,6 @@ To install *linux-post-install* from source:
     $ tar -xvzf linuxpost-install-X.X.X.tar.gz
     $ cd linux-post-install-X.X.X
     $ sudo ./SCRIPT-post-install-main.sh
-
-Happy hacking!
 
 Author
 ======
