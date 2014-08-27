@@ -23,9 +23,9 @@ To install *linux-post-install* from source:
 
 .. code-block:: console
 
-    $ wget -c https://github.com/vonbrownie/linux-post-install/releases/download/vX.X.X/linux-post-install-X.X.X.tar.gz
-    $ tar -xvzf linuxpost-install-X.X.X.tar.gz
-    $ cd linux-post-install-X.X.X
+    $ wget -c https://github.com/vonbrownie/linux-post-install/releases/download/vX.X.X/linux-post-install-0.9.0.tar.gz
+    $ tar -xvzf linuxpost-install-0.9.0.tar.gz
+    $ cd linux-post-install-0.9.0
     $ sudo ./SCRIPT-post-install-main.sh
 
 Author
