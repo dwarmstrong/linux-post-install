@@ -4,15 +4,13 @@ linux-post-install
 
 Post-install configuration of Debian GNU/Linux.
 
-debian-post-install-main.sh
----------------------------
+**debian-post-install-main.sh**
 
 Track the *wheezy* (stable), *jessie* (testing), or *sid* (unstable) branch with the option of installing the lightweight Openbox window manager + extra apps suitable for a desktop environment.
 
 See: `Debian Wheezy Minimal Install <http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html>`_ and `Install Debian using grml-debootstrap <http://www.circuidipity.com/grml-debootstrap.html>`_ (circuidipity.com)
 
-c720-sidbook-post-install-main.sh
----------------------------------
+**c720-sidbook-post-install-main.sh**
 
 Configures the **Acer C720 Chromebook** to track Debian's *sid* branch and installs Openbox.
 
