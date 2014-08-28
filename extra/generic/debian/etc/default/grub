@@ -32,4 +32,4 @@ GRUB_CMDLINE_LINUX=""
 #GRUB_INIT_TUNE="480 440 1"
 
 # Background wallpaper for the boot screen
-GRUB_BACKGROUND="grub_soyuz.tga"
+#GRUB_BACKGROUND="grub_soyuz.tga"
