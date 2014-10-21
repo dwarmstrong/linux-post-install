@@ -1,0 +1,21 @@
+#!/bin/sh
+# File: /etc/initramfs-tools/scripts/init-top/unbind_ehci
+# See: https://www.reddit.com/r/chrubuntu/comments/1rsxkd/list_of_fixes_for_xubuntu_1310_on_the_acer_c720/ch8eq2o
+
+PREREQ=""
+
+prereqs()
+{
+        echo "${PREREQ}"
+}
+
+case ${1} in
+        prereqs)
+                prereqs
+                exit 0
+                ;;
+esac
+
+log_success_msg "Unbind ehci for preventing error"
+echo -n "0000:00:1d.0" > /sys/bus/pci/drivers/ehci-pci/unbind
+exit 0
