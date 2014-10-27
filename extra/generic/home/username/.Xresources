@@ -1,0 +1,95 @@
+! run 'xrdb -merge ~/.Xresources' to enable any modifications
+
+! font settings ---------------------------------------------------------------
+
+Xft.autohint:   true
+Xft.antialias:  true
+Xft.hinting:    true
+Xft.hintstyle:  hintslight
+Xft.dpi:        96
+Xft.rgba:       rgb
+Xft.lcdfilter:  lcddefault
+
+! xscreensaver ----------------------------------------------------------------
+
+!font settings
+xscreensaver.Dialog.headingFont:        -*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.bodyFont:           -*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.labelFont:          -*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.unameFont:          -*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.buttonFont:         -*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.dateFont:           -*-fixed-medium-r-*-*-12-*-*-*-*-*-*-*
+xscreensaver.passwd.passwdFont:         -*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+!general dialog box (affects main hostname, username, password text)
+xscreensaver.Dialog.foreground:             #101010
+xscreensaver.Dialog.background:             #D8D8D8
+xscreensaver.Dialog.topShadowColor:         #D8D8D8
+xscreensaver.Dialog.bottomShadowColor:      #D8D8D8
+xscreensaver.Dialog.Button.foreground:      #101010
+xscreensaver.Dialog.Button.background:      #E5E5E5
+!username/password input box and date text colour
+xscreensaver.Dialog.text.foreground:        #101010
+xscreensaver.Dialog.text.background:        #E5E5E5
+xscreensaver.Dialog.internalBorderWidth:    24
+xscreensaver.Dialog.borderWidth:            0
+xscreensaver.Dialog.shadowThickness:        2
+!timeout bar (background is actually determined by Dialog.text.background)
+!xscreensaver.passwd.thermometer.foreground:  #101010
+xscreensaver.passwd.thermometer.foreground: #6699cc
+xscreensaver.passwd.thermometer.background: #2E2E2E
+xscreensaver.passwd.thermometer.width:      8
+
+! rxvt-unicode ----------------------------------------------------------------
+
+!general
+URxvt.borderLess:       true
+Urxvt.cursorBlink:      false
+!scrollback
+URxvt.scrollBar:        false
+URxvt.saveLines:        8888
+!font
+!run "fc-list" for a list of available fonts
+!URxvt.font:            xft:monaco:bold:size=10
+!URxvt.font:            xft:terminus:size=12
+URxvt.font:		xft:droid sans mono:pixelsize=12:Regular
+URxvt.boldFont:		xft:droid sans mono:pixelsize=12:Bold
+URxvt.italicFont:       xft:droid sans mono:pixelsize=12:Italic
+!colour palette
+!based on crunchbang terminator config -- ~/.config/terminator/config
+URxvt.foreground:       #d3d7cf
+URxvt.background:       #000000
+URxvt.cursorColor:      #ef2929
+! black
+URxvt.color0:		#000000
+URxvt.color8: 		#555753
+! red
+URxvt.color1: 		#cc0000
+URxvt.color9:		#ef2929
+! green
+URxvt.color2: 		#4e9a06
+URxvt.color10: 		#8ae234
+! yellow
+URxvt.color3: 		#c4a000
+URxvt.color11: 		#fce94f
+! blue
+URxvt.color4: 		#3465a4
+URxvt.color12: 		#729fcf
+! magenta
+URxvt.color5: 		#75507b
+URxvt.color13: 		#ad7fa8
+! cyan
+URxvt.color6: 		#06989a
+URxvt.color14: 		#34e2e2
+! white
+URxvt.color7: 		#d3d7cf
+URxvt.color15: 		#eeeeec
+!script extensions
+URxvt.perl-ext-common:  default,matcher,tabbed
+!tabs
+URxvt.tabbed.tabbar-fg:		15
+URxvt.tabbed.tabbar-bg: 	0
+URxvt.tabbed.tab-fg:    	0
+URxvt.tabbed.tab-bg:    	10
+!clickable links
+URxvt.urlLauncher:      	iceweasel
+URxvt.matcher.button:   	1
