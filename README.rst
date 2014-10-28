@@ -2,29 +2,14 @@
 linux-post-install
 ==================
 
-Scripts to configure a fresh installation of Debian GNU/Linux.
+Collection of scripts and configs for setting up Linux.
 
-**debian-post-install-main.sh**
+Helpful Resources
+=================
 
-Track the *wheezy* (stable), *jessie* (testing), or *sid* (unstable) branch with the option of installing the lightweight Openbox window manager + extra apps suitable for a desktop environment.
-
-See: `Debian Wheezy Minimal Install <http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html>`_ and `Install Debian using grml-debootstrap <http://www.circuidipity.com/grml-debootstrap.html>`_ (circuidipity.com)
-
-**c720-sidbook-post-install-main.sh**
-
-Configures the **Acer C720 Chromebook** to track Debian's *sid* branch and installs Openbox.
-
-See: `From Chromebook to Sidbook <http://www.circuidipity.com/c720-sidbook.html>`_ (circuidipity.com)
-
-Usage
-=====
-
-Download the contents of *linux-post-install*, navigate to the folder, and run:
-
-.. code-block:: console
-
-    $ cd SCRIPTS_LOCATION
-    $ sudo ./SCRIPT-post-install-main.sh
+* `Chromebook to Lubuntubook <http://www.circuidipity.com/c720-lubuntubook.html>`_ and `Install Lubuntu 14.04 on the Acer C720 Chromebook <http://www.circuidipity.com/c720-lubuntubook-install.html>`_
+* `Ubuntu 14.04 Trusty Tahr Minimal Install <http://www.circuidipity.com/ubuntu-trusty-install.html>`_
+* `Debian Wheezy Minimal Install <http://www.circuidipity.com/install-debian-wheezy-screenshot-tour.html>`_
 
 Author
 ======
