@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Urxvt
-GenericName=Terminal
-Comment=Use the command line
-TryExec=urxvt
-Exec=urxvt
-Icon=xterm-color
-Type=Application
-Categories=Utility;TerminalEmulator;
