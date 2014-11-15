@@ -211,12 +211,6 @@
       <action name="FocusToBottom"/>
       <action name="Unfocus"/>
     </keybind>
-    <!-- Take a screenshot of the current window with scrot when Alt+Print are pressed -->
-    <keybind key="A-Print">
-      <action name="Execute">
-        <command>lxsession-default screenshot window</command>
-      </action>
-    </keybind>
     <!-- Keybindings for window switching -->
     <keybind key="A-Tab">
       <action name="NextWindow">
@@ -250,14 +244,22 @@
     </keybind>
     <!-- Keybindings for window movements -->
     <keybind key="A-F6">
+    <action name="UnmaximizeFull"/>
       <action name="MoveResizeTo">
-          <monitor>2</monitor>
-        </action>
+        <monitor>2</monitor>
+    </action>
+    <action name="Maximize" />
     </keybind>
     <keybind key="A-F5">
       <action name="MoveResizeTo">
-          <monitor>1</monitor>
-        </action>
+        <monitor>1</monitor>
+      </action>
+    </keybind>
+    <!-- Keybindings for Openbox menu -->
+    <keybind key="A-space">
+      <action name="ShowMenu">
+        <menu>root-menu</menu>
+      </action>
     </keybind>
     <!-- Keybindings for running Run menu -->
     <keybind key="A-a">
@@ -271,9 +273,9 @@
     </keybind>
     <!-- Keybindings to toggle maximize -->
     <keybind key="A-m">
-        <action name="ToggleMaximize">
-            <direction>both</direction>
-        </action>
+      <action name="ToggleMaximize">
+        <direction>both</direction>
+      </action>
     </keybind>
     <!-- Launch task manager on Ctrl + Alt + Del-->
     <keybind key="C-A-Delete">
@@ -326,10 +328,15 @@
         <command>lxsession-default file_manager</command>
       </action>
     </keybind>
-    <!-- Launch scrot when Print is pressed -->
+    <!-- Keybindings for screenshots -->
     <keybind key="Print">
       <action name="Execute">
-        <command>lxsession-default screenshot</command>
+        <command>scrot '%Y-%m-%dT%H%M%S-$wx$h.png' -e 'mv $f ~/image/screenshot &amp; mirage ~/image/screenshot/$f'</command>
+      </action>
+    </keybind>
+    <keybind key="A-Print">
+      <action name="Execute">
+        <command>scrot -u -z '%Y-%m-%dT%H%M%S-$wx$h.png' -e 'mv $f ~/image/screenshot/ &amp; mirage ~/image/screenshot/$f'</command>
       </action>
     </keybind>
     <!-- Launch logout when push on the shutdown button -->
@@ -678,7 +685,8 @@
     <!-- You can specify more than one menu file in here and they are all loaded,
        just don't make menu ids clash or, well, it'll be kind of pointless -->
     <!-- default menu file (or custom one in $HOME/.config/openbox/) -->
-    <file>/usr/share/lubuntu/openbox/menu.xml</file>
+    <!-- <file>/usr/share/lubuntu/openbox/menu.xml</file> -->
+    <file>~/.config/openbox/lubuntu-menu.xml</file>
     <file>menu.xml</file>
     <hideDelay>200</hideDelay>
     <!-- if a press-release lasts longer than this setting (in milliseconds), the
@@ -791,7 +799,7 @@
     </application>
     -->
     <application name="urxvt">
-        <!-- <desktop>all</desktop> -->
+      <!-- <desktop>all</desktop> -->
       <maximized>yes</maximized>
       <decor>no</decor>
     </application>
