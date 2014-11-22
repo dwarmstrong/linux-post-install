@@ -1,0 +1,148 @@
+# lxpanel <profile> config file. Manually editing is not recommended.
+# Use preference dialog in lxpanel to adjust config when you can.
+
+Global {
+    edge=top
+    allign=right
+    margin=0
+    widthtype=percent
+    width=100
+    height=24
+    transparent=0
+    tintcolor=#000000
+    alpha=0
+    autohide=0
+    heightwhenhidden=2
+    setdocktype=1
+    setpartialstrut=1
+    usefontcolor=1
+    fontsize=10
+    fontcolor=#ffffff
+    usefontsize=0
+    background=0
+    backgroundfile=/usr/share/lxpanel/images/lubuntu-background.png
+    iconsize=24
+    loglevel=2
+}
+
+Plugin {
+    type = space
+    Config {
+        Size=4
+    }
+}
+
+Plugin {
+    type = deskno
+    Config {
+        BoldFont=0
+        WMLabels=1
+    }
+}
+
+Plugin {
+    type = space
+    Config {
+        Size=12
+    }
+}
+
+Plugin {
+    type = taskbar
+    expand=1
+    Config {
+        tooltips=1
+        IconsOnly=0
+        ShowAllDesks=1
+        UseMouseWheel=0
+        UseUrgencyHint=1
+        FlatButton=1
+        MaxTaskWidth=222
+        spacing=1
+        GroupedTasks=0
+    }
+}
+
+Plugin {
+    type = space
+    Config {
+        Size=4
+    }
+}
+
+Plugin {
+    type = volumealsa
+}
+
+Plugin {
+    type = xkb
+    Config {
+        DisplayType=2
+        PerWinLayout=0
+        NoResetOpt=0
+        KeepSysLayouts=1
+        Model=pc105
+        LayoutsList=us
+        VariantsList=,
+        ToggleOpt=shift_caps_toggle
+        FlagSize=6
+    }
+}
+
+Plugin {
+    type = tray
+}
+
+Plugin {
+    type = indicator
+    Config {
+        applications=1
+        datetime=0
+        messages=0
+        network=0
+        session=0
+        sound=0
+    }
+}
+
+Plugin {
+    type = space
+    Config {
+        Size=2
+    }
+}
+
+Plugin {
+    type = dclock
+    Config {
+        ClockFmt=%j:%d:%H:%M
+        TooltipFmt=%A
+        BoldFont=0
+        IconOnly=0
+        CenterText=0
+    }
+}
+
+Plugin {
+    type = space
+    Config {
+        Size=2
+    }
+}
+
+Plugin {
+    type = launchbar
+    Config {
+        Button {
+            id=lubuntu-logout.desktop
+        }
+    }
+}
+
+Plugin {
+    type = space
+    Config {
+        Size=2
+    }
+}
+
