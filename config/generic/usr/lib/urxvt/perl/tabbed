@@ -46,11 +46,11 @@ sub refresh {
 
    my @ofs;
 
-   substr $text, 0, 7, "[NEW] |";
-   @$rend[0 .. 5] = ($self->{rs_tab}) x 6;
+   substr $text, 0, 4, " + |";
+   @$rend[0 .. 2] = ($self->{rs_tab}) x 6;
    push @ofs, [0, 6, sub { $_[0]->new_tab }];
 
-   my $ofs = 7;
+   my $ofs = 4;
    my $idx = 0;
 
    for my $tab (@{ $self->{tabs} }) {
