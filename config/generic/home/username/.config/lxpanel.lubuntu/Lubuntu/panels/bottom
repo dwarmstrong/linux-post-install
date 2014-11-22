@@ -74,7 +74,7 @@ Plugin {
             id=/usr/share/applications/catfish.desktop
         }
         Button {
-            id=/usr/share/applications/qpdfview.desktop
+            id=/usr/local/share/applications/qpdfview-custom.desktop
         }
         Button {
             id=/usr/share/applications/gimp.desktop
