@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Xkill misbehaving apps
-Comment=KILL KILL KILL
-Exec=xkill
-Icon=system-error
-Type=Application
-Categories=System;Utility;
