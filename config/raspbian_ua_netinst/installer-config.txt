@@ -1,0 +1,5 @@
+packages=vim,tmux
+hostname=MyHostname
+bootsize=+256M
+rootsize=+24000M
+usbroot=1
