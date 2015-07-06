@@ -226,7 +226,7 @@ echo "$deb1 contrib non-free firmware rpi" > $list
 echo "$deb2" >> $list
 echo -e "\nUpgrading the Pi to '$release'...\n"
 sleep 4
-apt-get update && apt-get -y dist-upgrade && apt-get -y autoremove && outputDone
+apt-get update && apt-get -y dist-upgrade && outputDone
 }
 
 addPkgs() {

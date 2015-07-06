@@ -286,7 +286,7 @@ then
         fi
     done
 fi
-apt-get update && apt-get -y dist-upgrade && apt-get -y autoremove
+apt-get update && apt-get -y dist-upgrade
 }
 
 configBranch() {
