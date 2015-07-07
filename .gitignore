@@ -5,3 +5,4 @@ tar-*
 *.swp
 __*
 c720-sidbook*
+ubuntuLTS-post-install.sh
