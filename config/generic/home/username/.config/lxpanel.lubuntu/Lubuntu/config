@@ -1,4 +1,0 @@
-[Command]
-FileManager=lxsession-default filemanager
-Terminal=lxsession-default terminal
-Logout=lxsession-default quit
