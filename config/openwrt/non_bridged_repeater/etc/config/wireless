@@ -1,0 +1,24 @@
+config wifi-device  radio0
+	option type     mac80211
+	option channel  11          # Important! Match with the channel set on PrimaryAP
+	option hwmode	11g
+	option path	'pci0000:00/0000:00:00.0'
+	option htmode	HT20
+	option disabled 0
+
+config wifi-iface
+	option device   radio0
+	option network  wwan
+	option mode     sta
+	option ssid     <primary_ap_ssid>
+	option encryption psk2      # WPA2
+	option key      <primary_ap_wifi_passwd>
+
+config wifi-iface
+	option device radio0
+	option network lan
+	option mode ap
+	option ssid <secondary_ap_ssid>
+	option encryption psk2      # WPA2
+	option key <secondary_ap_wifi_passwd>
+
