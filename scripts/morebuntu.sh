@@ -274,9 +274,11 @@ confWM && apt -y install $i3 $theme && footer
 instPkg() {
 local top="Install some favourite packages suitable for a desktop environment"
 local bottom="Moving onward"
-local sound="pulseaudio pulseaudio-utils pavucontrol alsa-utils sox"
+local noNo="rhythmbox"  ## '--no-install-recommends'
+local sound="pulseaudio pulseaudio-utils pavucontrol gstreamer1.0-pulseaudio
+alsa-utils sox"
 local net="firefox default-jre icedtea-plugin transmission-gtk"
-local av="ubuntu-restricted-extras ffmpeg vlc"
+local av="ubuntu-restricted-extras ffmpeg rhythmbox-plugins vlc"
 local image="eog scrot geeqie gimp gimp-help-en gimp-data-extras"
 local doc="libreoffice libreoffice-help-en-us libreoffice-gnome
 hunspell-en-ca qpdfview"
@@ -284,7 +286,8 @@ local devel="build-essential bc git"
 clear; header; sleep 4
 ## Sometimes apt gets stuck on a slow download ... breaking up downloads
 ## speeds things up ...
-apt -y install $sound && \
+apt -y --no-install-recommends install $noNo && \
+    apt -y install $sound && \
     apt -y install $net && \
     apt -y install $av && \
     apt -y install $image && \
