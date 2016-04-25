@@ -12,7 +12,7 @@ set -eu
 
 NAME="morebuntu"
 BLURB="ubuntu post-install configuration"
-GIT_SRC="https://github.com/vonbrownie/linux-post-install"
+GIT_SRC="https://github.com/vonbrownie/linux-post-install/tree/master/scripts"
 
 penguinista() {
 cat << _EOF_
@@ -65,8 +65,8 @@ echoRed "\n'$REPLY' is invalid input. Please select 'Y(es)' or 'N(o)' ...\n"
 }
 
 letsGo() {
-local version="15.10"
-local version_name="Wily Werewolf"
+local version="16.04"
+local version_name="Xenial Xerus"
 local release="$(echoMagenta "$version '$version_name'" | tr -d "\n")"
 local http="http://www.circuidipity.com/ubuntu-trusty-install.html"
 clear
@@ -75,9 +75,8 @@ cat << _EOF_
 Howdy! Ideally this script is run immediately following the first successful
 boot into your new Ubuntu $release installation.
 
-Building on a minimal install [0] of Ubuntu ... the lightweight i3 tiling
-window manager plus a collection of packages suitable for a workstation
-will be installed.
+Building on a minimal install [0] of Ubuntu $version ... the lightweight _i3_
+tiling window manager plus a collection of desktop packages will be installed.
 
 [0] "Minimal Ubuntu" <$http>
 
@@ -210,6 +209,17 @@ done
 footer
 }
 
+instKey() {
+local top="Retrieve and install keyrings for third-party package repositories"
+local bottom="Moving onward"
+local wgetOpt="-r -l 1 -np -nd -P /tmp"
+## i3 - https://i3wm.org/docs/repositories.html
+local i3KeySrc="http://debian.sur5r.net/i3/pool/universe/s/sur5r-keyring/"
+local i3Key="sur5r-keyring*.deb"
+clear; header; sleep 4
+wget $wgetOpt -A "${i3Key}" $i3KeySrc && dpkg -i /tmp/${i3Key} && footer
+}
+
 instUU() {
 local top="Upgrade system to latest packages"
 local bottom="Moving onward"
@@ -229,20 +239,20 @@ apt -y install $xOrg && footer
 }
 
 confWM() {
-## Use the i3 Ubuntu repository - https://i3wm.org/docs/repositories.html
+## i3 window manager 
 local srcList="/etc/apt/sources.list"
-local docLink="https://i3wm.org/docs/repositories.html"
-local wmRepo="deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe"
-local repoOK="grep debian.sur5r.net $srcList"
+local docLink="http://i3wm.org/docs/repositories.html"
+local repLink="http://debian.sur5r.net/i3/"
+local repRelease="deb $repLink $(lsb_release -c -s) universe"
+local repOK="grep debian.sur5r.net $srcList"
 cp $srcList $srcList.$(date +%FT%H%M%S).bak
 ## Check if third party repo is already present in sources.list
-if ! $repoOK; then
+if ! $repOK; then
     echo "" >> $srcList
     echo "## i3 window manager ... $docLink" >> $srcList
-    echo "$wmRepo" >> $srcList
+    echo "$repRelease" >> $srcList
+    apt update
 fi
-! apt update    # Expect an error here ... because keyring not yet installed
-apt-get --allow-unauthenticated install sur5r-keyring && apt update
 }
 
 instWM() {
@@ -325,9 +335,10 @@ letsGo
 testUnit
 testErr
 testTime
+instKey
 instUU
 instX
-instWM  # Hint: Comment out this line ...
-instPkg # and this one to skip i3 and/or extra pkg install
+instWM  # Hint: Comment out this line to skip installing i3wm and ...
+instPkg # ... this one to skip the extra pkg install (if you want to customize)
 confAlt
 auRevoir
