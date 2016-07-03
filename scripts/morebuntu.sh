@@ -292,7 +292,7 @@ local av="ubuntu-restricted-extras ffmpeg rhythmbox-plugins vlc"
 local image="eog scrot geeqie gimp gimp-help-en gimp-data-extras"
 local doc="libreoffice libreoffice-help-en-us libreoffice-gnome
 hunspell-en-ca qpdfview"
-local devel="build-essential bc git"
+local devel="build-essential bc git python-pip python3-pip"
 clear; header; sleep 4
 ## Sometimes apt gets stuck on a slow download ... breaking up downloads
 ## speeds things up ...
