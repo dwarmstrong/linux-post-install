@@ -70,50 +70,45 @@ _EOF_
 
 L_greeting() {
 local SCRIPT_NAME
-    SCRIPT_NAME=""
+    SCRIPT_NAME="debian-stable-setup"
+local SCRIPT_GIT
+    SCRIPT_GIT="https://github.com/vonbrownie"
 local SCRIPT_SOURCE
-    SCRIPT_SOURCE=""
+    SCRIPT_SOURCE="$SCRIPT_GIT/linux-post-install/tree/master/scripts"
+local HTTP0
+    HTTP0="http://www.circuidipity.com/minimal-debian.html"
+local HTTP1
+    HTTP1="http://www.circuidipity.com/i3-tiling-window-manager.html"
 echo -e "\n$( L_penguin ) .: Howdy!"
 cat << _EOF_
 NAME
     $SCRIPT_NAME
 SYNOPSIS
-    .sh [ options ] X
+    setup.sh [ options ] USERNAME
 OPTIONS
     -h  print details
-    -s  skip the menu prompt       
+    -b  basic setup (no desktop)
 EXAMPLE
+    Post-install setup a machine running Debian _stable_ for username 'foo':
+        # ./setup.sh foo
 DESCRIPTION
-    See the README before first use ...
+    Script 'setup.sh' is ideally run immediately following the first successful
+    boot into your new Debian installation.
+
+    Building on a minimal install [0] the system will be configured to track
+    Debian's _stable_ branch, and the i3 tiling window manager [1] plus a
+    collection of packages suitable for a workstation will be installed.
+
+    [0] "Minimal Debian" <$HTTP0>
+    [1] "i3 wm" <$HTTP1>
+
+    See the README before first use.
 DEPENDS
-    bash, sudo
+    bash
 SOURCE
     $SCRIPT_SOURCE
 
 _EOF_
-}
-
-
-L_test_usb_device() {
-# Verify that USB_DEVICE_PARTITION is available for use.
-local ERR0
-    ERR0="ERROR: script requires the USB_DEVICE_PARTITION argument."
-local ERR1
-    ERR1="ERROR: '$USB_DEVICE' not available for use."
-local FIX0
-    FIX0="FIX: run script with a (valid) DEVICE as './grubs.sh sd[b-z]1'."
-if [[ -z "$USB_DEVICE" ]]; then
-    L_echo_red "\n$( L_penguin ) .: $ERR0"
-    L_echo_red "$FIX0"
-    exit 1
-fi
-if [[ ! -b /dev/$USB_DEVICE ]] || [[ ! $USB_DEVICE == sd[b-z]1 ]]; then
-    echo ""
-    L_echo_red "$( L_penguin ) .: $ERR1"
-    L_echo_red "$FIX0"
-    exit 1
-fi
-#L_echo_yellow "\nYou have chosen **$USB_DEVICE** as USB_DEVICE_PARTITION.\n"
 }
 
 
@@ -129,23 +124,15 @@ fi
 
 
 L_run_options() {
-local STEP3
-STEP3="Sync files from grubs/boot to MOUNTPOINT/boot on $USB_DEVICE"
-while getopts ":hu" OPT
+while getopts ":hb" OPT
 do
     case $OPT in
         h)
             L_greeting
             exit
             ;;
-        u)
-            L_test_usb_device 
-            L_banner_begin "UPDATE"
-            echo -e "Steps ...\n0) $STEP3"
-            ./03_sync_bootdirs.sh "$USB_DEVICE"
-            ./04_cleanup.sh "$USB_DEVICE"
-            L_banner_end "UPDATE"
-            L_all_done
+        b)
+            echo "base install" #TEST
             exit
             ;;
         ?)
@@ -175,89 +162,6 @@ do
         L_invalid_reply_yn
     fi
 done
-}
-
-
-L_create_warning() {
-L_echo_red "\n\n\t\t### WARNING ###"
-L_echo_red "Make careful note of the drive partition labels on your system!\n"
-L_echo_red "INSTALL option will **destroy all data** currently stored on the"
-L_echo_red "chosen partition **$USB_DEVICE**.\n"
-while :
-do
-    read -n 1 -p "Proceed with INSTALL? [yN] > "
-    if [[ $REPLY == [yY] ]]; then
-        break
-    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
-        echo -e "\n$( L_penguin )"
-        exit
-    else
-        L_invalid_reply_yn
-    fi
-done
-}
-
-
-L_mktemp_dir_pwd() {
-# Create a workspace directory within DIR
-local DIR
-    DIR="$(pwd)"
-local WORK_DIR
-    WORK_DIR=$( mktemp -d -p "$DIR" )
-if [[ ! "$WORK_DIR" || ! -d "$WORK_DIR" ]]; then
-    exit 1
-fi
-echo "$WORK_DIR"
-}
-
-
-L_mnt_detect() {
-mount | grep "/dev/$1" | cut -d' ' -f1-3
-}
-
-
-L_mnt_mount_vfat() {
-# $1 is sd[a-z][0-9] and $2 is MOUNTPOINT
-local _UID
-#    _UID="1000"
-     _UID="$UID"
-#local _GID
-#    _GID="1000"
-# Helpful! https://help.ubuntu.com/community/Mount/USB#Mount_the_Drive
-# Extra MNT_OPTS allow read and write on drive with regular username
-local MNT_OPTS
-    #MNT_OPTS="uid=$_UID,gid=$_GID,utf8,dmask=027,fmask=137"
-    MNT_OPTS="uid=$_UID,utf8,dmask=027,fmask=137"
-    sudo mount -t vfat /dev/"$1" "$2" -o $MNT_OPTS
-if [[ ! $( L_mnt_detect "$1" ) ]]; then
-    exit 1
-fi
-}
-
-
-L_mnt_mount() {
-# $1 is sd[a-z][0-9] and $2 is MOUNTPOINT
-local M_DEVICE
-    M_DEVICE="$( mount | grep "$1" | cut -d' ' -f1 )"
-sudo mount "/dev/$1" "$2"
-# confirm
-if [[ ! $( L_mnt_detect "$1" ) ]]; then
-    L_sig_fail
-    exit 1
-fi
-}
-
-
-L_mnt_umount() {
-# $1 is sd[a-z][0-9]
-local M_DEVICE
-    M_DEVICE="$( mount | grep "$1" | cut -d' ' -f1 )"
-sudo umount "$M_DEVICE"
-# confirm
-if [[ $( L_mnt_detect "$1" ) ]]; then
-    L_sig_fail
-    exit 1
-fi
 }
 
 
