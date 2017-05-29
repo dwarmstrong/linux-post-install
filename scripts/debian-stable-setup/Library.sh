@@ -221,6 +221,36 @@ for f in "$@"; do cp "$f" "$f.$(date +%FT%H%M%S).bak"; done
 }
 
 
+L_apt_update_upgrade() {
+L_echo_yellow "\nUpdate packages and upgrade $HOSTNAME ..."
+apt update && apt -y full-upgrade
+L_sig_ok
+}
+
+
+L_conf_apt_src_stable() {
+# $1 is debian RELEASE
+local FILE
+    FILE="/etc/apt/sources.list"
+local MIRROR
+    MIRROR="http://deb.debian.org/debian/"
+local MIRROR1
+    MIRROR1="http://security.debian.org/debian-security"
+local COMP
+    COMP="main contrib non-free"
+L_echo_yellow "\nBackup $FILE ..."
+L_bak_file $FILE
+L_sig_ok
+L_echo_yellow "\nConfigure sources.list for '$1' ..."
+echo "deb $MIRROR $1 $COMP" > $FILE
+echo -e "deb-src $MIRROR $1 $COMP\n" >> $FILE
+echo "deb $MIRROR1 $1/updates $COMP" >> $FILE
+echo -e "deb-src $MIRROR1 $1/updates $COMP\n" >> $FILE
+L_sig_ok
+L_apt_update_upgrade
+}
+
+
 L_all_done() {
 local AU_REVOIR
     AU_REVOIR="All done!"
