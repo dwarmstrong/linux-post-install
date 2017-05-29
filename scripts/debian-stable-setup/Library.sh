@@ -1,13 +1,13 @@
 #!/bin/bash
-set -eu
-
 # NAME="Library.sh"
 # BLURB="A library of functions for bash shell scripts"
+# SOURCE="https://github.com/vonbrownie/linux-post-install/tree/master/scripts"
+set -eu
 
 # Place in local directory and call its functions by adding to script ...
-#
-# . ./Library.sh
+#   . ./Library.sh
 
+OPT_HELP="Run with '-h' for details."
 # ANSI escape codes
 RED="\033[1;31m"
 GREEN="\033[1;32m"
@@ -31,12 +31,12 @@ echo -e "${YELLOW}$1${NC}"
 
 
 L_banner_begin() {
-L_echo_yellow "\n\t\t*** $1 BEGIN ***\n"
+L_echo_yellow "\n--------[  $1  ]--------\n"
 }
 
 
 L_banner_end() {
-L_echo_green "\n\t\t*** $1 END ***\n"
+L_echo_green "\n--------[  $1 END  ]--------\n"
 }
 
 
@@ -89,26 +89,135 @@ OPTIONS
     -h  print details
     -b  basic setup (no desktop)
 EXAMPLE
-    Post-install setup a machine running Debian _stable_ for username 'foo':
+    Post-install setup a machine for the (existing) username 'foo':
         # ./setup.sh foo
 DESCRIPTION
-    Script 'setup.sh' is ideally run immediately following the first successful
-    boot into your new Debian installation.
+    Script 'setup.sh' is ideally run immediately following the first
+    successful boot into your new Debian installation.
 
-    Building on a minimal install [0] the system will be configured to track
-    Debian's _stable_ branch, and the i3 tiling window manager [1] plus a
-    collection of packages suitable for a workstation will be installed.
+    Building on a minimal install [0] the system will be configured to
+    track Debian's _stable_ release, and (or disable with '-b') the i3
+    tiling window manager [1] plus a packages collection suitable for
+    a workstation will be installed.
 
     [0] "Minimal Debian" <$HTTP0>
-    [1] "i3 wm" <$HTTP1>
-
-    See the README before first use.
+    [1] "Tiling window manager" <$HTTP1>
 DEPENDS
     bash
 SOURCE
     $SCRIPT_SOURCE
 
 _EOF_
+}
+
+
+L_test_root() {
+local ERR
+    ERR="ERROR: script must be run with root privileges. $OPT_HELP"
+if (( EUID != 0 )); then
+    L_echo_red "\n$( L_penguin ) .: $ERR"
+    exit 1
+fi
+}
+
+
+L_test_homedir() {
+# $1 is $USER
+local ERR
+    ERR="ERROR: no USERNAME provided. $OPT_HELP"
+local ERR1
+if [[ "$#" -eq 0 ]]; then
+    L_echo_red "\n$( L_penguin ) .: $ERR"
+    exit 1
+elif [[ ! -d "/home/$1" ]]; then
+    ERR1="ERROR: a home directory for '$1' not found. $OPT_HELP"
+    L_echo_red "\n$( L_penguin ) .: $ERR1"
+    exit 1
+fi
+}
+
+
+L_test_internet() {
+local ERR
+    ERR="ERROR: script requires internet access to do its job."
+local UP
+    UP=$( nc -z 8.8.8.8 53; echo $? ) # Google DNS is listening?
+if [[ $UP -ne 0 ]]; then
+    L_echo_red "\n$( L_penguin ) .: $ERR"
+    exit 1
+fi
+}
+
+
+L_test_datetime() {
+L_banner_begin "Confirm date + timezone"
+if [[ -x "/usr/bin/timedatectl" ]]; then
+    timedatectl
+else
+    echo -e "Current date is $( date -I'minutes' )"
+fi
+while :
+do
+    read -n 1 -p "Modify? [yN] > "
+    if [[ $REPLY == [yY] ]]; then
+        echo -e "\n\n$( L_penguin ) .: Check out datetime in the Arch Wiki "`
+        `"<https://wiki.archlinux.org/index.php/time>\n"`
+        `"plus 'dpkg-reconfigure tzdata' for setting default timezone."
+        exit
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+        clear
+        break
+    else
+        L_invalid_reply_yn
+    fi
+done
+}
+
+
+L_test_systemd_fail() {
+L_banner_begin "List 'systemctl --failed' units"
+sleep 5
+systemctl --failed
+while :
+do
+    read -n 1 -p "Continue script? [yN] > "
+    if [[ $REPLY == [yY] ]]; then
+        clear
+        break
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+         echo ""
+         L_penguin
+         exit
+     else
+         L_invalid_reply_yn
+     fi
+ done
+}
+
+
+L_test_priority_err() {
+L_banner_begin "Identify high priority errors with 'journalctl -p 0..3 -xn'"
+sleep 5
+journalctl -p 0..3 -xn
+while :
+do
+    read -n 1 -p "Continue script? [yN] > "
+    if [[ $REPLY == [yY] ]]; then
+        clear
+        break
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+        echo ""
+        L_penguin
+        exit
+    else
+        L_invalid_reply_yn
+    fi
+done
+}
+
+
+L_bak_file() {
+for f in "$@"; do cp "$f" "$f.$(date +%FT%H%M%S).bak"; done
 }
 
 
@@ -132,8 +241,8 @@ do
             exit
             ;;
         b)
-            echo "base install" #TEST
-            exit
+            echo "Basic setup (no desktop)" #TEST
+            BASIC=y
             ;;
         ?)
             L_echo_red "\n$( L_penguin ) .: ERROR: Invalid option '-$OPTARG'"
@@ -162,11 +271,6 @@ do
         L_invalid_reply_yn
     fi
 done
-}
-
-
-L_bak_file() {
-for f in "$@"; do cp "$f" "$f.$(date +%FT%H%M%S).bak"; done
 }
 
 
