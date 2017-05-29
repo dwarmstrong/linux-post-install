@@ -69,16 +69,11 @@ _EOF_
 
 
 L_greeting() {
-local SCRIPT_NAME
-    SCRIPT_NAME="debian-stable-setup"
-local SCRIPT_GIT
-    SCRIPT_GIT="https://github.com/vonbrownie"
-local SCRIPT_SOURCE
-    SCRIPT_SOURCE="$SCRIPT_GIT/linux-post-install/tree/master/scripts"
-local HTTP0
-    HTTP0="http://www.circuidipity.com/minimal-debian.html"
-local HTTP1
-    HTTP1="http://www.circuidipity.com/i3-tiling-window-manager.html"
+local SCRIPT_NAME="debian-stable-setup"
+local SCRIPT_GIT="https://github.com/vonbrownie"
+local SCRIPT_SOURCE="$SCRIPT_GIT/linux-post-install/tree/master/scripts"
+local HTTP0="http://www.circuidipity.com/minimal-debian.html"
+local HTTP1="http://www.circuidipity.com/i3-tiling-window-manager.html"
 echo -e "\n$( L_penguin ) .: Howdy!"
 cat << _EOF_
 NAME
@@ -112,8 +107,7 @@ _EOF_
 
 
 L_test_root() {
-local ERR
-    ERR="ERROR: script must be run with root privileges. $OPT_HELP"
+local ERR="ERROR: script must be run with root privileges. $OPT_HELP"
 if (( EUID != 0 )); then
     L_echo_red "\n$( L_penguin ) .: $ERR"
     exit 1
@@ -123,14 +117,12 @@ fi
 
 L_test_homedir() {
 # $1 is $USER
-local ERR
-    ERR="ERROR: no USERNAME provided. $OPT_HELP"
-local ERR1
+local ERR="ERROR: no USERNAME provided. $OPT_HELP"
 if [[ "$#" -eq 0 ]]; then
     L_echo_red "\n$( L_penguin ) .: $ERR"
     exit 1
 elif [[ ! -d "/home/$1" ]]; then
-    ERR1="ERROR: a home directory for '$1' not found. $OPT_HELP"
+    local ERR1="ERROR: a home directory for '$1' not found. $OPT_HELP"
     L_echo_red "\n$( L_penguin ) .: $ERR1"
     exit 1
 fi
@@ -138,10 +130,8 @@ fi
 
 
 L_test_internet() {
-local ERR
-    ERR="ERROR: script requires internet access to do its job."
-local UP
-    UP=$( nc -z 8.8.8.8 53; echo $? ) # Google DNS is listening?
+local ERR="ERROR: script requires internet access to do its job."
+local UP=$( nc -z 8.8.8.8 53; echo $? ) # Google DNS is listening?
 if [[ $UP -ne 0 ]]; then
     L_echo_red "\n$( L_penguin ) .: $ERR"
     exit 1
@@ -230,14 +220,10 @@ L_sig_ok
 
 L_conf_apt_src_stable() {
 # $1 is debian RELEASE
-local FILE
-    FILE="/etc/apt/sources.list"
-local MIRROR
-    MIRROR="http://deb.debian.org/debian/"
-local MIRROR1
-    MIRROR1="http://security.debian.org/debian-security"
-local COMP
-    COMP="main contrib non-free"
+local FILE="/etc/apt/sources.list"
+local MIRROR="http://deb.debian.org/debian/"
+local MIRROR1="http://security.debian.org/debian-security"
+local COMP="main contrib non-free"
 L_echo_yellow "\nBackup $FILE ..."
 L_bak_file $FILE
 L_sig_ok
@@ -252,8 +238,7 @@ L_apt_update_upgrade
 
 
 L_all_done() {
-local AU_REVOIR
-    AU_REVOIR="All done!"
+local AU_REVOIR="All done!"
 if [[ -x "/usr/games/cowsay" ]]; then
     /usr/games/cowsay "$AU_REVOIR"
 else
