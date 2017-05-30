@@ -68,41 +68,24 @@ _EOF_
 }
 
 
-L_greeting() {
-local SCRIPT_NAME="debian-stable-setup"
-local SCRIPT_GIT="https://github.com/vonbrownie"
-local SCRIPT_SOURCE="$SCRIPT_GIT/linux-post-install/tree/master/scripts"
-local HTTP0="http://www.circuidipity.com/minimal-debian.html"
-local HTTP1="http://www.circuidipity.com/i3-tiling-window-manager.html"
-echo -e "\n$( L_penguin ) .: Howdy!"
-cat << _EOF_
-NAME
-    $SCRIPT_NAME
-SYNOPSIS
-    setup.sh [ options ] USERNAME
-OPTIONS
-    -h  print details
-    -b  basic setup (no desktop)
-EXAMPLE
-    Post-install setup a machine for the (existing) username 'foo':
-        # ./setup.sh foo
-DESCRIPTION
-    Script 'setup.sh' is ideally run immediately following the first
-    successful boot into your new Debian installation.
-
-    Building on a minimal install [0] the system will be configured to
-    track Debian's _stable_ release, and (or disable with '-b') the i3
-    tiling window manager [1] plus a packages collection suitable for
-    a workstation will be installed.
-
-    [0] "Minimal Debian" <$HTTP0>
-    [1] "Tiling window manager" <$HTTP1>
-DEPENDS
-    bash
-SOURCE
-    $SCRIPT_SOURCE
-
-_EOF_
+L_run_script() {
+while :
+do
+    read -n 1 -p "Run script now? [yN] > "
+    if [[ $REPLY == [yY] ]]; then
+        echo -e "\nLet's roll then ..."
+        sleep 2
+        if [[ -x "/usr/games/sl" ]]; then
+            /usr/games/sl
+        fi
+        break
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+        echo -e "\n$( L_penguin )"
+        exit
+    else
+        L_invalid_reply_yn
+    fi
+done
 }
 
 
@@ -130,8 +113,10 @@ fi
 
 
 L_test_internet() {
-local ERR="ERROR: script requires internet access to do its job."
-local UP=$( nc -z 8.8.8.8 53; echo $? ) # Google DNS is listening?
+local ERR="ERROR: script requires internet access to do its job. $OPT_HELP"
+local UP
+export UP
+UP=$( nc -z 8.8.8.8 53; echo $? ) # Google DNS is listening?
 if [[ $UP -ne 0 ]]; then
     L_echo_red "\n$( L_penguin ) .: $ERR"
     exit 1
@@ -140,7 +125,9 @@ fi
 
 
 L_test_datetime() {
+clear
 L_banner_begin "Confirm date + timezone"
+local LINK="<https://wiki.archlinux.org/index.php/time>"
 if [[ -x "/usr/bin/timedatectl" ]]; then
     timedatectl
 else
@@ -150,9 +137,8 @@ while :
 do
     read -n 1 -p "Modify? [yN] > "
     if [[ $REPLY == [yY] ]]; then
-        echo -e "\n\n$( L_penguin ) .: Check out datetime in the Arch Wiki "`
-        `"<https://wiki.archlinux.org/index.php/time>\n"`
-        `"plus 'dpkg-reconfigure tzdata' for setting default timezone."
+        echo -e "\n\n$( L_penguin ) .: Check out datetime in Arch Wiki $LINK" 
+        echo "plus 'dpkg-reconfigure tzdata' for setting default timezone."
         exit
     elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
         clear
@@ -165,8 +151,8 @@ done
 
 
 L_test_systemd_fail() {
+clear
 L_banner_begin "List 'systemctl --failed' units"
-sleep 5
 systemctl --failed
 while :
 do
@@ -186,8 +172,8 @@ do
 
 
 L_test_priority_err() {
+clear
 L_banner_begin "Identify high priority errors with 'journalctl -p 0..3 -xn'"
-sleep 5
 journalctl -p 0..3 -xn
 while :
 do
@@ -228,10 +214,13 @@ L_echo_yellow "\nBackup $FILE ..."
 L_bak_file $FILE
 L_sig_ok
 L_echo_yellow "\nConfigure sources.list for '$1' ..."
-echo "deb $MIRROR $1 $COMP" > $FILE
-echo -e "deb-src $MIRROR $1 $COMP\n" >> $FILE
-echo "deb $MIRROR1 $1/updates $COMP" >> $FILE
-echo -e "deb-src $MIRROR1 $1/updates $COMP\n" >> $FILE
+cat << _EOL_ > $FILE
+deb $MIRROR $1 $COMP
+deb-src $MIRROR $1 $COMP
+
+deb $MIRROR1 $1/updates $COMP
+deb-src $MIRROR1 $1/updates $COMP
+_EOL_
 L_sig_ok
 L_apt_update_upgrade
 }
@@ -240,52 +229,10 @@ L_apt_update_upgrade
 L_all_done() {
 local AU_REVOIR="All done!"
 if [[ -x "/usr/games/cowsay" ]]; then
-    /usr/games/cowsay "$AU_REVOIR"
+    L_echo_green "$( /usr/games/cowsay $AU_REVOIR )"
 else
     echo -e "$( L_penguin ) .: $AU_REVOIR"
 fi
-}
-
-
-L_run_options() {
-while getopts ":hb" OPT
-do
-    case $OPT in
-        h)
-            L_greeting
-            exit
-            ;;
-        b)
-            echo "Basic setup (no desktop)" #TEST
-            BASIC=y
-            ;;
-        ?)
-            L_echo_red "\n$( L_penguin ) .: ERROR: Invalid option '-$OPTARG'"
-            exit 1
-            ;;
-    esac
-done
-}
-
-
-L_run_script() {
-while :
-do
-    read -n 1 -p "Run script now? [yN] > "
-    if [[ $REPLY == [yY] ]]; then
-        echo -e "\nLet's roll then ..."
-        sleep 2
-        if [[ -x "/usr/games/sl" ]]; then
-            /usr/games/sl
-        fi
-        break
-    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
-        echo -e "\n$( L_penguin )"
-        exit
-    else
-        L_invalid_reply_yn
-    fi
-done
 }
 
 
