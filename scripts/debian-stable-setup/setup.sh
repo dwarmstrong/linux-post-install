@@ -123,6 +123,15 @@ sleep 8
 }
 
 
+Conf_grub() {
+# Uncomment to get a beep at grub start ... how about 'Close Encounters'?
+GRUB_INIT_TUNE="480 900 2 1000 2 800 2 400 2 600 3"
+
+# Wallpaper
+GRUB_BACKGROUND="/boot/grub/wallpaper-grub.tga"
+}
+
+
 Inst_xorg() {
 clear
 L_banner_begin "Install X environment"
@@ -182,6 +191,7 @@ Inst_console_pkg
 Conf_adduser
 #Conf_apt_security
 Conf_ssh
+#Conf_grub
 # Full setup (workstation)
 if [[ $BASIC == "n" ]]; then
     Inst_xorg
