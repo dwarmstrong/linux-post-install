@@ -199,6 +199,14 @@ sleep 8
 }
 
 
+Conf_filedir() {
+clear
+L_banner_begin "$FILE_DIR contents to be copied to $HOSTNAME"
+L_sig_ok
+sleep 8
+}
+
+
 Conf_update_alt() {
 clear
 L_banner_begin "Configure default commands"
@@ -207,11 +215,6 @@ update-alternatives --config pager
 update-alternatives --config x-terminal-emulator
 L_sig_ok
 sleep 8
-}
-
-
-Conf_filedir() {
-    :
 }
 
 
