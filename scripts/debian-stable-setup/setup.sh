@@ -16,8 +16,9 @@ set -eu
 # Import some helpful functions, prefixed 'L_'
 . ./Library.sh
 
-USERNAME="${*: -1}" # Setup machine for USERNAME
-RELEASE="stretch"   # Debian _stable_ release codename to track
+USERNAME="${*: -1}"         # Setup machine for USERNAME
+RELEASE="stretch"           # Debian _stable_ release codename to track
+FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
 BASIC=n     # Basic setup (no desktop); toggle to 'y[es]' with option '-b'
 
 
@@ -124,11 +125,36 @@ sleep 8
 
 
 Conf_grub() {
-# Uncomment to get a beep at grub start ... how about 'Close Encounters'?
+clear
+L_banner_begin "Configure GRUB extras"
+local GRUB_DEFAULT="/etc/default/grub"
+local GRUB_CUSTOM="/boot/grub/custom.cfg"
+local WALLPAPER="/boot/grub/wallpaper-grub.tga"
+echo "Backup $GRUB_DEFAULT ..."
+L_bak_file $GRUB_DEFAULT
+L_sig_ok
+echo "Put the BEEP in the grub start beep ..."
+echo "... and include some wallpaper and colour..."
+if [[ -f $WALLPAPER ]]; then
+    L_bak_file $WALLPAPER
+fi
+cp $FILE_DIR/boot/grub/wallpaper-grub.tga $WALLPAPER
+if [[ -f $GRUB_CUSTOM ]]; then
+    L_bak_file $GRUB_CUSTOM
+fi
+cp $FILE_DIR/boot/grub/custom.cfg $GRUB_CUSTOM
+cat << _EOL_ >> $GRUB_DEFAULT
+
+# Get a beep at grub start ... how about 'Close Encounters'?
 GRUB_INIT_TUNE="480 900 2 1000 2 800 2 400 2 600 3"
 
 # Wallpaper
-GRUB_BACKGROUND="/boot/grub/wallpaper-grub.tga"
+GRUB_BACKGROUND="$WALLPAPER"
+_EOL_
+L_sig_ok
+update-grub
+L_sig_ok
+sleep 8
 }
 
 
@@ -184,20 +210,25 @@ sleep 8
 }
 
 
+Conf_filedir() {
+    :
+}
+
+
 Task_setup() {
 # Basic setup
 Conf_apt_src
 Inst_console_pkg
 Conf_adduser
-#Conf_apt_security
 Conf_ssh
-#Conf_grub
+Conf_grub
 # Full setup (workstation)
 if [[ $BASIC == "n" ]]; then
     Inst_xorg
     Inst_i3wm
     Inst_desktop_pkg
     Conf_update_alt
+    #Conf_filedir
 fi
 }
 
