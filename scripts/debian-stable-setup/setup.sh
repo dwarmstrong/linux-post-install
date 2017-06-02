@@ -84,28 +84,6 @@ adduser $USERNAME sudo
 }
 
 
-Conf_apt_security() {
-clear
-L_banner_begin "Configure automate security updates"
-local APT_CONFD="etc/apt/apt.conf.d"
-local FILE="/$APT_CONFD/02periodic"
-local MOD_FILE="$PWD/config/$APT_CONFD/02periodic"
-local FILE1="/$APT_CONFD/50unattended-upgrades"
-local MOD_FILE1="$PWD/config/$APT_CONFD/50unattended-upgrades"
-if [[ -f $FILE ]]; then
-    echo "Backing up $FILE ..."
-    L_bak_file $FILE
-elif [[ -f $FILE1 ]]; then
-    echo "Backing up $FILE1 ..."
-    L_bak_file $FILE1
-fi
-echo "Copying $MOD_FILE and $MOD_FILE1 to /$APT_CONFD ..."
-cp $MOD_FILE $MOD_FILE1 /$APT_CONFD/
-L_sig_ok
-sleep 8
-}
-
-
 Conf_ssh() {
 clear
 L_banner_begin "Create SSH directory for $USERNAME"
