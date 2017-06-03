@@ -68,8 +68,8 @@ sleep 8
 Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
-local PKG_TOOLS="apt-listchanges aptitude bsd-mailx build-essential 
-unattended-upgrades"
+local PKG_TOOLS="apt-listchanges aptitude autoconf automake bsd-mailx 
+build-essential checkinstall unattended-upgrades"
 local CONSOLE="bc cowsay cryptsetup figlet git hdparm htop keychain 
 less mc most openssh-server pmount resolvconf rsync sl sudo tmux unzip 
 vim wget whois"
@@ -139,8 +139,9 @@ sleep 8
 Inst_xorg() {
 clear
 L_banner_begin "Install X environment"
-local XORG="xorg xinput xterm rxvt-unicode-256color xfonts-terminus 
-xbindkeys xbacklight xvkbd fonts-liberation"
+local XORG="xorg xbacklight xbindkeys xfonts-terminus xinput 
+xserver-xorg-input-synaptics xterm xvkbd fonts-liberation 
+rxvt-unicode-256color"
 apt -y install $XORG
 L_sig_ok
 sleep 8
@@ -160,7 +161,7 @@ sleep 8
 Inst_desktop_pkg() {
 clear
 L_banner_begin "Install some favourite desktop packages"
-local AV="alsa-utils default-jre ffmpeg pavucontrol 
+local AV="alsa-utils default-jre ffmpeg gstreamer1.0-plugins-ugly pavucontrol 
 pulseaudio pulseaudio-utils rhythmbox sox vlc"
 local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome 
 hunspell-en-ca qpdfview"
