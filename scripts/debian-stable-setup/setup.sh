@@ -68,12 +68,14 @@ sleep 8
 Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
-local PKG_TOOLS="apt-listchanges aptitude autoconf automake bsd-mailx 
-build-essential checkinstall unattended-upgrades"
-local CONSOLE="bc cowsay cryptsetup figlet git hdparm htop keychain 
-less mc most openssh-server pmount resolvconf rsync sl sudo tmux unzip 
-vim wget whois"
-apt -y install $PKG_TOOLS $CONSOLE
+local PKG_TOOLS="apt-listchanges aptitude bsd-mailx checkinstall 
+unattended-upgrades"
+local CONSOLE="bsd-mailx cowsay cryptsetup curl figlet git hdparm htop keychain 
+less mc most neovim openssh-server pmount resolvconf rsync rtorrent sl sudo 
+tmux unzip wget whois"
+local PROG="autoconf automake bc build-essential python-dev python-pip 
+python3-dev python3-pip"
+apt -y install $PKG_TOOLS $CONSOLE $PROG
 L_sig_ok
 sleep 8
 }
@@ -158,6 +160,16 @@ sleep 8
 }
 
 
+Inst_theme() {
+clear
+L_banner_begin "Install theme"
+local THEME="gnome-themes-standard lxappearance qt4-qtconfig"
+apt -y install $THEME
+L_sig_ok
+sleep 8
+}
+
+
 Inst_desktop_pkg() {
 clear
 L_banner_begin "Install some favourite desktop packages"
@@ -208,6 +220,7 @@ Conf_grub
 if [[ $BASIC == "n" ]]; then
     Inst_xorg
     Inst_i3wm
+    #Inst_theme
     Inst_desktop_pkg
     Conf_update_alt
     #Conf_filedir
