@@ -215,11 +215,21 @@ L_bak_file $FILE
 L_sig_ok
 L_echo_yellow "\nConfigure sources.list for '$1' ..."
 cat << _EOL_ > $FILE
+# Base repository
 deb $MIRROR $1 $COMP
 deb-src $MIRROR $1 $COMP
 
+# Security updates
 deb $MIRROR1 $1/updates $COMP
 deb-src $MIRROR1 $1/updates $COMP
+
+# Stable updates
+deb $MIRROR $1-updates $COMP
+deb-src $MIRROR $1-updates $COMP
+
+# Stable backports
+deb $MIRROR $1-backports $COMP
+deb-src $MIRROR $1-backports $COMP
 _EOL_
 L_sig_ok
 L_apt_update_upgrade
