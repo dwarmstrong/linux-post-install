@@ -65,6 +65,27 @@ sleep 8
 }
 
 
+Conf_unattended_upgrades() {
+clear
+L_banner_begin "Configure automatic security updates"
+local UNATTENDED_UPGRADES="/etc/apt/apt.conf.d/50unattended-upgrades"
+local PERIODIC="/etc/apt/apt.conf.d/02periodic"
+if [[ -f $UNATTENDED_UPGRADES ]]; then
+    L_bak_file $UNATTENDED_UPGRADES
+fi
+if [[ -f $PERIODIC ]]; then
+    L_bak_file $PERIODIC
+fi
+echo "Setup $UNATTENDED_UPGRADES ..."
+cp $FILE_DIR/etc/apt/apt.conf.d/50unattended-upgrades $UNATTENDED_UPGRADES
+L_sig_ok
+echo "Setup $PERIODIC ..."
+cp $FILE_DIR/etc/apt/apt.conf.d/02periodic $PERIODIC
+L_sig_ok
+sleep 8
+}
+
+
 Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
@@ -94,7 +115,7 @@ local AUTH_KEY="$SSH_DIR/authorized_keys"
 if [[ -d $SSH_DIR ]]; then
     echo "SSH directory $SSH_DIR already exists. Skipping ..."
 else
-    echo "Creating $SSH_DIR and setting permissions ..."
+    echo "Create $SSH_DIR and set permissions ..."
     mkdir $SSH_DIR && chmod 700 $SSH_DIR && \
     touch $AUTH_KEY && chmod 600 $AUTH_KEY && \
     chown -R $USERNAME:$USERNAME $SSH_DIR
@@ -110,9 +131,7 @@ L_banner_begin "Configure GRUB extras"
 local GRUB_DEFAULT="/etc/default/grub"
 local GRUB_CUSTOM="/boot/grub/custom.cfg"
 local WALLPAPER="/boot/grub/wallpaper-grub.tga"
-echo "Backup $GRUB_DEFAULT ..."
 L_bak_file $GRUB_DEFAULT
-L_sig_ok
 echo "Put the BEEP in the grub start beep ..."
 echo "... and include some wallpaper and colour..."
 if [[ -f $WALLPAPER ]]; then
@@ -142,13 +161,19 @@ clear
 L_banner_begin "Configure sudo"
 local ALIAS="/etc/sudoers.d/00-alias"
 local NOPASSWD="/etc/sudoers.d/01-nopasswd"
-L_echo_yellow "Creating $ALIAS ..."
+if [[ -f $ALIAS ]]; then
+    L_bak_file $ALIAS
+fi
+if [[ -f $NOPASSWD ]]; then
+    L_bak_file $NOPASSWD
+fi
+L_echo_yellow "Create $ALIAS ..."
 cat << _EOL_ > $ALIAS
 # Cmnd alias specification
 Cmnd_Alias SHUTDOWN_CMDS = /sbin/poweroff, /sbin/reboot, /sbin/shutdown
 _EOL_
 L_sig_ok
-L_echo_yellow "Creating $NOPASSWD ..."
+L_echo_yellow "Create $NOPASSWD ..."
 cat << _EOL_ > $NOPASSWD
 # Allow specified users to execute these commands without password
 $USERNAME ALL=(ALL) NOPASSWD: SHUTDOWN_CMDS, /bin/dmesg
@@ -210,11 +235,8 @@ sleep 8
 }
 
 
-Conf_filedir() {
-clear
-L_banner_begin "$FILE_DIR contents to be copied to $HOSTNAME"
-L_sig_ok
-sleep 8
+Conf_urxvt() {
+    :
 }
 
 
@@ -237,14 +259,25 @@ Conf_adduser
 Conf_ssh
 Conf_grub
 Conf_sudoersd
+# Read the 'UNATTENDED_UPGRADES' property from '.config'
+local UNATTND_OPT="$( grep -i ^UNATTENDED_UPGRADES .config | cut -f2- -d'=' )"
+if [[ $UNATTND == 'y' ]]; then
+    Conf_unattended_upgrades
+fi
+# Read the 'GRUB_EXTRAS' property from '.config'
+local GRUB_X="$( grep -i ^GRUB_EXTRAS .config | cut -f2- -d'=' )"
+if [[ $GRUB_X == 'y' ]]; then
+    Conf_grub
+fi
+#
 # Full setup (workstation)
 if [[ $BASIC == "n" ]]; then
     Inst_xorg
     Inst_i3wm
     #Inst_theme
     Inst_desktop_pkg
+    #Conf_urxvt
     Conf_update_alt
-    #Conf_filedir
 fi
 }
 
