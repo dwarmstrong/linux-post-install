@@ -173,7 +173,7 @@ do
 
 L_test_priority_err() {
 clear
-L_banner_begin "Identify high priority errors with 'journalctl -p 0..3 -xn'"
+L_banner_begin "Identify high priority errors"
 journalctl -p 0..3 -xn
 while :
 do
@@ -183,7 +183,7 @@ do
         break
     elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
         echo ""
-        L_penguin
+        echo -e "\n$( L_penguin ) .: Run 'journalctl -p 0..3 -xn' for errors."
         exit
     else
         L_invalid_reply_yn
@@ -210,9 +210,7 @@ local FILE="/etc/apt/sources.list"
 local MIRROR="http://deb.debian.org/debian/"
 local MIRROR1="http://security.debian.org/debian-security"
 local COMP="main contrib non-free"
-L_echo_yellow "\nBackup $FILE ..."
 L_bak_file $FILE
-L_sig_ok
 L_echo_yellow "\nConfigure sources.list for '$1' ..."
 cat << _EOL_ > $FILE
 # Base repository

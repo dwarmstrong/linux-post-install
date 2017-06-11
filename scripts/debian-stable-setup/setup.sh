@@ -304,7 +304,8 @@ done
 
 #: START
 Run_options "$@"
-# Run a few tests before we begin ...
+echo -e "\n$( L_penguin ) .: Let's run a few tests before we begin ..."
+sleep 4
 L_test_root             # Script run with root priviliges?
 L_test_homedir $USERNAME    # $HOME exists for USERNAME?
 L_test_internet         # Internet access available?
