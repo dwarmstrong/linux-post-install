@@ -198,7 +198,7 @@ for f in "$@"; do cp "$f" "$f.$(date +%FT%H%M%S).bak"; done
 
 
 L_apt_update_upgrade() {
-L_echo_yellow "\nUpdate packages and upgrade $HOSTNAME ..."
+echo "Update packages and upgrade $HOSTNAME ..."
 apt update && apt -y full-upgrade
 L_sig_ok
 }
@@ -211,7 +211,7 @@ local MIRROR="http://deb.debian.org/debian/"
 local MIRROR1="http://security.debian.org/debian-security"
 local COMP="main contrib non-free"
 L_bak_file $FILE
-L_echo_yellow "\nConfigure sources.list for '$1' ..."
+echo "Configure sources.list for '$1' ..."
 cat << _EOL_ > $FILE
 # Base repository
 deb $MIRROR $1 $COMP
