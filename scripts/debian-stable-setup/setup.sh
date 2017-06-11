@@ -235,8 +235,18 @@ sleep 8
 }
 
 
-Conf_urxvt() {
-    :
+Conf_terminal() {
+clear
+L_banner_begin "Configure terminal"
+local TERM="/usr/bin/urxvt"
+local TERM_TAB="/usr/lib/urxvt/perl/tabbed"
+if [[ -x $TERM ]]; then
+    L_bak_file $TERM_TAB
+    echo "Modify $TERM_TAB ..."
+    cp $FILE_DIR/usr/lib/urxvt/perl/tabbed $TERM_TAB
+fi
+L_sig_ok
+sleep 8
 }
 
 
@@ -257,11 +267,10 @@ Conf_apt_src
 Inst_console_pkg
 Conf_adduser
 Conf_ssh
-Conf_grub
 Conf_sudoersd
 # Read the 'UNATTENDED_UPGRADES' property from '.config'
-local UNATTND_OPT="$( grep -i ^UNATTENDED_UPGRADES .config | cut -f2- -d'=' )"
-if [[ $UNATTND == 'y' ]]; then
+local UNATTEND="$( grep -i ^UNATTENDED_UPGRADES .config | cut -f2- -d'=' )"
+if [[ $UNATTEND == 'y' ]]; then
     Conf_unattended_upgrades
 fi
 # Read the 'GRUB_EXTRAS' property from '.config'
@@ -276,7 +285,7 @@ if [[ $BASIC == "n" ]]; then
     Inst_i3wm
     #Inst_theme
     Inst_desktop_pkg
-    #Conf_urxvt
+    Conf_terminal
     Conf_update_alt
 fi
 }
