@@ -30,16 +30,16 @@ cat << _EOF_
 NAME
     $NAME
 SYNOPSIS
-    setup.sh [ options ] USERNAME
+    $NAME.sh [ options ] USER
 OPTIONS
     -h  print details
     -b  basic setup (no desktop)
 EXAMPLE
-    $BLURB for the (existing) username 'foo':
-        # ./setup.sh foo
+    $BLURB for (existing) USER 'foo':
+        # ./$NAME.sh foo
 DESCRIPTION
-    Script 'setup.sh' is ideally run immediately following the first
-    successful boot into your new Debian installation.
+    Script '$NAME.sh' is ideally run immediately following
+    the first successful boot into your new Debian installation.
 
     Building on a minimal install [0] the system will be configured to
     track Debian's _stable_ release, and (or disable with '-b') the i3
