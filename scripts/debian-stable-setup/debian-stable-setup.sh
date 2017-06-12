@@ -335,7 +335,7 @@ done
 
 #: START
 Run_options "$@"
-echo -e "\n$( L_penguin ) .: Let's run a few tests before we begin ..."
+L_test_announce
 sleep 4
 L_test_root             # Script run with root priviliges?
 L_test_homedir $USERNAME    # $HOME exists for USERNAME?
