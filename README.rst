@@ -4,11 +4,11 @@ linux-post-install
 
 Collection of scripts and configs for setting up Linux.
 
-Helpful Resources
-=================
+Links
+=====
 
-* `Minimal to Morebuntu <http://www.circuidipity.com/20160501.html>`_
-* `Chromebook to Ubuntubook <http://www.circuidipity.com/c720-ubuntubook.html>`_
+* `Minimal Debian <http://www.circuidipity.com/minimal-debian.html>`_
+* `Chromebook to Jessiebook <http://www.circuidipity.com/c720-chromebook-to-jessiebook.html>`_
 
 Author
 ======
