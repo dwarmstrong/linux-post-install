@@ -19,7 +19,7 @@ set -eu
 USERNAME="${*: -1}"         # Setup machine for USERNAME
 RELEASE="stretch"           # Debian _stable_ release codename to track
 FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
-BASIC=n     # Basic setup (no desktop); toggle to 'y[es]' with option '-b'
+BASIC=n     # Basic setup (console only); toggle to 'y[es]' with option '-b'
 
 
 Hello_you() {
@@ -33,7 +33,7 @@ SYNOPSIS
     $NAME.sh [ options ] USER
 OPTIONS
     -h  print details
-    -b  basic setup (no desktop)
+    -b  basic setup (console only)
 EXAMPLE
     $BLURB for (existing) USER 'foo':
         # ./$NAME.sh foo
@@ -77,10 +77,10 @@ if [[ -f $PERIODIC ]]; then
     L_bak_file $PERIODIC
 fi
 echo "Setup $UNATTENDED_UPGRADES ..."
-cp $FILE_DIR/etc/apt/apt.conf.d/50unattended-upgrades $UNATTENDED_UPGRADES
+cp "$FILE_DIR/etc/apt/apt.conf.d/50unattended-upgrades" $UNATTENDED_UPGRADES
 L_sig_ok
 echo "Setup $PERIODIC ..."
-cp $FILE_DIR/etc/apt/apt.conf.d/02periodic $PERIODIC
+cp "$FILE_DIR/etc/apt/apt.conf.d/02periodic" $PERIODIC
 L_sig_ok
 sleep 8
 }
@@ -118,7 +118,7 @@ else
     echo "Create $SSH_DIR and set permissions ..."
     mkdir $SSH_DIR && chmod 700 $SSH_DIR && \
     touch $AUTH_KEY && chmod 600 $AUTH_KEY && \
-    chown -R $USERNAME:$USERNAME $SSH_DIR
+    chown -R "$USERNAME:$USERNAME" $SSH_DIR
 fi
 L_sig_ok
 sleep 8
@@ -129,32 +129,46 @@ Conf_grub() {
 clear
 L_banner_begin "Configure GRUB extras"
 local GRUB_DEFAULT="/etc/default/grub"
-local GRUB_CUSTOM="/boot/grub/custom.cfg"
 local WALLPAPER="/boot/grub/wallpaper-grub.tga"
+local GRUB_CUSTOM="/boot/grub/custom.cfg"
 L_bak_file $GRUB_DEFAULT
-echo "Put the BEEP in the grub start beep ..."
-echo "... and include some wallpaper and colour..."
-if [[ -f $WALLPAPER ]]; then
-    L_bak_file $WALLPAPER
-fi
-cp $FILE_DIR/boot/grub/wallpaper-grub.tga $WALLPAPER
-if [[ -f $GRUB_CUSTOM ]]; then
-    L_bak_file $GRUB_CUSTOM
-fi
-cp $FILE_DIR/boot/grub/custom.cfg $GRUB_CUSTOM
-cat << _EOL_ >> $GRUB_DEFAULT
-
+if [[ ! $( grep ^GRUB_INIT_TUNE $GRUB_DEFAULT ) ]]; then
+    echo "Put the BEEP in the grub start beep ..."
+    cat << _EOL_ >> $GRUB_DEFAULT
+        
 # Get a beep at grub start ... how about 'Close Encounters'?
 GRUB_INIT_TUNE="480 900 2 1000 2 800 2 400 2 600 3"
-
+_EOL_
+    L_sig_ok
+else
+    echo "Grub already includes sound effects. Skipping ..."
+    L_sig_ok
+fi
+if [[ ! $( grep ^GRUB_BACKGROUND $GRUB_DEFAULT ) ]]; then
+    echo "Include some wallpaper and colour ..."
+    cat << _EOL_ >> $GRUB_DEFAULT
+        
 # Wallpaper
 GRUB_BACKGROUND="$WALLPAPER"
 _EOL_
-L_sig_ok
+    if [[ -f $WALLPAPER ]]; then
+        L_bak_file $WALLPAPER
+    fi
+    cp "$FILE_DIR/boot/grub/wallpaper-grub.tga" $WALLPAPER
+    if [[ -f $GRUB_CUSTOM ]]; then
+        L_bak_file $GRUB_CUSTOM
+    fi
+    cp "$FILE_DIR/boot/grub/custom.cfg" $GRUB_CUSTOM
+    L_sig_ok
+else
+    echo "Grub already includes wallpaper and colour. Skipping ..."
+    L_sig_ok
+fi
 update-grub
 L_sig_ok
 sleep 8
 }
+
 
 Conf_sudoersd() {
 clear
@@ -243,7 +257,7 @@ local TERM_TAB="/usr/lib/urxvt/perl/tabbed"
 if [[ -x $TERM ]]; then
     L_bak_file $TERM_TAB
     echo "Modify $TERM_TAB ..."
-    cp $FILE_DIR/usr/lib/urxvt/perl/tabbed $TERM_TAB
+    cp "$FILE_DIR/usr/lib/urxvt/perl/tabbed" $TERM_TAB
 fi
 L_sig_ok
 sleep 8
@@ -268,17 +282,20 @@ Inst_console_pkg
 Conf_adduser
 Conf_ssh
 # Read the 'UNATTENDED_UPGRADES' property from '.config'
-local UNATTEND="$( grep -i ^UNATTENDED_UPGRADES .config | cut -f2- -d'=' )"
+local UNATTEND
+    UNATTEND="$( grep -i ^UNATTENDED_UPGRADES .config | cut -f2- -d'=' )"
 if [[ $UNATTEND == 'y' ]]; then
     Conf_unattended_upgrades
 fi
 # Read the 'GRUB_EXTRAS' property from '.config'
-local GRUB_X="$( grep -i ^GRUB_EXTRAS .config | cut -f2- -d'=' )"
+local GRUB_X
+    GRUB_X="$( grep -i ^GRUB_EXTRAS .config | cut -f2- -d'=' )"
 if [[ $GRUB_X == 'y' ]]; then
     Conf_grub
 fi
 # READ the 'SUDO_EXTRAS' property from '.config'
-local SUDO_X="$( grep -i ^SUDO_EXTRAS .config | cut -f2- -d'=' )"
+local SUDO_X
+    SUDO_X="$( grep -i ^SUDO_EXTRAS .config | cut -f2- -d'=' )"
 if [[ $SUDO_X == 'y' ]]; then
     Conf_sudoersd
 fi
