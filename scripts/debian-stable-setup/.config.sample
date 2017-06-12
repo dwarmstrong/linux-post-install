@@ -17,11 +17,11 @@
 # See: "Automatic security updates on Debian"
 #       http://www.circuidipity.com/unattended-upgrades.html
 #
-UNATTENDED_UPGRADES=n   # 'y' to enable.
+UNATTENDED_UPGRADES=n       # 'y' or 'n' to enable/disable.
 
 # GRUB: Add a bit of colour, a bit of sound, and wallpaper!
 #
-GRUB_EXTRAS=n       # 'y' to enable.
+GRUB_EXTRAS=n       # 'y' or 'n' to enable/disable.
 
 # SUDO: Add config files to /etc/sudoers.d/ to allow members of the sudo group
 # extra privileges; the ability to shutdown/reboot the system and read the
@@ -30,4 +30,4 @@ GRUB_EXTRAS=n       # 'y' to enable.
 # See: "Minimal Debian"
 #       http://www.circuidipity.com/minimal-debian.html#sudo
 #
-SUDO_EXTRAS=n       # 'y' to enable.
+SUDO_EXTRAS=n       # 'y' or 'n' to enable/disable.
