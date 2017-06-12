@@ -267,7 +267,6 @@ Conf_apt_src
 Inst_console_pkg
 Conf_adduser
 Conf_ssh
-Conf_sudoersd
 # Read the 'UNATTENDED_UPGRADES' property from '.config'
 local UNATTEND="$( grep -i ^UNATTENDED_UPGRADES .config | cut -f2- -d'=' )"
 if [[ $UNATTEND == 'y' ]]; then
@@ -277,6 +276,11 @@ fi
 local GRUB_X="$( grep -i ^GRUB_EXTRAS .config | cut -f2- -d'=' )"
 if [[ $GRUB_X == 'y' ]]; then
     Conf_grub
+fi
+# READ the 'SUDO_EXTRAS' property from '.config'
+local SUDO_X="$( grep -i ^SUDO_EXTRAS .config | cut -f2- -d'=' )"
+if [[ $SUDO_X == 'y' ]]; then
+    Conf_sudoersd
 fi
 #
 # Full setup (workstation)
