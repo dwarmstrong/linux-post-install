@@ -15,19 +15,19 @@
 # Upgrade information is logged under /var/log/unattended-upgrades.
 #
 # See: "Automatic security updates on Debian"
-#               http://www.circuidipity.com/unattended-upgrades.html
+#       http://www.circuidipity.com/unattended-upgrades.html
 #
-# Modify to 'n' to disable.
-UNATTENDED_UPGRADES=y
+UNATTENDED_UPGRADES=n   # 'y' to enable.
 
 # GRUB: Add a bit of colour, a bit of sound, and wallpaper!
 #
-# Modify to 'n' to disable.
-GRUB_EXTRAS=y
+GRUB_EXTRAS=n       # 'y' to enable.
 
 # SUDO: Add config files to /etc/sudoers.d/ to allow members of the sudo group
 # extra privileges; the ability to shutdown/reboot the system and read the
 # kernel buffer using `dmesg` without a password for example.
 #
-# Modify to 'n' to disable.
-SUDO_EXTRAS=y
+# See: "Minimal Debian"
+#       http://www.circuidipity.com/minimal-debian.html#sudo
+#
+SUDO_EXTRAS=n       # 'y' to enable.
