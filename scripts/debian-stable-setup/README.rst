@@ -9,8 +9,6 @@ Building on a minimal install [0] the system will be configured to track Debian'
 | [0] `Minimal Debian <http://www.circuidipity.com/minimal-debian.html>`_
 | [1] `Tiling window manager <http://www.circuidipity.com/i3-tiling-window-manager.html>`_
 
-Depends: ``bash``
-
 Synopsis
 ========
 
