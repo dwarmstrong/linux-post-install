@@ -94,6 +94,16 @@ L_test_announce() {
 }
 
 
+L_test_required_file() {
+local FILE=$1
+local ERR="ERROR: file '$FILE' required but not found."
+if [[ ! -f "$FILE" ]]; then
+    L_echo_red "\n$( L_penguin ) .: $ERR"
+    exit 1
+fi
+}
+
+
 L_test_root() {
 local ERR="ERROR: script must be run with root privileges. $OPT_HELP"
 if (( EUID != 0 )); then
@@ -194,11 +204,6 @@ do
         L_invalid_reply_yn
     fi
 done
-}
-
-
-L_test_config() {
-    :
 }
 
 

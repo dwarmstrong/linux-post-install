@@ -1,7 +1,8 @@
 #!/bin/bash
 NAME="debian-stable-setup"
 BLURB="Post-install setup of a machine running Debian _stable_ release"
-SOURCE="https://github.com/vonbrownie/linux-post-install/tree/master/scripts"
+GITHUB="https://github.com/vonbrownie"
+SOURCE="$GITHUB/linux-post-install/tree/master/scripts/debian-stable-setup"
 set -eu
 
 # Copyright (c) 2017 Daniel Wayne Armstrong. All rights reserved.
@@ -18,6 +19,7 @@ set -eu
 
 USERNAME="${*: -1}"         # Setup machine for USERNAME
 RELEASE="stretch"           # Debian _stable_ release codename to track
+CONFIG="$(pwd)/config"      # Script settings
 FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
 BASIC=n     # Basic setup (console only); toggle to 'y[es]' with option '-b'
 
@@ -36,16 +38,16 @@ OPTIONS
     -b  basic setup (console only)
 EXAMPLE
     $BLURB for (existing) USER 'foo' ...
-        # ./$NAME.sh foo
+        $ sudo ./$NAME.sh foo
 DESCRIPTION
-    Script '$NAME.sh' is ideally run immediately following
-    the first successful boot into your new Debian installation.
+    Script '$NAME.sh' is ideally run immediately following the
+    first successful boot into your new Debian installation.
 
-    Building on a minimal install [0] the system will be configured to
-    track Debian's "$RELEASE" _stable_ release. A choice of either a
-    console setup (option '-b') or a more extensive graphical interface
-    which includes the i3 tiling window manager [1] plus a packages
-    collection suitable for a workstation will be installed.
+    Building on a minimal install [0] the system will be configured to track
+    Debian's "$RELEASE" _stable_ release. A choice of either 1) a console setup
+    (option '-b'); or 2) a more extensive graphical interface which includes
+    the i3 tiling window manager [1] plus a packages collection suitable for a
+    workstation will be installed.
 
     [0] "Minimal Debian" <$HTTP0>
     [1] "Tiling window manager" <$HTTP1>
@@ -282,21 +284,21 @@ Conf_apt_src
 Inst_console_pkg
 Conf_adduser
 Conf_ssh
-# Read the 'UNATTENDED_UPGRADES' property from 'config'
+# Read the 'UNATTENDED_UPGRADES' property from $CONFIG
 local UNATTEND
-    UNATTEND="$( grep -i ^UNATTENDED_UPGRADES config | cut -f2- -d'=' )"
+    UNATTEND="$( grep -i ^UNATTENDED_UPGRADES $CONFIG | cut -f2- -d'=' )"
 if [[ $UNATTEND == 'y' ]]; then
     Conf_unattended_upgrades
 fi
-# Read the 'GRUB_EXTRAS' property from 'config'
+# Read the 'GRUB_EXTRAS' property from $CONFIG
 local GRUB_X
-    GRUB_X="$( grep -i ^GRUB_EXTRAS config | cut -f2- -d'=' )"
+    GRUB_X="$( grep -i ^GRUB_EXTRAS $CONFIG | cut -f2- -d'=' )"
 if [[ $GRUB_X == 'y' ]]; then
     Conf_grub
 fi
-# READ the 'SUDO_EXTRAS' property from 'config'
+# READ the 'SUDO_EXTRAS' property from $CONFIG
 local SUDO_X
-    SUDO_X="$( grep -i ^SUDO_EXTRAS config | cut -f2- -d'=' )"
+    SUDO_X="$( grep -i ^SUDO_EXTRAS $CONFIG | cut -f2- -d'=' )"
 if [[ $SUDO_X == 'y' ]]; then
     Conf_sudoersd
 fi
@@ -337,12 +339,13 @@ done
 Run_options "$@"
 L_test_announce
 sleep 4
-L_test_root             # Script run with root priviliges?
-L_test_homedir $USERNAME    # $HOME exists for USERNAME?
-L_test_internet         # Internet access available?
-L_test_datetime         # Confirm date + timezone
-L_test_systemd_fail     # Any failed units?
-L_test_priority_err     # Identify high priority errors
+L_test_required_file $CONFIG    # Script settings file in place?
+L_test_root                     # Script run with root priviliges?
+L_test_homedir $USERNAME        # $HOME exists for USERNAME?
+L_test_internet                 # Internet access available?
+L_test_datetime                 # Confirm date + timezone
+L_test_systemd_fail             # Any failed units?
+L_test_priority_err             # Identify high priority errors
 # ... rollin' rollin' rollin' ...
 Hello_you
 L_run_script
