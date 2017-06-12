@@ -35,7 +35,7 @@ OPTIONS
     -h  print details
     -b  basic setup (console only)
 EXAMPLE
-    $BLURB for (existing) USER 'foo':
+    $BLURB for (existing) USER 'foo' ...
         # ./$NAME.sh foo
 DESCRIPTION
     Script '$NAME.sh' is ideally run immediately following
@@ -281,21 +281,21 @@ Conf_apt_src
 Inst_console_pkg
 Conf_adduser
 Conf_ssh
-# Read the 'UNATTENDED_UPGRADES' property from '.config'
+# Read the 'UNATTENDED_UPGRADES' property from 'config'
 local UNATTEND
-    UNATTEND="$( grep -i ^UNATTENDED_UPGRADES .config | cut -f2- -d'=' )"
+    UNATTEND="$( grep -i ^UNATTENDED_UPGRADES config | cut -f2- -d'=' )"
 if [[ $UNATTEND == 'y' ]]; then
     Conf_unattended_upgrades
 fi
-# Read the 'GRUB_EXTRAS' property from '.config'
+# Read the 'GRUB_EXTRAS' property from 'config'
 local GRUB_X
-    GRUB_X="$( grep -i ^GRUB_EXTRAS .config | cut -f2- -d'=' )"
+    GRUB_X="$( grep -i ^GRUB_EXTRAS config | cut -f2- -d'=' )"
 if [[ $GRUB_X == 'y' ]]; then
     Conf_grub
 fi
-# READ the 'SUDO_EXTRAS' property from '.config'
+# READ the 'SUDO_EXTRAS' property from 'config'
 local SUDO_X
-    SUDO_X="$( grep -i ^SUDO_EXTRAS .config | cut -f2- -d'=' )"
+    SUDO_X="$( grep -i ^SUDO_EXTRAS config | cut -f2- -d'=' )"
 if [[ $SUDO_X == 'y' ]]; then
     Conf_sudoersd
 fi
