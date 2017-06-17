@@ -2,7 +2,7 @@
 debian-stable-setup
 ===================
 
-.. image:: images/debian_9_banner.png
+.. image:: debian_9_banner.png
     :alt: Debian 9 Stretch
     :width: 800px
     :height: 75px
