@@ -43,14 +43,14 @@ DESCRIPTION
     Script '$NAME.sh' is ideally run immediately following the
     first successful boot into your new Debian installation.
 
-    Building on a minimal install [0] the system will be configured to track
-    Debian's "$RELEASE" _stable_ release. A choice of either 1) a console setup
-    (option '-b'); or 2) a more extensive graphical interface which includes
-    the i3 tiling window manager [1] plus a packages collection suitable for a
-    workstation will be installed.
+    Building on a minimal install the system will be configured
+    to track Debian's "$RELEASE" _stable_ release. A choice of either
+    1) a basic console setup (option '-b'); or 2) a more complete
+    setup which includes the i3 tiling window manager plus a packages
+    collection suitable for a workstation will be installed.
 
-    [0] "Minimal Debian" <$HTTP0>
-    [1] "Tiling window manager" <$HTTP1>
+    More: "Minimal Debian" <$HTTP0>
+          "Tiling window manager" <$HTTP1>
 DEPENDS
     bash
 SOURCE

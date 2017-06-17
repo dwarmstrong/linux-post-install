@@ -9,10 +9,7 @@ debian-stable-setup
 
 Script **debian-stable-setup.sh** is ideally run immediately following the first successful boot into your new Debian installation.
 
-Building on a minimal install [0] the system will be configured to track Debian's _stable_ release. A choice of either 1) a console setup (option '-b'); or 2) a more extensive graphical interface which includes the i3 tiling window manager [1] plus a packages collection suitable for a workstation will be installed.
-
-| [0] `Minimal Debian <http://www.circuidipity.com/minimal-debian.html>`_
-| [1] `Tiling window manager <http://www.circuidipity.com/i3-tiling-window-manager.html>`_
+Building on a `minimal install <http://www.circuidipity.com/minimal-debian.html>`_ the system will be configured to track Debian's _stable_ release. A choice of either 1) a basic console setup (option '-b'); or 2) a more complete setup which includes the `i3 tiling window manager <http://www.circuidipity.com/i3-tiling-window-manager.html>`_ plus a packages collection suitable for a workstation will be installed.
 
 Synopsis
 ========
