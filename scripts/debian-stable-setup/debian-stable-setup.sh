@@ -227,8 +227,16 @@ sleep 8
 Inst_theme() {
 clear
 L_banner_begin "Install theme"
-local THEME="gnome-themes-standard lxappearance qt4-qtconfig"
-apt -y install $THEME
+# Breeze is the default Qt style of KDE Plasma with good support for both Qt
+# and GTK applications.
+# More: http://www.circuidipity.com/breeze-qt-gtk.html
+local THEME="breeze gtk3-engines-breeze gnome-themes-standard"
+# A few independent configuration tools ...
+# * qt5ct for Qt5 (pkg built from mentors.debian.net and installed separately)
+# * qt4-qtconfig for Qt4
+# * lxappearance for Gtk2 and Gtk3
+local TOOLS="qt4-qtconfig lxappearance"
+apt -y install $THEME $TOOLS
 L_sig_ok
 sleep 8
 }
