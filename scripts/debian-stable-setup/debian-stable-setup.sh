@@ -208,7 +208,7 @@ L_banner_begin "Install X environment"
 local XORG="xorg xbacklight xbindkeys xfonts-terminus xinput 
 xserver-xorg-input-synaptics xterm xvkbd fonts-liberation 
 rxvt-unicode-256color"
-apt -y install $XORG
+apt-get -y install $XORG
 L_sig_ok
 sleep 8
 }
@@ -218,7 +218,7 @@ Inst_i3wm() {
 clear
 L_banner_begin "Install i3 window manager"
 local WM="i3 i3status i3lock dunst rofi"
-apt -y install $WM
+apt-get -y install $WM
 L_sig_ok
 sleep 8
 }
@@ -236,7 +236,7 @@ local THEME="breeze gtk3-engines-breeze gnome-themes-standard"
 # * qt4-qtconfig for Qt4
 # * lxappearance for Gtk2 and Gtk3
 local TOOLS="qt4-qtconfig lxappearance"
-apt -y install $THEME $TOOLS
+apt-get -y install $THEME $TOOLS
 L_sig_ok
 sleep 8
 }
@@ -255,8 +255,9 @@ local NET="firefox-esr icedtea-plugin transmission-gtk"
 local SYS="rxvt-unicode-256color"
 # Sometimes apt gets stuck on a slow download ... breaking up downloads
 # speeds things up ...
-apt -y install $AV && apt -y install $DOC && apt -y install $IMAGE && \
-    apt -y install $NET && apt -y install $SYS
+apt-get -y install $AV && apt-get -y install $DOC && \
+    apt-get -y install $IMAGE && apt-get -y install $NET && \
+    apt-get -y install $SYS
 L_sig_ok
 sleep 8
 }
