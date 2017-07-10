@@ -92,10 +92,10 @@ sleep 8
 Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
-local PKG_TOOLS="apt-listchanges aptitude bsd-mailx checkinstall 
-unattended-upgrades"
+local PKG_TOOLS="apt-listchanges apt-show-versions aptitude bsd-mailx 
+checkinstall unattended-upgrades"
 local CONSOLE="bsd-mailx cowsay cryptsetup curl dirmngr figlet git gnupg 
-hdparm htop keychain less mc mlocate most neovim openssh-server pmount
+hdparm htop keychain less mc mlocate most neovim nmap openssh-server pmount
 resolvconf rsync rtorrent sl sudo tmux unzip wget whois"
 local PROG="autoconf automake bc build-essential python-dev python-pip 
 python3-dev python3-pip"
