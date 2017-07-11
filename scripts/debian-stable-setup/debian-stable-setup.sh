@@ -95,8 +95,8 @@ L_banner_begin "Install console packages"
 local PKG_TOOLS="apt-file apt-listbugs apt-listchanges apt-show-versions 
 apt-utils aptitude bsd-mailx checkinstall unattended-upgrades"
 local CONSOLE="bsd-mailx cowsay cryptsetup curl dirmngr figlet git gnupg 
-hdparm htop keychain less mc mlocate most neovim nmap openssh-server pmount
-resolvconf rsync rtorrent sl sudo tmux unzip wget whois"
+hdparm htop keychain less mc mlocate most neovim net-tools nmap 
+openssh-server pmount resolvconf rsync rtorrent sl sudo tmux unzip wget whois"
 local PROG="autoconf automake bc build-essential fakeroot libncurses5-dev 
 python-dev python-pip python3-dev python3-pip"
 apt-get -y install $PKG_TOOLS $CONSOLE $PROG
