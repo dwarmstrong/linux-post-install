@@ -22,11 +22,13 @@ RELEASE="stretch"           # Debian _stable_ release codename to track
 CONFIG="$(pwd)/config"      # Script settings
 FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
 BASIC=n     # Basic setup (console only); toggle to 'y[es]' with option '-b'
-
+PKG_LIST="foo"  # Install packages from LIST; set with option '-p LISTNAME'
 
 Hello_you() {
 local HTTP0="http://www.circuidipity.com/minimal-debian.html"
 local HTTP1="http://www.circuidipity.com/i3-tiling-window-manager.html"
+local HTTP2="https://github.com/vonbrownie/homebin/blob/master/generatePkgList"
+local HTTP3="http://www.circuidipity.com/debian-package-list.html"
 L_echo_yellow "\n$( L_penguin ) .: Howdy!"
 cat << _EOF_
 NAME
@@ -34,23 +36,33 @@ NAME
 SYNOPSIS
     $NAME.sh [ options ] USER
 OPTIONS
-    -h  print details
-    -b  basic setup (console only)
+    -h              print details
+    -b              basic setup (console only)
+    -p PKG_LIST     install packages from PKG_LIST
 EXAMPLE
     $BLURB for (existing) USER 'foo' ...
         $ sudo ./$NAME.sh foo
+    Install packages from 'pkg-list' ...
+        $ sudo ./$NAME.sh -p pkg-list foo
 DESCRIPTION
     Script '$NAME.sh' is ideally run immediately following the
     first successful boot into your new Debian installation.
 
     Building on a minimal install the system will be configured
-    to track Debian's "$RELEASE" _stable_ release. A choice of either
-    1) a basic console setup (option '-b'); or 2) a more complete
-    setup which includes the i3 tiling window manager plus a packages
-    collection suitable for a workstation will be installed.
+    to track Debian's "$RELEASE" _stable_ release. A choice of either ...
 
-    More: "Minimal Debian" <$HTTP0>
-          "Tiling window manager" <$HTTP1>
+    1) a basic console setup; or
+    2) a more complete setup which includes the i3 tiling window manager
+    plus a packages collection suitable for a workstation; or
+    3) install the same list of packages as PKG_LIST
+    
+    ... will be installed.
+
+    More ...
+    * "Minimal Debian" <$HTTP0>
+    * "Tiling window manager" <$HTTP1>
+    * "generatePkgList" <$HTTP2>
+    * "Install list of Debian packages on multiple machines" <$HTTP3>
 DEPENDS
     bash
 SOURCE
@@ -251,7 +263,7 @@ pulseaudio pulseaudio-utils rhythmbox sox vlc"
 local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome 
 hunspell-en-ca qpdfview"
 local IMAGE="eog scrot geeqie gimp gimp-help-en gimp-data-extras"
-local NET="firefox-esr icedtea-plugin transmission-gtk"
+local NET="firefox-esr icedtea-plugin"
 #local FLASH="flashplugin-nonfree" # Problematic ... almost never downloads
 local SYS="rxvt-unicode-256color"
 # Sometimes apt gets stuck on a slow download ... breaking up downloads
@@ -259,6 +271,26 @@ local SYS="rxvt-unicode-256color"
 apt-get -y install $AV && apt-get -y install $DOC && \
     apt-get -y install $IMAGE && apt-get -y install $NET && \
     apt-get -y install $SYS
+L_sig_ok
+sleep 8
+}
+
+
+Inst_pkg_list() {
+clear
+L_banner_begin "Install packages from '$PKG_LIST' list (option '-p')"
+# Update dpkg database of known packages
+local AVAIL
+    AVAIL=$( mktemp )
+apt-cache dumpavail > "$AVAIL"
+dpkg --merge-avail "$AVAIL"
+rm -f "$AVAIL"
+# Update the dpkg selections
+dpkg --set-selections < $PKG_LIST
+L_sig_ok
+sleep 8
+# Use apt-get to install the selected packages
+apt-get -y dselect-upgrade
 L_sig_ok
 sleep 8
 }
@@ -317,10 +349,14 @@ fi
 #
 # Full setup (workstation)
 if [[ $BASIC == "n" ]]; then
-    Inst_xorg
-    Inst_i3wm
-    #Inst_theme
-    Inst_desktop_pkg
+    if [[ $PKG_LIST == "foo" ]]; then
+        Inst_xorg
+        Inst_i3wm
+        Inst_theme
+        Inst_desktop_pkg
+    else
+        Inst_pkg_list
+    fi
     Conf_terminal
     Conf_update_alt
 fi
@@ -328,7 +364,7 @@ fi
 
 
 Run_options() {
-while getopts ":hb" OPT
+while getopts ":hbp:" OPT
 do
     case $OPT in
         h)
@@ -338,8 +374,17 @@ do
         b)
             BASIC=y
             ;;
+        p)
+            PKG_LIST="$OPTARG"
+            L_test_required_file "$PKG_LIST"
+            ;;
+        :)
+            local ARG_ERR="Option '-$OPTARG' requires an argument."
+            L_echo_red "\n$( L_penguin ) .: $ARG_ERR"
+            exit 1
+            ;;
         ?)
-            L_echo_red "\n$( L_penguin ) .: ERROR: Invalid option '-$OPTARG'"
+            L_echo_red "\n$( L_penguin ) .: Invalid option '-$OPTARG'"
             exit 1
             ;;
     esac
