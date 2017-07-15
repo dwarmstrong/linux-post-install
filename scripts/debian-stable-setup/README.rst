@@ -63,9 +63,7 @@ USE
 DEPENDS
 =======
 
-.. code-block:: bash
-
-    bash
+``bash``
 
 Happy hacking!
 
