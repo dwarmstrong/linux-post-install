@@ -18,7 +18,7 @@ set -eu
 . ./Library.sh
 
 USERNAME="${*: -1}"         # Setup machine for USERNAME
-RELEASE="stretch"           # Debian _stable_ release codename to track
+RELEASE="stretch"           # Debian stable release _codename_ to track
 CONFIG="$(pwd)/config"      # Script settings
 FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
 BASIC=n     # Basic setup (console only); toggle to 'y[es]' with option '-b'
@@ -39,6 +39,7 @@ OPTIONS
     -h              print details
     -b              basic setup (console only)
     -p PKG_LIST     install packages from PKG_LIST
+    -x              track unstable/_sid_ release
 EXAMPLE
     $BLURB for (existing) USER 'foo' ...
         $ sudo ./$NAME.sh foo
@@ -49,7 +50,7 @@ DESCRIPTION
     first successful boot into your new Debian installation.
 
     Building on a minimal install the system will be configured
-    to track Debian's "$RELEASE" _stable_ release. A choice of either ...
+    to track Debian's "$RELEASE" release. A choice of either ...
 
     1) a basic console setup; or
     2) a more complete setup which includes the i3 tiling window manager
@@ -75,7 +76,7 @@ _EOF_
 Conf_apt_src() {
 clear
 L_banner_begin "Configure sources.list"
-L_conf_apt_src_stable $RELEASE
+L_conf_apt_src_release $RELEASE
 sleep 8
 }
 
@@ -364,7 +365,7 @@ fi
 
 
 Run_options() {
-while getopts ":hbp:" OPT
+while getopts ":hbxp:" OPT
 do
     case $OPT in
         h)
@@ -377,6 +378,9 @@ do
         p)
             PKG_LIST="$OPTARG"
             L_test_required_file "$PKG_LIST"
+            ;;
+        x)
+            RELEASE="unstable"
             ;;
         :)
             local ARG_ERR="Option '-$OPTARG' requires an argument."

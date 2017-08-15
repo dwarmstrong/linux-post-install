@@ -220,7 +220,7 @@ L_sig_ok
 }
 
 
-L_conf_apt_src_stable() {
+L_conf_apt_src_release() {
 # $1 is debian RELEASE
 local FILE="/etc/apt/sources.list"
 local MIRROR="http://deb.debian.org/debian/"
@@ -228,6 +228,21 @@ local MIRROR1="http://security.debian.org/debian-security"
 local COMP="main contrib non-free"
 L_bak_file $FILE
 echo "Configure sources.list for '$1' ..."
+if [[ $1 == "unstable" ]]; then
+cat << _EOL_ > $FILE
+# Unstable
+deb $MIRROR $1 $COMP
+#deb-src $MIRROR $1 $COMP
+
+# Testing
+#deb $MIRROR testing $COMP
+#deb-src $MIRROR testing $COMP
+
+# Security updates
+#deb $MIRROR1 testing/updates $COMP
+#deb-src $MIRROR1 testing/updates $COMP
+_EOL_
+else
 cat << _EOL_ > $FILE
 # Base repository
 deb $MIRROR $1 $COMP
@@ -245,6 +260,7 @@ deb-src $MIRROR $1-updates $COMP
 deb $MIRROR $1-backports $COMP
 deb-src $MIRROR $1-backports $COMP
 _EOL_
+fi
 L_sig_ok
 L_apt_update_upgrade
 }
