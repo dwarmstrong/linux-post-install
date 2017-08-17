@@ -110,9 +110,7 @@ apt-utils aptitude bsd-mailx checkinstall unattended-upgrades"
 local CONSOLE="bsd-mailx cowsay cryptsetup curl dirmngr figlet git gnupg 
 hdparm htop keychain less mc mlocate most neovim net-tools nmap 
 openssh-server pmount resolvconf rsync rtorrent sl sudo tmux unzip wget whois"
-local PROG="autoconf automake bc build-essential fakeroot libncurses5-dev 
-python-dev python-pip python3-dev python3-pip"
-apt-get -y install $PKG_TOOLS $CONSOLE $PROG
+apt-get -y install $PKG_TOOLS $CONSOLE
 apt-file update
 # Create the mlocate database
 /etc/cron.daily/mlocate
@@ -267,11 +265,14 @@ local IMAGE="eog scrot geeqie gimp gimp-help-en gimp-data-extras"
 local NET="firefox-esr icedtea-plugin"
 #local FLASH="flashplugin-nonfree" # Problematic ... almost never downloads
 local SYS="rxvt-unicode-256color"
+local DEV="autoconf automake bc build-essential devscripts fakeroot
+libncurses5-dev python-dev python-pip python3-dev python3-pip 
+python-pygments python3-pygments"
 # Sometimes apt gets stuck on a slow download ... breaking up downloads
 # speeds things up ...
 apt-get -y install $AV && apt-get -y install $DOC && \
     apt-get -y install $IMAGE && apt-get -y install $NET && \
-    apt-get -y install $SYS
+    apt-get -y install $SYS && apt-get -y install $DEV
 L_sig_ok
 sleep 8
 }
