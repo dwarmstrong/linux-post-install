@@ -105,8 +105,8 @@ sleep 8
 Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
-local PKG_TOOLS="apt-file apt-listbugs apt-listchanges apt-show-versions 
-apt-utils aptitude bsd-mailx checkinstall unattended-upgrades"
+local PKG_TOOLS="apt-file apt-listchanges apt-show-versions apt-utils aptitude 
+bsd-mailx checkinstall unattended-upgrades"
 local CONSOLE="bsd-mailx cowsay cryptsetup curl dirmngr figlet git gnupg 
 hdparm htop keychain less mc mlocate most neovim net-tools nmap 
 openssh-server pmount resolvconf rsync rtorrent sl sudo tmux unzip wget whois"
@@ -218,8 +218,7 @@ Inst_xorg() {
 clear
 L_banner_begin "Install X environment"
 local XORG="xorg xbacklight xbindkeys xfonts-terminus xinput 
-xserver-xorg-input-synaptics xterm xvkbd fonts-liberation 
-rxvt-unicode-256color"
+xserver-xorg-input-all xterm xvkbd fonts-liberation rxvt-unicode-256color"
 apt-get -y install $XORG
 L_sig_ok
 sleep 8
