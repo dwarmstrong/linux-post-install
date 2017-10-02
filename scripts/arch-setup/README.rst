@@ -36,7 +36,7 @@ Building on a minimal install, the system will be configured with a choice of ei
 
 1) a basic console setup; or
 2) a more complete setup which includes the `i3 tiling window manager <http://www.circuidipity.com/i3-tiling-window-manager.html>`_ plus a packages collection suitable for a workstation; or
-3) install the `same list of packages as PKG_LIST <http://www.circuidipity.com/debian-package-list.html>`_
+3) **TODO:** install the `same list of packages as PKG_LIST <http://www.circuidipity.com/debian-package-list.html>`_
 
 ... will be installed.
 
