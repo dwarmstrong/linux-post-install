@@ -24,7 +24,7 @@ PKG_LIST="foo"  # Install packages from LIST; set with option '-p LISTNAME'
 
 Hello_you() {
 local HTTP0="http://www.circuidipity.com/i3-tiling-window-manager.html"
-local HTTP1="TODO"
+local HTTP1="https://wiki.archlinux.org/index.php/Pacman/Tips_and_tricks#List_of_installed_packages"
 L_echo_yellow "\n$( L_penguin ) .: Howdy!"
 cat << _EOF_
 NAME
@@ -303,7 +303,7 @@ sleep 8
 Inst_pkg_list() {
 clear
 L_banner_begin "Install packages from '$PKG_LIST' list (option '-p')"
-# TODO
+pacman --needed -S $(comm -12 <(pacman -Slq | sort) <(sort $PKG_LIST))
 L_sig_ok
 sleep 8
 }
