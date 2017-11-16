@@ -145,15 +145,16 @@ sleep 8
 Inst_desktop_pkg() {
 clear
 L_banner_begin "Install some favourite desktop packages"
-local XORG="xbacklight xbindkeys xinput xvkbd" 
+local SYS="dconf-editor wmctrl xbacklight xbindkeys xdotool xinput xvkbd" 
 local AV="ffmpeg pavucontrol sox ubuntu-restricted-extras vlc"
 local DOC="qpdfview"
 local IMAGE="gimp gimp-help-en gimp-data-extras"
 local NET="flashplugin-installer"
-local DEV="autoconf automake bc build-essential devscripts fakeroot"
+local DEV="autoconf automake bc build-essential devscripts fakeroot  
+python-dev python-pip python3-dev python3-pip pylint pylint3 shellcheck"
 # Sometimes apt gets stuck on a slow download ... breaking up downloads
 # speeds things up ...
-apt-get -y install $XORG && apt-get -y install $AV && \
+apt-get -y install $SYS && apt-get -y install $AV && \
     apt-get -y install $DOC && apt-get -y install $IMAGE && \
     apt-get -y install $NET && apt-get -y install $DEV
 L_sig_ok
