@@ -161,6 +161,21 @@ sleep 8
 }
 
 
+Inst_theme() {
+clear
+L_banner_begin "Install theme"
+# [Arc theme](https://github.com/horst3180/arc-theme)
+# Arc Dark Theme for
+# [Firefox](https://addons.mozilla.org/en-US/firefox/addon/arc-dark-theme/?src=api)
+local THEME="arc-theme gnome-themes-standard gtk2-engines-murrine"
+local ICONS="papirus-icon-theme"
+add-apt-repository -y ppa:papirus/papirus && apt update
+apt-get -y install $THEME $ICONS
+L_sig_ok
+sleep 8
+}
+
+
 Inst_pkg_list() {
 clear
 L_banner_begin "Install packages from '$PKG_LIST' list (option '-p')"
@@ -205,6 +220,7 @@ fi
 # Full setup (workstation)
 if [[ $PKG_LIST == "foo" ]]; then
     Inst_desktop_pkg
+    Inst_theme
 else
     Inst_pkg_list
 fi
