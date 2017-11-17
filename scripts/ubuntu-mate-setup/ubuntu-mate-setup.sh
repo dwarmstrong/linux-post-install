@@ -142,6 +142,16 @@ sleep 8
 }
 
 
+Conf_pkg_repo() {
+clear
+L_banner_begin "Configure package repositories"
+# Papirus icons PPA
+add-apt-repository -y ppa:papirus/papirus && apt update
+L_sig_ok
+sleep 8
+}
+
+
 Inst_desktop_pkg() {
 clear
 L_banner_begin "Install some favourite desktop packages"
@@ -170,7 +180,6 @@ L_banner_begin "Install theme"
 # [Firefox](https://addons.mozilla.org/en-US/firefox/addon/arc-dark-theme/?src=api)
 local THEME="arc-theme gnome-themes-standard gtk2-engines-murrine"
 local ICONS="papirus-icon-theme"
-add-apt-repository -y ppa:papirus/papirus && apt update
 apt-get -y install $THEME $ICONS
 L_sig_ok
 sleep 8
@@ -212,6 +221,7 @@ Task_setup() {
 # Basic setup
 Inst_console_pkg
 Conf_ssh
+Conf_pkg_repo
 # Read the 'GRUB_EXTRAS' property from $CONFIG
 local GRUB_X
     GRUB_X="$( grep -i ^GRUB_EXTRAS $CONFIG | cut -f2- -d'=' )"
