@@ -1,8 +1,7 @@
 #!/bin/bash
 # NAME="Library.sh"
 # BLURB="A library of functions for bash shell scripts"
-# GITHUB="https://github.com/vonbrownie"
-# SOURCE="$GITHUB/linux-post-install/tree/master/scripts/debian-stable-setup"
+# SOURCE="https://github.com/vonbrownie/linux-post-install/tree/master/scripts/debian-stable-setup"
 set -eu
 
 # Place in local directory and call its functions by adding to script ...

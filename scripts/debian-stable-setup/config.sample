@@ -15,7 +15,7 @@
 # Upgrade information is logged under /var/log/unattended-upgrades.
 #
 # See: "Automatic security updates on Debian"
-#       http://www.circuidipity.com/unattended-upgrades.html
+#       https://www.circuidipity.com/unattended-upgrades.html
 #
 # 'y' or 'n' to enable/disable.
 UNATTENDED_UPGRADES=n
@@ -30,7 +30,7 @@ GRUB_EXTRAS=n
 # kernel buffer using `dmesg` without a password for example.
 #
 # See: "Minimal Debian"
-#       http://www.circuidipity.com/minimal-debian.html#sudo
+#       https://www.circuidipity.com/minimal-debian.html#sudo
 #
 # 'y' or 'n' to enable/disable.
 SUDO_EXTRAS=n

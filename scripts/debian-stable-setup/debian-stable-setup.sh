@@ -25,10 +25,10 @@ BASIC=n     # Basic setup (console only); toggle to 'y[es]' with option '-b'
 PKG_LIST="foo"  # Install packages from LIST; set with option '-p LISTNAME'
 
 Hello_you() {
-local HTTP0="http://www.circuidipity.com/minimal-debian.html"
-local HTTP1="http://www.circuidipity.com/i3-tiling-window-manager.html"
+local HTTP0="https://www.circuidipity.com/minimal-debian.html"
+local HTTP1="https://www.circuidipity.com/i3-tiling-window-manager.html"
 local HTTP2="https://github.com/vonbrownie/homebin/blob/master/generatePkgList"
-local HTTP3="http://www.circuidipity.com/debian-package-list.html"
+local HTTP3="https://www.circuidipity.com/debian-package-list.html"
 L_echo_yellow "\n$( L_penguin ) .: Howdy!"
 cat << _EOF_
 NAME
@@ -39,7 +39,6 @@ OPTIONS
     -h              print details
     -b              basic setup (console only)
     -p PKG_LIST     install packages from PKG_LIST
-    -x              track unstable/_sid_ release
 EXAMPLE
     $BLURB for (existing) USER 'foo' ...
         $ sudo ./$NAME.sh foo
@@ -106,11 +105,13 @@ Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
 local PKG_TOOLS="apt-file apt-listchanges apt-show-versions apt-utils aptitude 
-bsd-mailx checkinstall unattended-upgrades"
+bsd-mailx checkinstall"
 local CONSOLE="bsd-mailx cowsay cryptsetup curl dirmngr figlet git gnupg 
-hdparm htop keychain less mc mlocate most neovim net-tools nmap 
-openssh-server pmount resolvconf rsync rtorrent sl sudo tmux unzip wget whois"
-apt-get -y install $PKG_TOOLS $CONSOLE
+hdparm htop keychain less mlocate most net-tools nmap openssh-server pmount 
+resolvconf rsync rtorrent sl sudo tmux unzip wget whois"
+local EDITOR="neovim python-dev python-pip python3-dev python3-pip pylint 
+pylint3 shellcheck"
+apt-get -y install $PKG_TOOLS $CONSOLE $EDITOR
 apt-file update
 # Create the mlocate database
 /etc/cron.daily/mlocate
@@ -238,9 +239,8 @@ sleep 8
 Inst_theme() {
 clear
 L_banner_begin "Install theme"
-# Breeze is the default Qt style of KDE Plasma with good support for both Qt
-# and GTK applications.
-# More: http://www.circuidipity.com/breeze-qt-gtk.html
+# Breeze is the default Qt style of KDE Plasma with good support for both
+# Qt and GTK applications. More: https://www.circuidipity.com/breeze-qt-gtk/
 local THEME="breeze gtk3-engines-breeze gnome-themes-standard"
 # A few independent configuration tools ...
 # * qt5ct for Qt5 (pkg built from mentors.debian.net and installed separately)
@@ -261,7 +261,7 @@ pulseaudio pulseaudio-utils rhythmbox sox vlc"
 local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome 
 hunspell-en-ca qpdfview"
 local IMAGE="eog scrot geeqie gimp gimp-help-en gimp-data-extras"
-local NET="firefox-esr icedtea-plugin"
+local NET="network-manager-gnome transmission-qt"
 #local FLASH="flashplugin-nonfree" # Problematic ... almost never downloads
 local SYS="rxvt-unicode-256color"
 local DEV="autoconf automake bc build-essential devscripts fakeroot
@@ -270,8 +270,14 @@ python-pygments python3-pygments"
 # Sometimes apt gets stuck on a slow download ... breaking up downloads
 # speeds things up ...
 apt-get -y install $AV && apt-get -y install $DOC && \
-    apt-get -y install $IMAGE && apt-get -y install $NET && \
+    apt-get -y install $IMAGE && apt-get -y install $NET \
     apt-get -y install $SYS && apt-get -y install $DEV
+# Third-party packages
+#
+# Firefox - fetch the latest version ...
+#wget -c -O firefox-latest.tar.bz2 "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US"
+# ... and - post-script - unpack tarball, install somewhere in ~/,
+# and create symlink in /usr/local/bin.
 L_sig_ok
 sleep 8
 }
@@ -333,6 +339,7 @@ Conf_ssh
 local UNATTEND
     UNATTEND="$( grep -i ^UNATTENDED_UPGRADES $CONFIG | cut -f2- -d'=' )"
 if [[ $UNATTEND == 'y' ]]; then
+    apt-get -y install unattended-upgrades
     Conf_unattended_upgrades
 fi
 # Read the 'GRUB_EXTRAS' property from $CONFIG
