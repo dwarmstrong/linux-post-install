@@ -1,5 +1,5 @@
 #!/bin/bash
-NAME="debian-stable-setup"
+NAME="debian-stable-setup.sh"
 BLURB="Post-install setup of a machine running Debian _stable_ release"
 GITHUB="https://github.com/vonbrownie"
 SOURCE="$GITHUB/linux-post-install/tree/master/scripts/debian-stable-setup"
@@ -32,41 +32,41 @@ local HTTP3="https://www.circuidipity.com/debian-package-list.html"
 L_echo_yellow "\n$( L_penguin ) .: Howdy!"
 cat << _EOF_
 NAME
-    $NAME
+    $NAME - Debian post-install configuration
 SYNOPSIS
-    $NAME.sh [ options ] USER
+    $NAME [OPTION] username
+DESCRIPTION
+    Script '$NAME' is ideally run immediately following the first
+    successful boot into a new install of Debian's $RELEASE/stable release.
+
+    A choice of either ...
+
+    0) a basic console setup; or
+    1) a more complete setup using the i3 tiling window manager plus
+    desktop packages; or
+    2) install the same list of packages specified in PKG_LIST
+    
+    ... will be configured.
 OPTIONS
     -h              print details
     -b              basic setup (console only)
     -p PKG_LIST     install packages from PKG_LIST
-EXAMPLE
-    $BLURB for (existing) USER 'foo' ...
-        $ sudo ./$NAME.sh foo
-    Install packages from 'pkg-list' ...
-        $ sudo ./$NAME.sh -p pkg-list foo
-DESCRIPTION
-    Script '$NAME.sh' is ideally run immediately following the
-    first successful boot into your new Debian installation.
-
-    Building on a minimal install the system will be configured
-    to track Debian's "$RELEASE" release. A choice of either ...
-
-    1) a basic console setup; or
-    2) a more complete setup which includes the i3 tiling window manager
-    plus a packages collection suitable for a workstation; or
-    3) install the same list of packages as PKG_LIST
-    
-    ... will be installed.
-
-    More ...
-    * "Minimal Debian" <$HTTP0>
-    * "Tiling window manager" <$HTTP1>
-    * "generatePkgList" <$HTTP2>
-    * "Install list of Debian packages on multiple machines" <$HTTP3>
-DEPENDS
-    bash
+EXAMPLES
+    $BLURB for username 'foo' ...
+        # ./$NAME foo
+    Install the list of packages specified in 'my-pkg-list' ...
+        # ./$NAME -p my-pkg-list foo
 SOURCE
     $SOURCE
+SEE ALSO
+    * "Minimal Debian"
+        $HTTP0
+    * "Lightweight and a delight: i3 tiling window manager"
+        $HTTP1
+    * "generatePkgList"
+        $HTTP2
+    * "Install (almost) the same list of Debian packages on multiple machines"
+        $HTTP3
 
 _EOF_
 }
@@ -91,6 +91,7 @@ fi
 if [[ -f $PERIODIC ]]; then
     L_bak_file $PERIODIC
 fi
+apt-get -y install unattended-upgrades
 echo "Setup $UNATTENDED_UPGRADES ..."
 cp "$FILE_DIR/etc/apt/apt.conf.d/50unattended-upgrades" $UNATTENDED_UPGRADES
 L_sig_ok
@@ -339,7 +340,6 @@ Conf_ssh
 local UNATTEND
     UNATTEND="$( grep -i ^UNATTENDED_UPGRADES $CONFIG | cut -f2- -d'=' )"
 if [[ $UNATTEND == 'y' ]]; then
-    apt-get -y install unattended-upgrades
     Conf_unattended_upgrades
 fi
 # Read the 'GRUB_EXTRAS' property from $CONFIG
