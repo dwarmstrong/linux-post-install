@@ -47,7 +47,7 @@ Post-install setup of a machine for username `foo` ...
 Install the list of packages specified in `my-pkg-list` ...
 
 ```bash
-# xdeb -p my-pkg-list foo
+# debian-stable-setup.sh -p my-pkg-list foo
 ```
 
 ## AUTHOR
@@ -65,4 +65,4 @@ GPLv3. See ``LICENSE`` for more details.
 
 [Lightweight and a delight: i3 tiling window manager](https://www.circuidipity.com/i3-tiling-window-manager/)
 
-[Install (almost) the same list of Debian packages on multiple machines](https://www.circuidipity.com/debian-package-list/]
+[Install (almost) the same list of Debian packages on multiple machines](https://www.circuidipity.com/debian-package-list/)
