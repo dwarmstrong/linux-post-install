@@ -271,7 +271,7 @@ python-pygments python3-pygments"
 # Sometimes apt gets stuck on a slow download ... breaking up downloads
 # speeds things up ...
 apt-get -y install $AV && apt-get -y install $DOC && \
-    apt-get -y install $IMAGE && apt-get -y install $NET \
+    apt-get -y install $IMAGE && apt-get -y install $NET && \
     apt-get -y install $SYS && apt-get -y install $DEV
 # Third-party packages
 #
