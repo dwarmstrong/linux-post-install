@@ -1,10 +1,10 @@
 #!/bin/bash
 NAME="ubuntu-mate-setup"
-BLURB="Post-install setup of a machine running Ubuntu MATE 17.10"
+BLURB="Post-install setup of a machine running Ubuntu MATE 18.04 LTS"
 SOURCE="https://github.com/vonbrownie/linux-post-install/tree/master/scripts/ubuntu-mate-setup"
 set -eu
 
-# Copyright (c) 2017 Daniel Wayne Armstrong. All rights reserved.
+# Copyright (c) 2018 Daniel Wayne Armstrong. All rights reserved.
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License (GPLv2) published by
 # the Free Software Foundation.
@@ -17,7 +17,7 @@ set -eu
 . ./Library.sh
 
 USERNAME="${*: -1}"         # Setup machine for USERNAME
-RELEASE="artful"            # Ubuntu MATE release _codename_ to track
+RELEASE="bionic"            # Ubuntu MATE release _codename_ to track
 CONFIG="$(pwd)/config"      # Script settings
 FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
 PKG_LIST="foo"  # Install packages from LIST; set with option '-p LISTNAME'
@@ -44,7 +44,7 @@ DESCRIPTION
     Script '$NAME.sh' is ideally run immediately following
     the first successful boot into your new Ubuntu MATE installation.
 
-    Building on a default setup of release 17.10 "Artful Aardvark",
+    Building on a default setup of release 18.04 "Bionic Beaver",
     a choice of either ...
 
     1) configuration tweaks and extra desktop packages; or
@@ -253,7 +253,7 @@ Task_setup() {
 # Basic setup
 Inst_console_pkg
 Conf_ssh
-Conf_pkg_repo
+#Conf_pkg_repo  # note: pkgs now included in official repos
 # Read the 'GRUB_EXTRAS' property from $CONFIG
 local GRUB_X
     GRUB_X="$( grep -i ^GRUB_EXTRAS $CONFIG | cut -f2- -d'=' )"
