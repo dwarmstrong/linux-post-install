@@ -107,8 +107,8 @@ clear
 L_banner_begin "Install console packages"
 local PKG_TOOLS="apt-file apt-listchanges apt-show-versions apt-utils aptitude 
 bsd-mailx checkinstall"
-local CONSOLE="bsd-mailx cowsay cryptsetup curl dirmngr figlet git gnupg 
-hdparm htop keychain less mlocate most net-tools nmap openssh-server pmount 
+local CONSOLE="bsd-mailx cowsay cryptsetup git gnupg gpm hdparm htop 
+keychain less mlocate most net-tools nmap openssh-server pmount 
 resolvconf rsync rtorrent sl sudo tmux unzip wget whois"
 local EDITOR="neovim python-dev python-pip python3-dev python3-pip pylint 
 pylint3 shellcheck"
@@ -120,6 +120,14 @@ L_sig_ok
 sleep 8
 }
 
+Inst_server_pkg() {
+clear
+L_banner_begin "Install server packages"
+local PKG="fail2ban logwatch"
+apt-get -y install $PKG
+L_sig_ok
+sleep 8
+}
 
 Conf_adduser() {
 adduser $USERNAME sudo
