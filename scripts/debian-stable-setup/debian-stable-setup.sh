@@ -23,11 +23,9 @@ USERNAME="foo"              # Setup machine for USERNAME
 
 Hello_you() {
 L_echo_yellow "\n$( L_penguin ) .: Howdy!"
-local LINK0="https://www.circuidipity.com/debian-stable-setup/"
-local LINK1="https://www.circuidipity.com/minimal-debian/"
-local LINK2="https://www.circuidipity.com/debian-package-list/"
-local LINK3="https://www.circuidipity.com/openbox/"
-local LINK4="https://www.circuidipity.com/laptop-home-server/"
+local LINK1="https://www.circuidipity.com/debian-stable-setup/"
+local LINK2="https://www.circuidipity.com/minimal-debian/"
+local LINK3="https://www.circuidipity.com/debian-package-list/"
 cat << _EOF_
 NAME
     $NAME
@@ -35,31 +33,28 @@ NAME
 SYNOPSIS
     $NAME [OPTION]
 DESCRIPTION
-    Script '$NAME' is ideally run immediately following the first successful
-    boot into a fresh install of Debian's "$RELEASE" release.
+    Script '$NAME' [1] is ideally run immediately following
+    the first successful boot into a minimal install [2] of Debian's _stable_ 
+    (code-named "$RELEASE") release.
 
-    A choice of either a [desktop] or [server] setup will be configured.
+    A choice of either a [w]orkstation or [s]erver setup is available.
 OPTIONS
     -h              print details
-    -p PKG_LIST     install packages from PKG_LIST
+    -p PKG_LIST     install packages from PKG_LIST [3]
 EXAMPLES
     Run script (requires superuser privileges) ...
         # ./$NAME
     Install the list of packages specified in 'my-pkg-list' ...
-        # ./$NAME -p my-pkg-list foo
+        # ./$NAME -p my-pkg-list
 SOURCE
     $SOURCE
 SEE ALSO
-    * "Command line tools: debian-stable-setup"
-        $LINK0
-    * "Minimal Debian"
+    [1] "Command line tools: debian-stable-setup"
         $LINK1
-    * "Install (almost) the same list of Debian packages on multiple machines"
+    [2] "Minimal Debian"
         $LINK2
-    * "Roll your own Linux desktop using Openbox"
+    [3] "Install (almost) the same list of Debian packages on multiple machines"
         $LINK3
-    * "New life for an old laptop as a Linux home server"
-        $LINK4
 
 _EOF_
 }
@@ -117,7 +112,7 @@ _EOL_
 echo "Update packages and upgrade $HOSTNAME ..."
 apt-get update && apt-get -y dist-upgrade
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Conf_ssh() {
@@ -134,7 +129,7 @@ else
     chown -R "$USERNAME:$USERNAME" $SSH_DIR
 fi
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Conf_sudoersd() {
@@ -164,7 +159,7 @@ $USERNAME ALL=(ALL) NOPASSWD: SHUTDOWN_CMDS, /bin/dmesg
 _EOL_
 adduser $USERNAME sudo
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Conf_trim() {
@@ -186,7 +181,7 @@ chmod 755 $TRIM
 #    /etc/cron.weekly/trim
 fi
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Conf_grub() {
@@ -231,7 +226,7 @@ else
 fi
 update-grub
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Conf_unattended_upgrades() {
@@ -261,7 +256,7 @@ L_sig_ok
 echo "Setup $PERIODIC ..."
 cp "$FILE_DIR/etc/apt/apt.conf.d/02periodic" $PERIODIC
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Inst_pkg_list() {
@@ -276,11 +271,11 @@ rm -f "$AVAIL"
 # Update the dpkg selections
 dpkg --set-selections < "$PKG_LIST"
 L_sig_ok
-sleep 8
+sleep 4
 # Use apt-get to install the selected packages
 apt-get -y dselect-upgrade
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Inst_console_pkg() {
@@ -298,7 +293,7 @@ apt-file update
 # Create the mlocate database
 /etc/cron.daily/mlocate
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Inst_server_pkg() {
@@ -307,7 +302,7 @@ L_banner_begin "Install server packages"
 local PKG="fail2ban logwatch"
 apt-get -y install "$PKG"
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Inst_xorg() {
@@ -317,7 +312,7 @@ local XORG="xorg xbacklight xbindkeys xfonts-terminus xinput
 xserver-xorg-input-all xterm xvkbd fonts-liberation rxvt-unicode-256color"
 apt-get -y install "$XORG"
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 
@@ -331,7 +326,7 @@ pulseaudio-utils volumeicon-alsa pavucontrol network-manager
 network-manager-gnome i3lock"
 apt-get -y install "$WM $WM_HELP"
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Inst_theme() {
@@ -365,7 +360,7 @@ dpkg -i $FONT_UB
 # plugin) to setup your new theme (details stored in `~/.gtkrc-2.0`).
 apt-get -y install $TOOL
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Inst_nonpkg_firefox() {
@@ -381,7 +376,7 @@ wget -c -O $FF $FF_SRC
 tar xvf FirefoxSetup.tar.bz2 -C ~/opt/
 ln -s ~/opt/firefox/firefox /usr/local/bin/
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Inst_desktop_pkg() {
@@ -406,7 +401,7 @@ apt-get -y install "$AV" && apt-get -y install "$DOC" && \
 # Install applications not packaged in Debian.
 Inst_nonpkg_firefox
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Conf_terminal() {
@@ -420,7 +415,7 @@ if [[ -x $TERM ]]; then
     cp "$FILE_DIR/usr/lib/urxvt/perl/tabbed" $TERM_TAB
 fi
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Conf_alt_workstation() {
@@ -429,7 +424,7 @@ L_banner_begin "Configure default commands"
 update-alternatives --config editor
 update-alternatives --config x-terminal-emulator
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Conf_alt_server() {
@@ -437,70 +432,71 @@ clear
 L_banner_begin "Configure default commands"
 update-alternatives --config editor
 L_sig_ok
-sleep 8
+sleep 4
 }
 
 Goto_work() {
 local NUM_Q="4"
 local PROFILE="foo"
 local SSD="foo"
-clear
-L_banner_begin "Question 1 of $NUM_Q"
-read -r -p "What is your username? > " FOO; USERNAME="$FOO"
-L_test_homedir "$USERNAME"        # $HOME exists for USERNAME?
-clear
-L_banner_begin "Question 2 of $NUM_Q"
 while :
 do
-    read -r -n 1 -p "Are you configuring a [w]orkstation or [s]erver? > "
-    if [[ $REPLY == [wW] ]]; then
-        PROFILE="workstation"
-        break
-    elif [[ $REPLY == [sS] ]]; then
-        PROFILE="server"
-        break
-    else
-        L_invalid_reply
+    clear
+    L_banner_begin "Question 1 of $NUM_Q"
+    read -r -p "What is your username? > " FOO; USERNAME="$FOO"
+    L_test_homedir "$USERNAME"        # $HOME exists for USERNAME?
+    clear
+    L_banner_begin "Question 2 of $NUM_Q"
+    while :
+    do
+        read -r -n 1 -p "Are you configuring a [w]orkstation or [s]erver? > "
+        if [[ $REPLY == [wW] ]]; then
+            PROFILE="workstation"
+             break
+        elif [[ $REPLY == [sS] ]]; then
+            PROFILE="server"
+            break
+        else
+            L_invalid_reply
+        fi
+    done
+    clear
+    L_banner_begin "Question 3 of $NUM_Q"
+    while :
+    do
+        read -r -n 1 -p "Setup trim on ssd? [yN] > "
+        if [[ $REPLY == [yY] ]]; then
+            SSD="yes"
+            break
+        elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+            SSD="no"
+            break
+        else
+            L_invalid_reply_yn
+        fi
+    done
+    clear
+    L_banner_begin "Question 4 of $NUM_Q"
+    echo "Username: $USERNAME"
+    echo "Profile: $PROFILE"
+    echo "SSD: $SSD"
+    if [[ $PKG_LIST != "foo" ]]; then
+        echo "Debian packages will be installed as specified in '-p $PKG_LIST'."
     fi
-done
-clear
-L_banner_begin "Question 3 of $NUM_Q"
-while :
-do
-    read -r -n 1 -p "Setup trim on ssd? [yN] > "
-    if [[ $REPLY == [yY] ]]; then
-        SSD="yes"
-        break
-    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
-        SSD="no"
-        break
-    else
-        L_invalid_reply_yn
-    fi
-done
-clear
-L_banner_begin "Question 4 of $NUM_Q"
-cat << _EOF_
-Username: $USERNAME
-Profile: $PROFILE
-SSD: $SSD
-_EOF_
-if [[ $PKG_LIST != "foo" ]]; then
-    echo "Debian packages will be installed as specified in '-p $PKG_LIST'."
-fi
-while :
-do
-    read -r -p "Is this correct? [yN] > "
+    echo ""; read -r -n 1 -p "Is this correct? [yN] > "
     if [[ $REPLY == [yY] ]]; then
         L_sig_ok
-        sleep 8
+        sleep 4
         break
     elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
-        echo "Try again ..."
+        echo -e "\nOK ... Let's try again ..."
+        sleep 4
     else
         L_invalid_reply_yn
+        sleep 4
     fi
 done
+: <<'QWERTY' 
 # Common tasks
 Conf_apt_src
 Conf_ssh
@@ -536,13 +532,13 @@ if [[ $PROFILE == "server" ]]; then
         Conf_alt_server
     fi
 fi
+QWERTY
 }
 
 #: START
 Run_options "$@"
 L_test_announce
 sleep 4
-L_test_required_file "$CONFIG"    # Script settings file in place?
 L_test_root                     # Script run with root priviliges?
 L_test_internet                 # Internet access available?
 L_test_datetime                 # Confirm date + timezone
