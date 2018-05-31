@@ -21,7 +21,7 @@ FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
 PKG_LIST="foo"  # Install packages from LIST; set with option '-p LISTNAME'
 USERNAME="foo"              # Setup machine for USERNAME
 
-What_do() {
+Hello_you() {
 L_echo_yellow "\n$( L_penguin ) .: Howdy!"
 local LINK0="https://www.circuidipity.com/debian-stable-setup/"
 local LINK1="https://www.circuidipity.com/minimal-debian/"
@@ -69,7 +69,7 @@ while getopts ":hp:" OPT
 do
     case $OPT in
         h)
-            What_do_you_do
+            Hello_you
             exit
             ;;
         p)
@@ -361,7 +361,8 @@ wget -qO- $ICON_SRC | DESTDIR="$HOME/.icons" sh
 apt-get -y install $FONT
 wget -c $FONT_UB_SRC
 dpkg -i $FONT_UB
-# Use the **lxappearance** graphical config utility (with the extra openbox plugin) to setup your new theme (details stored in `~/.gtkrc-2.0`). Install ...
+# Use the **lxappearance** graphical config utility (with the extra openbox 
+# plugin) to setup your new theme (details stored in `~/.gtkrc-2.0`).
 apt-get -y install $TOOL
 L_sig_ok
 sleep 8
@@ -440,52 +441,101 @@ sleep 8
 }
 
 Goto_work() {
-clear
 local NUM_Q="4"
 local PROFILE="foo"
 local SSD="foo"
+clear
 L_banner_begin "Question 1 of $NUM_Q"
-# What is your username?
-L_test_homedir $USERNAME        # $HOME exists for USERNAME?
+read -r -p "What is your username? > " FOO; USERNAME="$FOO"
+L_test_homedir "$USERNAME"        # $HOME exists for USERNAME?
 clear
 L_banner_begin "Question 2 of $NUM_Q"
-# Are you configuring a workstation or server?
+while :
+do
+    read -r -n 1 -p "Are you configuring a [w]orkstation or [s]erver? > "
+    if [[ $REPLY == [wW] ]]; then
+        PROFILE="workstation"
+        break
+    elif [[ $REPLY == [sS] ]]; then
+        PROFILE="server"
+        break
+    else
+        L_invalid_reply
+    fi
+done
 clear
 L_banner_begin "Question 3 of $NUM_Q"
-# Setup trim on ssd?
+while :
+do
+    read -r -n 1 -p "Setup trim on ssd? [yN] > "
+    if [[ $REPLY == [yY] ]]; then
+        SSD="yes"
+        break
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+        SSD="no"
+        break
+    else
+        L_invalid_reply_yn
+    fi
+done
 clear
 L_banner_begin "Question 4 of $NUM_Q"
-# Username: $USERNAME
-# Profile: $PROFILE
-# SSD: $SSD
-# Is this correct? [Yes|No|Quit]
+cat << _EOF_
+Username: $USERNAME
+Profile: $PROFILE
+SSD: $SSD
+_EOF_
+if [[ $PKG_LIST != "foo" ]]; then
+    echo "Debian packages will be installed as specified in '-p $PKG_LIST'."
+fi
+while :
+do
+    read -r -p "Is this correct? [yN] > "
+    if [[ $REPLY == [yY] ]]; then
+        L_sig_ok
+        sleep 8
+        break
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+        echo "Try again ..."
+    else
+        L_invalid_reply_yn
+    fi
+done
+# Common tasks
 Conf_apt_src
 Conf_ssh
 Conf_sudoersd
-# if trim yes
-#   Conf_trim
-# if workstation
-#   Conf_grub
-#   if pkglist
-#       Inst_pkg_list
-#   else
-#       Inst_console_pkg
-#       Inst_xorg
-#       Inst_openbox
-#       Inst_theme
-#       Inst_desktop_pkg
-#       Inst_nonpkg_firefox
-#       Conf_terminal
-#       Conf_alt_workstation
-#
-# if server
-#   Conf_unattended_upgrades
-#   if pkglist
-#       Inst_pkg_list
-#   else
-#       Inst_console_pkg
-#       Inst_server_pkg
-#       Conf_alt_server
+# Setup periodic trim
+if [[ $SSD == "yes" ]]; then
+    Conf_trim
+fi
+# Workstation setup
+if [[ $PROFILE == "workstation" ]]; then
+    Conf_grub
+    if [[ $PKG_LIST != "foo" ]]; then
+        Inst_pkg_list
+    else
+        Inst_console_pkg
+        Inst_xorg
+        Inst_openbox
+        Inst_theme
+        Inst_desktop_pkg
+        Inst_nonpkg_firefox
+        Conf_terminal
+        Conf_alt_workstation
+    fi
+fi
+# Server setup
+if [[ $PROFILE == "server" ]]; then
+    Conf_unattended_upgrades
+    if [[ $PKG_LIST != "foo" ]]; then
+        Inst_pkg_list
+    else
+        Inst_console_pkg
+        Inst_server_pkg
+        Conf_alt_server
+    fi
+fi
 }
 
 #: START
@@ -499,7 +549,7 @@ L_test_datetime                 # Confirm date + timezone
 L_test_systemd_fail             # Any failed units?
 L_test_priority_err             # Identify high priority errors
 # ... rollin' rollin' rollin' ...
-What_do
+Hello_you
 L_run_script
 Goto_work
 clear
