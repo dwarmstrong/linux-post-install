@@ -367,6 +367,22 @@ L_sig_ok
 sleep 8
 }
 
+Inst_nonpkg_firefox() {
+clear
+L_banner_begin "Install Firefox"
+# Install the latest Firefox Stable on Debian Stretch.
+# Create ~/opt directory to store programs in $HOME. Download and unpack the 
+# latest binaries from the official website, and create a link to the
+# executable in my PATH
+local FF="FirefoxSetup.tar.bz2"
+local FF_SRC="https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"
+wget -c -O $FF $FF_SRC
+tar xvf FirefoxSetup.tar.bz2 -C ~/opt/
+ln -s ~/opt/firefox/firefox /usr/local/bin/
+L_sig_ok
+sleep 8
+}
+
 Inst_desktop_pkg() {
 clear
 L_banner_begin "Install some favourite desktop packages"
@@ -386,26 +402,8 @@ python-pygments python3-pygments"
 apt-get -y install "$AV" && apt-get -y install "$DOC" && \
     apt-get -y install "$IMAGE" && apt-get -y install "$NET" && \
     apt-get -y install "$SYS" && apt-get -y install "$DEV"
-# Third-party packages
-#
-# Firefox - fetch the latest version ...
-#wget -c -O firefox-latest.tar.bz2 "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US"
-# ... and - post-script - unpack tarball, install somewhere in ~/,
-# and create symlink in /usr/local/bin.
-L_sig_ok
-sleep 8
-}
-
-Inst_nonpkg_firefox() {
-clear
-L_banner_begin "Install Firefox"
-# Install the latest Firefox Stable on Debian Stretch.
-# Create ~/opt directory to store programs in $HOME. Download and unpack the 
-# latest binaries from the official website, and create a link to the
-# executable in my PATH
-wget -c -O FirefoxSetup.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"
-tar xvf FirefoxSetup.tar.bz2 -C ~/opt/
-ln -s ~/opt/firefox/firefox /usr/local/bin/
+# Install applications not packaged in Debian.
+Inst_nonpkg_firefox
 L_sig_ok
 sleep 8
 }
