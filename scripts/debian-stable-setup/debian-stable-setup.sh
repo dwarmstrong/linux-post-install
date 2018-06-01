@@ -25,7 +25,8 @@ Hello_you() {
 L_echo_yellow "\n$( L_penguin ) .: Howdy!"
 local LINK1="https://www.circuidipity.com/debian-stable-setup/"
 local LINK2="https://www.circuidipity.com/minimal-debian/"
-local LINK3="https://www.circuidipity.com/debian-package-list/"
+local LINK3="https://www.circuidipity.com/openbox/"
+local LINK4="https://www.circuidipity.com/debian-package-list/"
 cat << _EOF_
 NAME
     $NAME
@@ -37,10 +38,16 @@ DESCRIPTION
     the first successful boot into a minimal install [2] of Debian's _stable_ 
     (code-named "$RELEASE") release.
 
-    A choice of either a [w]orkstation or [s]erver setup is available.
+    A choice of either a [w]orkstation or [s]erver setup is available. [S]erver
+    is a basic console setup, whereas the [w]orkstation choice is a more
+    extensive configuration using the lightweight *Openbox* [3] window manager
+    and a range of desktop applications.
+    
+    Alternately, in lieu of a pre-defined list of Debian packages, the user may
+    specify their own custom list of packages to be installed.
 OPTIONS
     -h              print details
-    -p PKG_LIST     install packages from PKG_LIST [3]
+    -p PKG_LIST     install packages from PKG_LIST [4]
 EXAMPLES
     Run script (requires superuser privileges) ...
         # ./$NAME
@@ -53,8 +60,10 @@ SEE ALSO
         $LINK1
     [2] "Minimal Debian"
         $LINK2
-    [3] "Install (almost) the same list of Debian packages on multiple machines"
+    [3] "Roll your own Linux desktop using Openbox"
         $LINK3
+    [3] "Install (almost) the same list of Debian packages on multiple machines"
+        $LINK4
 
 _EOF_
 }
