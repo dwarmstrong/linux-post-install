@@ -49,7 +49,7 @@ EXAMPLES
 SOURCE
     $SOURCE
 SEE ALSO
-    [1] "Command line tools: debian-stable-setup"
+    [1] "Command line tools: debian-stable-setup.sh"
         $LINK1
     [2] "Minimal Debian"
         $LINK2
@@ -126,7 +126,7 @@ else
     echo "Create $SSH_DIR and set permissions ..."
     mkdir $SSH_DIR && chmod 700 $SSH_DIR && \
     touch $AUTH_KEY && chmod 600 $AUTH_KEY && \
-    chown -R "$USERNAME:$USERNAME" $SSH_DIR
+    chown -R ${USERNAME}:${USERNAME} $SSH_DIR
 fi
 L_sig_ok
 sleep 4
@@ -170,12 +170,13 @@ local TRIM="/etc/cron.weekly/trim"
 if [[ -f $TRIM ]]; then
     echo "Weekly trim job $TRIM already exists. Skipping ..."
 else
-cat << _EOL_ > $TRIM
+    echo "Create $TRIM ..."
+    cat << _EOL_ > $TRIM
 #!/bin/sh
 # trim all mounted file systems which support it
 /usr/bin/fstrim --all
 _EOL_
-chmod 755 $TRIM
+    chmod 755 $TRIM
 #/etc/cron.weekly/trim                # check the program runs without errors
 #run-parts --test /etc/cron.weekly    # checks that cron can run the script
 #    /etc/cron.weekly/trim
@@ -288,7 +289,7 @@ less mlocate net-tools nmap openssh-server pmount resolvconf rsync sl sudo
 tmux unzip wget whois"
 local EDITOR="neovim python-dev python-pip python3-dev python3-pip pylint 
 pylint3 shellcheck"
-apt-get -y install "$PKG_TOOLS $CONSOLE $EDITOR"
+apt-get -y install $PKG_TOOLS $CONSOLE $EDITOR
 apt-file update
 # Create the mlocate database
 /etc/cron.daily/mlocate
@@ -300,17 +301,29 @@ Inst_server_pkg() {
 clear
 L_banner_begin "Install server packages"
 local PKG="fail2ban logwatch"
-apt-get -y install "$PKG"
+apt-get -y install $PKG
 L_sig_ok
 sleep 4
 }
+
+#Inst_video_intel() {
+#clear
+#L_banner_begin "Install intel video driver"
+#apt-get -y install xorg xserver-xorg-video-intel
+#L_sig_ok
+#sleep 4
+#}
+
+#Conf_video_intel() {
+#    :
+#}
 
 Inst_xorg() {
 clear
 L_banner_begin "Install X environment"
 local XORG="xorg xbacklight xbindkeys xfonts-terminus xinput 
 xserver-xorg-input-all xterm xvkbd fonts-liberation rxvt-unicode-256color"
-apt-get -y install "$XORG"
+apt-get -y install $XORG
 L_sig_ok
 sleep 4
 }
@@ -320,11 +333,11 @@ Inst_openbox() {
 clear
 L_banner_begin "Install Openbox window manager"
 local WM="openbox obconf menu"
-local WM_HELP="scrot mirage rofi xfce4-power-manager feh compton compton-conf 
+local WM_HELP="scrot mirage rofi xfce4-power-manager feh compton compton-conf
 xbindkeys x11-xserver-utils dunst dbus-x11 libnotify-bin tint2 clipit 
 pulseaudio-utils volumeicon-alsa pavucontrol network-manager 
 network-manager-gnome i3lock"
-apt-get -y install "$WM $WM_HELP"
+apt-get -y install $WM $WM_HELP
 L_sig_ok
 sleep 4
 }
@@ -333,8 +346,10 @@ Inst_theme() {
 clear
 L_banner_begin "Install theme"
 local GTK="arc-theme"
+local THEME_DIR="/home/$USERNAME/.themes"
 local OB="https://github.com/dglava/arc-openbox.git"
 local QT="qt5-style-plugins"
+local ICON_DIR="/home/$USERNAME/.icons"
 local ICON="papirus-icon-theme"
 local ICON_SRC="https://raw.githubusercontent.com/PapirusDevelopmentTeam/$ICON/master/install.sh"
 local FONT="fonts-liberation fonts-noto-mono"
@@ -342,16 +357,31 @@ local FONT_UB="fonts-ubuntu_0.83-4_all.deb"
 local FONT_UB_SRC="http://ftp.us.debian.org/debian/pool/non-free/f/fonts-ubuntu/$FONT_UB"
 local TOOL="lxappearance lxappearance-obconf"
 # GTK2+3
-apt-get -y install "$GTK"
+apt-get -y install $GTK
 # Openbox
-mkdir ~/.themes
-cd ~/.themes
-git clone $OB
+if [[ -d $THEME_DIR ]]; then
+    echo "$THEME_DIR already exist. Skipping ..."
+else
+    echo "Create $THEME_DIR ..."
+    mkdir $THEME_DIR
+    chown ${USERNAME}:${USERNAME} $THEME_DIR
+fi
+if [[ -d $THEME_DIR/Arc-Dark ]]; then
+    echo "$THEME_DIR/Arc-Dark already exist. Skipping ..."
+else
+    git clone $OB $THEME_DIR
+fi
 # QT
 apt-get -y install $QT
 # I like the "Papirus" icon set. Install in `~/.icons` ...
-mkdir ~/.icons
-wget -qO- $ICON_SRC | DESTDIR="$HOME/.icons" sh
+if [[ -d $ICON_DIR ]]; then
+    echo "$ICON_DIR already exist. Skipping ..."
+else
+    echo "Create $ICON_DIR ..."
+    mkdir $ICON_DIR
+    chown ${USERNAME}:${USERNAME} $ICON_DIR
+fi
+wget -qO- $ICON_SRC | DESTDIR="$ICON_DIR" sh
 # Install a few extra fonts (including the nice **Ubuntu** fonts) ...
 apt-get -y install $FONT
 wget -c $FONT_UB_SRC
@@ -370,11 +400,25 @@ L_banner_begin "Install Firefox"
 # Create ~/opt directory to store programs in $HOME. Download and unpack the 
 # latest binaries from the official website, and create a link to the
 # executable in my PATH
+local DIR="/home/$USERNAME/opt"
 local FF="FirefoxSetup.tar.bz2"
 local FF_SRC="https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"
+local LINK="/usr/local/bin/firefox"
 wget -c -O $FF $FF_SRC
-tar xvf FirefoxSetup.tar.bz2 -C ~/opt/
-ln -s ~/opt/firefox/firefox /usr/local/bin/
+if [[ -d $DIR ]]; then
+    echo "$DIR already exists. Skipping ..."
+else
+    echo "Create $DIR ..."
+    mkdir $DIR
+    chown ${USERNAME}:${USERNAME} $DIR
+fi
+tar xvf $FF -C $DIR
+if [[ -a $LINK ]]; then
+    echo "$LINK already exists. Skipping ..."
+else
+    echo "Create symbolic link $LINK to firefox installed in $DIR ..."
+    ln -s $DIR/firefox/firefox $LINK
+fi
 L_sig_ok
 sleep 4
 }
@@ -395,11 +439,9 @@ libncurses5-dev python-dev python-pip python3-dev python3-pip
 python-pygments python3-pygments"
 # Sometimes apt gets stuck on a slow download ... breaking up downloads
 # speeds things up ...
-apt-get -y install "$AV" && apt-get -y install "$DOC" && \
-    apt-get -y install "$IMAGE" && apt-get -y install "$NET" && \
-    apt-get -y install "$SYS" && apt-get -y install "$DEV"
-# Install applications not packaged in Debian.
-Inst_nonpkg_firefox
+apt-get -y install $AV && apt-get -y install $DOC && \
+    apt-get -y install $IMAGE && apt-get -y install $NET && \
+    apt-get -y install $SYS && apt-get -y install $DEV
 L_sig_ok
 sleep 4
 }
@@ -464,7 +506,9 @@ do
     L_banner_begin "Question 3 of $NUM_Q"
     while :
     do
-        read -r -n 1 -p "Setup trim on ssd? [yN] > "
+        echo "Periodic TRIM optimizes performance on solid-state storage. If"
+        echo "this machine has an SSD drive, you should enable this task."
+        echo ""; read -r -n 1 -p "Enable a weekly task that discards unused blocks on this drive? [yN] > "
         if [[ $REPLY == [yY] ]]; then
             SSD="yes"
             break
@@ -496,7 +540,6 @@ do
         sleep 4
     fi
 done
-: <<'QWERTY' 
 # Common tasks
 Conf_apt_src
 Conf_ssh
@@ -515,8 +558,8 @@ if [[ $PROFILE == "workstation" ]]; then
         Inst_xorg
         Inst_openbox
         Inst_theme
-        Inst_desktop_pkg
         Inst_nonpkg_firefox
+        Inst_desktop_pkg
         Conf_terminal
         Conf_alt_workstation
     fi
@@ -532,7 +575,6 @@ if [[ $PROFILE == "server" ]]; then
         Conf_alt_server
     fi
 fi
-QWERTY
 }
 
 #: START
