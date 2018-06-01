@@ -96,6 +96,9 @@ done
 Conf_apt_src() {
 clear
 L_banner_begin "Configure sources.list for '$RELEASE'"
+# Add `backports` repository, update package list, upgrade packages.
+# "Minimal Debian -- Main, non-free, contrib, and backports"
+#   https://www.circuidipity.com/minimal-debian/#8-main-non-free-contrib-and-backports
 local FILE="/etc/apt/sources.list"
 local MIRROR="http://deb.debian.org/debian/"
 local MIRROR1="http://security.debian.org/debian-security"
@@ -127,6 +130,9 @@ sleep 4
 Conf_ssh() {
 clear
 L_banner_begin "Create SSH directory for $USERNAME"
+# Install SSH server, create $HOME/.ssh.
+# "Secure remote access using SSH keys"
+#   https://www.circuidipity.com/ssh-keys/
 local SSH_DIR="/home/$USERNAME/.ssh"
 local AUTH_KEY="$SSH_DIR/authorized_keys"
 if [[ -d $SSH_DIR ]]; then
@@ -141,41 +147,13 @@ L_sig_ok
 sleep 4
 }
 
-Conf_sudoersd() {
-clear
-L_banner_begin "Configure sudo"
-# Add config files to /etc/sudoers.d/ to allow members of the sudo group
-# extra privileges; the ability to shutdown/reboot the system and read 
-# the kernel buffer using `dmesg` without a password for example.
-local ALIAS="/etc/sudoers.d/00-alias"
-local NOPASSWD="/etc/sudoers.d/01-nopasswd"
-if [[ -f $ALIAS ]]; then
-    L_bak_file $ALIAS
-fi
-if [[ -f $NOPASSWD ]]; then
-    L_bak_file $NOPASSWD
-fi
-echo "Create $ALIAS ..."
-cat << _EOL_ > $ALIAS
-# Cmnd alias specification
-Cmnd_Alias SHUTDOWN_CMDS = /sbin/poweroff, /sbin/reboot, /sbin/shutdown
-_EOL_
-L_sig_ok
-echo "Create $NOPASSWD ..."
-cat << _EOL_ > $NOPASSWD
-# Allow specified users to execute these commands without password
-$USERNAME ALL=(ALL) NOPASSWD: SHUTDOWN_CMDS, /bin/dmesg
-_EOL_
-adduser $USERNAME sudo
-L_sig_ok
-sleep 4
-}
-
 Conf_trim() {
 clear
 L_banner_begin "Configure periodic trim for SSD"
-local TRIM="/etc/cron.weekly/trim"
 # Enable periodic TRIM on SSD drives. Create a weekly TRIM job.
+# "Minimal Debian -- SSD"
+#   https://www.circuidipity.com/minimal-debian/#11-ssd
+local TRIM="/etc/cron.weekly/trim"
 if [[ -f $TRIM ]]; then
     echo "Weekly trim job $TRIM already exists. Skipping ..."
 else
@@ -198,6 +176,8 @@ Conf_grub() {
 clear
 L_banner_begin "Configure GRUB extras"
 # Add a bit of colour, a bit of sound, and wallpaper!
+# "GNU GRUB"
+#   https://www.circuidipity.com/grub/
 local GRUB_DEFAULT="/etc/default/grub"
 local WALLPAPER="/boot/grub/wallpaper-grub.tga"
 local GRUB_CUSTOM="/boot/grub/custom.cfg"
@@ -239,6 +219,38 @@ L_sig_ok
 sleep 4
 }
 
+Conf_sudoersd() {
+clear
+L_banner_begin "Configure sudo"
+# Add config files to /etc/sudoers.d/ to allow members of the sudo group
+# extra privileges; the ability to shutdown/reboot the system and read 
+# the kernel buffer using `dmesg` without a password for example.
+# "Minimal Debian -- Sudo"
+#   https://www.circuidipity.com/minimal-debian/#10-sudo
+local ALIAS="/etc/sudoers.d/00-alias"
+local NOPASSWD="/etc/sudoers.d/01-nopasswd"
+if [[ -f $ALIAS ]]; then
+    L_bak_file $ALIAS
+fi
+if [[ -f $NOPASSWD ]]; then
+    L_bak_file $NOPASSWD
+fi
+echo "Create $ALIAS ..."
+cat << _EOL_ > $ALIAS
+# Cmnd alias specification
+Cmnd_Alias SHUTDOWN_CMDS = /sbin/poweroff, /sbin/reboot, /sbin/shutdown
+_EOL_
+L_sig_ok
+echo "Create $NOPASSWD ..."
+cat << _EOL_ > $NOPASSWD
+# Allow specified users to execute these commands without password
+$USERNAME ALL=(ALL) NOPASSWD: SHUTDOWN_CMDS, /bin/dmesg
+_EOL_
+adduser $USERNAME sudo
+L_sig_ok
+sleep 4
+}
+
 Conf_unattended_upgrades() {
 clear
 L_banner_begin "Configure automatic security updates"
@@ -249,8 +261,8 @@ L_banner_begin "Configure automatic security updates"
 # 
 # Upgrade information is logged under /var/log/unattended-upgrades.
 #
-# See: "Automatic security updates on Debian"
-#       https://www.circuidipity.com/unattended-upgrades/
+# "Automatic security updates on Debian"
+#   https://www.circuidipity.com/unattended-upgrades/
 local UNATTENDED_UPGRADES="/etc/apt/apt.conf.d/50unattended-upgrades"
 local PERIODIC="/etc/apt/apt.conf.d/02periodic"
 if [[ -f $UNATTENDED_UPGRADES ]]; then
@@ -272,7 +284,9 @@ sleep 4
 Inst_pkg_list() {
 clear
 L_banner_begin "Install packages from '$PKG_LIST' list (option '-p')"
-# Update dpkg database of known packages
+# Update dpkg database of known packages.
+# "Install (almost) the same list of Debian packages on multiple machines"
+#   https://www.circuidipity.com/debian-package-list/
 local AVAIL
     AVAIL=$( mktemp )
 apt-cache dumpavail > "$AVAIL"
@@ -337,10 +351,11 @@ L_sig_ok
 sleep 4
 }
 
-
 Inst_openbox() {
 clear
 L_banner_begin "Install Openbox window manager"
+# "Roll your own Linux desktop using Openbox"
+#   https://www.circuidipity.com/openbox/
 local WM="openbox obconf menu"
 local WM_HELP="scrot mirage rofi xfce4-power-manager feh compton compton-conf
 xbindkeys x11-xserver-utils dunst dbus-x11 libnotify-bin tint2 clipit 
@@ -354,6 +369,10 @@ sleep 4
 Inst_theme() {
 clear
 L_banner_begin "Install theme"
+# Use the 'Arc' theme for Openbox, GTK2+3, and QT;
+# 'Papirus' icons; and 'Ubuntu' fonts.
+# "Openbox -- Themes"
+#   https://www.circuidipity.com/openbox/#6-themes
 local GTK="arc-theme"
 local THEME_DIR="/home/$USERNAME/.themes"
 local OB="https://github.com/dglava/arc-openbox.git"
@@ -487,14 +506,17 @@ sleep 4
 }
 
 Goto_work() {
-local NUM_Q="4"
+local NUM_Q="7"
 local PROFILE="foo"
 local SSD="foo"
+local GRUB_X="foo"
+local SUDO_X="foo"
+local AUTO_UP="foo"
 while :
 do
     clear
     L_banner_begin "Question 1 of $NUM_Q"
-    read -r -p "What is your username? > " FOO; USERNAME="$FOO"
+    read -r -p "What is your non-root username? > " FOO; USERNAME="$FOO"
     L_test_homedir "$USERNAME"        # $HOME exists for USERNAME?
     clear
     L_banner_begin "Question 2 of $NUM_Q"
@@ -517,12 +539,12 @@ do
     do
         echo "Periodic TRIM optimizes performance on solid-state storage. If"
         echo "this machine has an SSD drive, you should enable this task."
-        echo ""; read -r -n 1 -p "Enable a weekly task that discards unused blocks on this drive? [yN] > "
-        if [[ $REPLY == [yY] ]]; then
-            SSD="yes"
-            break
-        elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+        echo ""; read -r -n 1 -p "Enable a weekly task that discards unused blocks on this drive? [Yn] > "
+        if [[ $REPLY == [nN] ]]; then
             SSD="no"
+            break
+        elif [[ $REPLY == [yY] || $REPLY == "" ]]; then
+            SSD="yes"
             break
         else
             L_invalid_reply_yn
@@ -530,9 +552,66 @@ do
     done
     clear
     L_banner_begin "Question 4 of $NUM_Q"
+    while :
+    do
+        echo "GRUB extras: Add a bit of colour, a bit of sound, and wallpaper!"
+        echo ""; read -r -n 1 -p "Setup a custom GRUB? [Yn] > "
+        if [[ $REPLY == [nN] ]]; then
+            GRUB_X="no"
+            break
+        elif [[ $REPLY == [yY] || $REPLY == "" ]]; then
+            GRUB_X="yes"
+            break
+        else
+            L_invalid_reply_yn
+        fi
+    done
+    clear
+    L_banner_begin "Question 5 of $NUM_Q"
+    while :
+    do
+		echo "Add config files to /etc/sudoers.d/ to allow members of the"
+		echo "sudo group extra privileges; the ability to shutdown/reboot"
+		echo "the system and read the kernel buffer using 'dmesg' without"
+		echo "a password for example."
+        echo ""; read -r -n 1 -p "Configure a custom sudo? [Yn] > "
+        if [[ $REPLY == [nN] ]]; then
+            SUDO_X="no"
+            break
+        elif [[ $REPLY == [yY] || $REPLY == "" ]]; then
+            SUDO_X="yes"
+            break
+        else
+            L_invalid_reply_yn
+        fi
+    done
+    clear
+    L_banner_begin "Question 6 of $NUM_Q"
+    while :
+    do
+		echo "Install security updates automatically with options set in"
+		echo "/etc/apt/apt.conf.d/50unattended-upgrades. Activate tracking"
+		echo "with details provided in /etc/apt/apt.conf.d/02periodic."
+		echo "Upgrade information is logged under /var/log/unattended-upgrades."
+        echo ""; read -r -n 1 -p "Enable automatic security updates? [Yn] > "
+        if [[ $REPLY == [nN] ]]; then
+            AUTO_UP="no"
+            break
+        elif [[ $REPLY == [yY] || $REPLY == "" ]]; then
+            AUTO_UP="yes"
+            break
+        else
+            L_invalid_reply_yn
+        fi
+    done
+    clear
+    L_banner_begin "Question 7 of $NUM_Q"
     echo "Username: $USERNAME"
     echo "Profile: $PROFILE"
     echo "SSD: $SSD"
+    echo "Custom GRUB: $GRUB_X"
+    echo "Custom SUDO: $SUDO_X"
+    echo "Auto-Updates: $AUTO_UP"
     if [[ $PKG_LIST != "foo" ]]; then
         echo "Debian packages will be installed as specified in '-p $PKG_LIST'."
     fi
@@ -552,14 +631,24 @@ done
 # Common tasks
 Conf_apt_src
 Conf_ssh
-Conf_sudoersd
-# Setup periodic trim
+# Periodic trim
 if [[ $SSD == "yes" ]]; then
     Conf_trim
 fi
+# Custon grub
+if [[ $GRUB_X == "yes" ]]; then
+    Conf_grub
+fi
+# Custom sudo
+if [[ $SUDO_X == "yes" ]]; then
+    Conf_sudoersd
+fi
+# Automatic security updates
+if [[ $AUTO_UP == "yes" ]]; then
+    Conf_unattended_upgrades
+fi
 # Workstation setup
 if [[ $PROFILE == "workstation" ]]; then
-    Conf_grub
     if [[ $PKG_LIST != "foo" ]]; then
         Inst_pkg_list
     else
@@ -575,7 +664,6 @@ if [[ $PROFILE == "workstation" ]]; then
 fi
 # Server setup
 if [[ $PROFILE == "server" ]]; then
-    Conf_unattended_upgrades
     if [[ $PKG_LIST != "foo" ]]; then
         Inst_pkg_list
     else
