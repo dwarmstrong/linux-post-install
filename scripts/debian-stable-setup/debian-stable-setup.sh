@@ -312,6 +312,7 @@ less mlocate net-tools nmap openssh-server pmount resolvconf rsync sl sudo
 tmux unzip wget whois"
 local EDITOR="neovim python-dev python-pip python3-dev python3-pip pylint 
 pylint3 shellcheck"
+# shellcheck disable=SC2086
 apt-get -y install $PKG_TOOLS $CONSOLE $EDITOR
 apt-file update
 # Create the mlocate database
@@ -324,6 +325,7 @@ Inst_server_pkg() {
 clear
 L_banner_begin "Install server packages"
 local PKG="fail2ban logwatch"
+# shellcheck disable=SC2086
 apt-get -y install $PKG
 L_sig_ok
 sleep 4
@@ -334,6 +336,7 @@ clear
 L_banner_begin "Install X environment"
 local XORG="xorg xbacklight xbindkeys xfonts-terminus xinput 
 xserver-xorg-input-all xterm xvkbd fonts-liberation rxvt-unicode-256color"
+# shellcheck disable=SC2086
 apt-get -y install $XORG
 L_sig_ok
 sleep 4
@@ -349,6 +352,7 @@ local WM_HELP="scrot mirage rofi xfce4-power-manager feh compton compton-conf
 xbindkeys x11-xserver-utils dunst dbus-x11 libnotify-bin tint2 clipit 
 pulseaudio-utils volumeicon-alsa pavucontrol network-manager 
 network-manager-gnome i3lock"
+# shellcheck disable=SC2086
 apt-get -y install $WM $WM_HELP
 L_sig_ok
 sleep 4
@@ -399,11 +403,13 @@ else
 fi
 wget -qO- $ICON_SRC | DESTDIR="$ICON_DIR" sh
 # Install a few extra fonts (including the nice **Ubuntu** fonts) ...
+# shellcheck disable=SC2086
 apt-get -y install $FONT
 wget -c $FONT_UB_SRC
 dpkg -i $FONT_UB
 # Use the **lxappearance** graphical config utility (with the extra openbox 
 # plugin) to setup your new theme (details stored in `~/.gtkrc-2.0`).
+# shellcheck disable=SC2086
 apt-get -y install $TOOL
 L_sig_ok
 sleep 4
@@ -420,6 +426,7 @@ local DIR="/home/$USERNAME/opt"
 local FF="FirefoxSetup.tar.bz2"
 local FF_SRC="https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"
 local LINK="/usr/local/bin/firefox"
+# shellcheck disable=SC2086
 wget -c -O $FF $FF_SRC
 if [[ -d $DIR ]]; then
     echo "$DIR already exists. Skipping ..."
@@ -455,6 +462,7 @@ libncurses5-dev python-dev python-pip python3-dev python3-pip
 python-pygments python3-pygments"
 # Sometimes apt gets stuck on a slow download ... breaking up downloads
 # speeds things up ...
+# shellcheck disable=SC2086
 apt-get -y install $AV && apt-get -y install $DOC && \
     apt-get -y install $IMAGE && apt-get -y install $NET && \
     apt-get -y install $SYS && apt-get -y install $DEV
