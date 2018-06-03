@@ -1,68 +1,59 @@
-# Debian _stable_ release setup
+# Debian _stable_ setup
 
 ![Debian](files/img/debian_9_banner.png)
 
-## NAME
+### NAME
 
-debian-stable-setup.sh - Debian post-install configuration
+debian-stable-setup.sh - Setup a machine running the Debian _stable_ release
 
-## SYNOPSIS
+### SYNOPSIS
 
-`debian-stable-setup.sh [OPTION] username`
+`debian-stable-setup.sh [OPTION]`
 
-## DESCRIPTION
+### DESCRIPTION
 
-Script `debian-stable-setup.sh` is ideally run immediately following the first successful boot into a new install of Debian's `stable` release.
+Script `debian-stable-setup.sh` [1] is a *setup script* ideally run immediately following the first successful boot into a minimal install [2] of Debian's _stable_ (code-named _stretch_) release.
 
-A choice of either ...
+A choice of either a **workstation** or **server** setup is available. *Server* is a basic console setup, whereas the *workstation* choice is a more extensive configuration using the lightweight **Openbox** [3] window manager and a range of desktop applications.
 
-0) a basic console setup; or
-1) a more complete setup using the **i3 tiling window manager** plus desktop packages; or
-2) install the list of packages specified in `PKG_LIST`
+Alternately, in lieu of a pre-defined list of Debian packages, the user may specify their own custom list of packages to be installed.
 
-... will be configured.
-
-To use program ... 
-
-0) Install program folder on target machine.
-1) Copy `config.sample` to `config` and (optional) enable settings. All settings are **disabled** by default.
-2) Run program!
-
-## OPTIONS
+### OPTIONS
 
 ```bash
 -h              print details
--b              basic setup (console only)
--p PKG_LIST     install packages from PKG_LIST
+-p PKG_LIST     install packages from PKG_LIST [4]
 ```
 
-## EXAMPLES
+### EXAMPLES
 
-Post-install setup of a machine for username `foo` ...
+Run script (requires superuser privileges) ...
 
 ```bash
-# debian-stable-setup.sh foo
+./debian-stable-setup.sh
 ```
 
 Install the list of packages specified in `my-pkg-list` ...
 
 ```bash
-# debian-stable-setup.sh -p my-pkg-list foo
+./debian-stable-setup.sh -p my-pkg-list
 ```
 
-## AUTHOR
+### AUTHOR
 
 Daniel Wayne Armstrong
 https://www.circuidipity.com
 
-## LICENSE
+### LICENSE
 
-GPLv3. See ``LICENSE`` for more details.
+GPLv2. See ``LICENSE`` for more details.
 
-## SEE ALSO
+### SEE ALSO
 
-[Minimal Debian](https://www.circuidipity.com/minimal-debian/)
+1. [Command line tools: Debian -stable- setup](https://www.circuidipity.com/debian-stable-setup/)
 
-[Lightweight and a delight: i3 tiling window manager](https://www.circuidipity.com/i3-tiling-window-manager/)
+2. [Minimal Debian](https://www.circuidipity.com/minimal-debian/)
 
-[Install (almost) the same list of Debian packages on multiple machines](https://www.circuidipity.com/debian-package-list/)
+3. [Roll your own Linux desktop using Openbox](https://www.circuidipity.com/openbox/)
+
+4. [Install (almost) the same list of Debian packages on multiple machines](https://www.circuidipity.com/debian-package-list/)

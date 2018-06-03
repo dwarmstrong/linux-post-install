@@ -5,60 +5,55 @@
 set -eu
 
 # Place in local directory and call its functions by adding to script ...
-#   . ./Library.sh
+#   source ./Library.sh
 
 OPT_HELP="Run with '-h' for details."
 # ANSI escape codes
 RED="\033[1;31m"
 GREEN="\033[1;32m"
 YELLOW="\033[1;33m"
+PURPLE="\033[1;35m"
 NC="\033[0m" # no colour
-
 
 L_echo_red() {
 echo -e "${RED}$1${NC}"
 }
 
-
 L_echo_green() {
 echo -e "${GREEN}$1${NC}"
 }
-
 
 L_echo_yellow() {
 echo -e "${YELLOW}$1${NC}"
 }
 
+L_echo_purple() {
+echo -e "${PURPLE}$1${NC}"
+}
 
 L_banner_begin() {
 L_echo_yellow "\n--------[  $1  ]--------\n"
 }
 
-
 L_banner_end() {
 L_echo_green "\n--------[  $1 END  ]--------\n"
 }
 
-
 L_sig_ok() {
-L_echo_green "--> [ OK ]"
+L_echo_green "\n--> [ OK ]"
 }
-
 
 L_sig_fail() {
-L_echo_red "--> [ FAIL ]"
+L_echo_red "\n--> [ FAIL ]"
 }
-
 
 L_invalid_reply() {
 L_echo_red "\n'${REPLY}' is invalid input..."
 }
 
-
 L_invalid_reply_yn() {
 L_echo_red "\n'${REPLY}' is invalid input. Please select 'Y(es)' or 'N(o)'..."
 }
-
 
 L_penguin() {
 cat << _EOF_
@@ -67,14 +62,13 @@ cat << _EOF_
 _EOF_
 }
 
-
 L_run_script() {
 while :
 do
-    read -n 1 -p "Run script now? [yN] > "
+    read -r -n 1 -p "Run script now? [yN] > "
     if [[ $REPLY == [yY] ]]; then
         echo -e "\nLet's roll then ..."
-        sleep 2
+        sleep 4
         if [[ -x "/usr/games/sl" ]]; then
             /usr/games/sl
         fi
@@ -88,11 +82,9 @@ do
 done
 }
 
-
 L_test_announce() {
     echo -e "\n$( L_penguin ) .: Let's run a few tests before we begin ..."
 }
-
 
 L_test_required_file() {
 local FILE=$1
@@ -103,7 +95,6 @@ if [[ ! -f "$FILE" ]]; then
 fi
 }
 
-
 L_test_root() {
 local ERR="ERROR: script must be run with root privileges. $OPT_HELP"
 if (( EUID != 0 )); then
@@ -111,7 +102,6 @@ if (( EUID != 0 )); then
     exit 1
 fi
 }
-
 
 L_test_homedir() {
 # $1 is $USER
@@ -126,7 +116,6 @@ elif [[ ! -d "/home/$1" ]]; then
 fi
 }
 
-
 L_test_internet() {
 local ERR="ERROR: script requires internet access to do its job. $OPT_HELP"
 local UP
@@ -137,7 +126,6 @@ if [[ $UP -ne 0 ]]; then
     exit 1
 fi
 }
-
 
 L_test_datetime() {
 clear
@@ -150,7 +138,7 @@ else
 fi
 while :
 do
-    read -n 1 -p "Modify? [yN] > "
+    echo ""; read -r -n 1 -p "Modify? [yN] > "
     if [[ $REPLY == [yY] ]]; then
         echo -e "\n\n$( L_penguin ) .: Check out datetime in Arch Wiki $LINK" 
         echo "plus 'dpkg-reconfigure tzdata' for setting default timezone."
@@ -164,18 +152,17 @@ do
 done
 }
 
-
 L_test_systemd_fail() {
 clear
 L_banner_begin "List 'systemctl --failed' units"
 systemctl --failed
 while :
 do
-    read -n 1 -p "Continue script? [yN] > "
-    if [[ $REPLY == [yY] ]]; then
+    echo ""; read -r -n 1 -p "Continue script? [Yn] > "
+    if [[ $REPLY == [yY] || $REPLY == "" ]]; then
         clear
         break
-    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+    elif [[ $REPLY == [nN] ]]; then
          echo ""
          L_penguin
          exit
@@ -185,18 +172,17 @@ do
  done
 }
 
-
 L_test_priority_err() {
 clear
 L_banner_begin "Identify high priority errors"
 journalctl -p 0..3 -xn
 while :
 do
-    read -n 1 -p "Continue script? [yN] > "
-    if [[ $REPLY == [yY] ]]; then
+    echo ""; read -r -n 1 -p "Continue script? [Yn] > "
+    if [[ $REPLY == [yY] || $REPLY == "" ]]; then
         clear
         break
-    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+    elif [[ $REPLY == [nN] ]]; then
         echo ""
         echo -e "\n$( L_penguin ) .: Run 'journalctl -p 0..3 -xn' for errors."
         exit
@@ -206,64 +192,9 @@ do
 done
 }
 
-
 L_bak_file() {
 for f in "$@"; do cp "$f" "$f.$(date +%FT%H%M%S).bak"; done
 }
-
-
-L_apt_update_upgrade() {
-echo "Update packages and upgrade $HOSTNAME ..."
-apt update && apt -y full-upgrade
-L_sig_ok
-}
-
-
-L_conf_apt_src_release() {
-# $1 is debian RELEASE
-local FILE="/etc/apt/sources.list"
-local MIRROR="http://deb.debian.org/debian/"
-local MIRROR1="http://security.debian.org/debian-security"
-local COMP="main contrib non-free"
-L_bak_file $FILE
-echo "Configure sources.list for '$1' ..."
-if [[ $1 == "unstable" ]]; then
-cat << _EOL_ > $FILE
-# Unstable
-deb $MIRROR $1 $COMP
-#deb-src $MIRROR $1 $COMP
-
-# Testing
-#deb $MIRROR testing $COMP
-#deb-src $MIRROR testing $COMP
-
-# Security updates
-#deb $MIRROR1 testing/updates $COMP
-#deb-src $MIRROR1 testing/updates $COMP
-_EOL_
-else
-cat << _EOL_ > $FILE
-# Base repository
-deb $MIRROR $1 $COMP
-deb-src $MIRROR $1 $COMP
-
-# Security updates
-deb $MIRROR1 $1/updates $COMP
-deb-src $MIRROR1 $1/updates $COMP
-
-# Stable updates
-deb $MIRROR $1-updates $COMP
-deb-src $MIRROR $1-updates $COMP
-
-# Stable backports
-deb $MIRROR $1-backports $COMP
-deb-src $MIRROR $1-backports $COMP
-_EOL_
-fi
-L_sig_ok
-L_apt_update_upgrade
-}
-
 
 L_all_done() {
 local AU_REVOIR="All done!"
@@ -273,5 +204,3 @@ else
     echo -e "$( L_penguin ) .: $AU_REVOIR"
 fi
 }
-
-

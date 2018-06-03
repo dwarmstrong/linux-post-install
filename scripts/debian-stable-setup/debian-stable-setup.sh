@@ -329,18 +329,6 @@ L_sig_ok
 sleep 4
 }
 
-#Inst_video_intel() {
-#clear
-#L_banner_begin "Install intel video driver"
-#apt-get -y install xorg xserver-xorg-video-intel
-#L_sig_ok
-#sleep 4
-#}
-
-#Conf_video_intel() {
-#    :
-#}
-
 Inst_xorg() {
 clear
 L_banner_begin "Install X environment"
@@ -570,10 +558,9 @@ do
     L_banner_begin "Question 5 of $NUM_Q"
     while :
     do
-		echo "Add config files to /etc/sudoers.d/ to allow members of the"
-		echo "sudo group extra privileges; the ability to shutdown/reboot"
-		echo "the system and read the kernel buffer using 'dmesg' without"
-		echo "a password for example."
+		echo "Add config files to /etc/sudoers.d/ to allow members of the sudo"
+        echo "group extra privileges; the ability to shutdown/reboot the system"
+        echo "and read the kernel buffer using 'dmesg' without a password."
         echo ""; read -r -n 1 -p "Configure a custom sudo? [Yn] > "
         if [[ $REPLY == [nN] ]]; then
             SUDO_X="no"
@@ -606,21 +593,37 @@ do
     done
     clear
     L_banner_begin "Question 7 of $NUM_Q"
-    echo "Username: $USERNAME"
-    echo "Profile: $PROFILE"
-    echo "SSD: $SSD"
-    echo "Custom GRUB: $GRUB_X"
-    echo "Custom SUDO: $SUDO_X"
-    echo "Auto-Updates: $AUTO_UP"
+    L_echo_purple "Username: $USERNAME"
+    L_echo_purple "Profile: $PROFILE"
+    if [[ $SSD == "yes" ]]; then
+        L_echo_green "SSD: $SSD"
+    else
+        L_echo_red "SSD: $SSD"
+    fi
+    if [[ $GRUB_X == "yes" ]]; then
+        L_echo_green "Custom GRUB: $GRUB_X"
+    else
+        L_echo_red "Custom GRUB: $GRUB_X"
+    fi
+    if [[ $SUDO_X == "yes" ]]; then
+        L_echo_green "Custom SUDO: $SUDO_X"
+    else
+        L_echo_red "Custom SUDO: $SUDO_X"
+    fi
+    if [[ $AUTO_UP == "yes" ]]; then
+        L_echo_green "Auto-Updates: $AUTO_UP"
+    else
+        L_echo_red "Auto-Updates: $AUTO_UP"
+    fi
     if [[ $PKG_LIST != "foo" ]]; then
         echo "Debian packages will be installed as specified in '-p $PKG_LIST'."
     fi
-    echo ""; read -r -n 1 -p "Is this correct? [yN] > "
-    if [[ $REPLY == [yY] ]]; then
+    echo ""; read -r -n 1 -p "Is this correct? [Yn] > "
+    if [[ $REPLY == [yY] || $REPLY == "" ]]; then
         L_sig_ok
         sleep 4
         break
-    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+    elif [[ $REPLY == [nN] ]]; then
         echo -e "\nOK ... Let's try again ..."
         sleep 4
     else
