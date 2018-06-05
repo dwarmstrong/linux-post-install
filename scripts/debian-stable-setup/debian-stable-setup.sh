@@ -229,6 +229,8 @@ L_banner_begin "Configure sudo"
 #   https://www.circuidipity.com/minimal-debian/#10-sudo
 local ALIAS="/etc/sudoers.d/00-alias"
 local NOPASSWD="/etc/sudoers.d/01-nopasswd"
+# Install sudo
+apt-get -y install sudo
 if [[ -f $ALIAS ]]; then
     L_bak_file $ALIAS
 fi
