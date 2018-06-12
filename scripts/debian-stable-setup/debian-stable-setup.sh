@@ -456,7 +456,7 @@ pulseaudio pulseaudio-utils rhythmbox sox vlc"
 local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome 
 hunspell-en-ca qpdfview"
 local IMAGE="mirage scrot geeqie gimp gimp-help-en gimp-data-extras"
-local NET="network-manager-gnome transmission-qt"
+local NET="network-manager-gnome transmission-gtk"
 #local FLASH="flashplugin-nonfree" # Problematic ... almost never downloads
 local SYS="rxvt-unicode-256color"
 local DEV="autoconf automake bc build-essential devscripts fakeroot
