@@ -393,9 +393,9 @@ if [[ -d $ICON_DIR ]]; then
 else
     echo "Create $ICON_DIR ..."
     mkdir $ICON_DIR
-    chown ${USERNAME}:${USERNAME} $ICON_DIR
 fi
 wget -qO- $ICON_SRC | DESTDIR="$ICON_DIR" sh
+chown -R ${USERNAME}:${USERNAME} $ICON_DIR
 # Install a few extra fonts (including the nice **Ubuntu** fonts) ...
 # shellcheck disable=SC2086
 apt-get -y install $FONT
