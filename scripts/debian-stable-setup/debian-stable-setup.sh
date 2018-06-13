@@ -468,6 +468,13 @@ python-pygments python3-pygments"
 apt-get -y install $AV && apt-get -y install $DOC && \
     apt-get -y install $IMAGE && apt-get -y install $NET && \
     apt-get -y install $SYS && apt-get -y install $DEV
+# Virtualbox - more: https://www.circuidipity.com/virtualbox-debian-stretch/
+local KERNEL
+KERNEL=$(uname -r)
+local VB_DEP="dkms module-assistant linux-headers-$KERNEL"
+# shellcheck disable=SC2086
+apt-get -y install $VB_DEP && apt-get -y install virtualbox
+adduser $USERNAME vboxusers
 L_sig_ok
 sleep 4
 }
