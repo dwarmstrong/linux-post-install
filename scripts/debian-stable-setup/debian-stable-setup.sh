@@ -159,6 +159,7 @@ local TIMER="/usr/share/doc/util-linux/examples/fstrim.timer"
 local DEST="/etc/systemd/system/"
 cp $SERVICE $DEST
 cp $TIMER $DEST
+echo "Enabling timer ..."
 systemctl enable fstrim.timer
 L_sig_ok
 sleep 4
