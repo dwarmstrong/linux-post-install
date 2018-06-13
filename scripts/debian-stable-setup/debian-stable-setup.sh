@@ -161,7 +161,7 @@ else
     cat << _EOL_ > $TRIM
 #!/bin/sh
 # trim all mounted file systems which support it
-/usr/bin/fstrim --all
+/sbin/fstrim --all
 _EOL_
     chmod 755 $TRIM
 #/etc/cron.weekly/trim                # check the program runs without errors
