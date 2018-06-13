@@ -626,7 +626,7 @@ do
         L_echo_red "Auto-Updates: $AUTO_UP"
     fi
     if [[ $PKG_LIST != "foo" ]]; then
-        echo "Debian packages will be installed as specified in '-p $PKG_LIST'."
+        L_echo_purple "Package List: $PKG_LIST"
     fi
     echo ""; read -r -n 1 -p "Is this correct? [Yn] > "
     if [[ $REPLY == [yY] || $REPLY == "" ]]; then
