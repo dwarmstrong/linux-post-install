@@ -150,24 +150,16 @@ sleep 4
 Conf_trim() {
 clear
 L_banner_begin "Configure periodic trim for SSD"
-# Enable periodic TRIM on SSD drives. Create a weekly TRIM job.
+# Periodic TRIM optimizes performance on SSD storage. Enable a weekly task
+# that discards unused blocks on the drive.
 # "Minimal Debian -- SSD"
 #   https://www.circuidipity.com/minimal-debian/#11-ssd
-local TRIM="/etc/cron.weekly/trim"
-if [[ -f $TRIM ]]; then
-    echo "Weekly trim job $TRIM already exists. Skipping ..."
-else
-    echo "Create $TRIM ..."
-    cat << _EOL_ > $TRIM
-#!/bin/sh
-# trim all mounted file systems which support it
-/sbin/fstrim --all
-_EOL_
-    chmod 755 $TRIM
-#/etc/cron.weekly/trim                # check the program runs without errors
-#run-parts --test /etc/cron.weekly    # checks that cron can run the script
-#    /etc/cron.weekly/trim
-fi
+local SERVICE="/usr/share/doc/util-linux/examples/fstrim.service"
+local TIMER="/usr/share/doc/util-linux/examples/fstrim.timer"
+local DEST="/etc/systemd/system/"
+cp $SERVICE $DEST
+cp $TIMER $DEST
+systemctl enable fstrim.timer
 L_sig_ok
 sleep 4
 }
