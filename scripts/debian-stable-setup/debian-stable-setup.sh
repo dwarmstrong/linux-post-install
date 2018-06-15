@@ -344,7 +344,7 @@ L_banner_begin "Install Openbox window manager"
 #   https://www.circuidipity.com/openbox/
 local WM="openbox obconf menu"
 local WM_HELP="scrot mirage rofi xfce4-power-manager feh compton compton-conf
-xbindkeys x11-xserver-utils dunst dbus-x11 libnotify-bin tint2 clipit 
+xbindkeys x11-xserver-utils dunst dbus-x11 libnotify-bin tint2 clipit hsetroot 
 pulseaudio-utils volumeicon-alsa pavucontrol network-manager 
 network-manager-gnome i3lock"
 # shellcheck disable=SC2086
