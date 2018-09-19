@@ -62,7 +62,7 @@ SEE ALSO
         $LINK2
     [3] "Roll your own Linux desktop using Openbox"
         $LINK3
-    [3] "Install (almost) the same list of Debian packages on multiple machines"
+    [4] "Install (almost) the same list of Debian packages on multiple machines"
         $LINK4
 
 _EOF_
