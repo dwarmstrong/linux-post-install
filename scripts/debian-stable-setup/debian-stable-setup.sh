@@ -232,12 +232,18 @@ if [[ -f $NOPASSWD ]]; then
 fi
 echo "Create $ALIAS ..."
 cat << _EOL_ > $ALIAS
+# User alias
+User_Alias ADMIN = $USERNAME
+
 # Cmnd alias specification
 Cmnd_Alias SHUTDOWN_CMDS = /sbin/poweroff, /sbin/reboot, /sbin/shutdown
 _EOL_
 L_sig_ok
 echo "Create $NOPASSWD ..."
 cat << _EOL_ > $NOPASSWD
+# Allow ADMIN to run any command as any user without password
+ADMIN ALL=(ALL) NOPASSWD: ALL
+
 # Allow specified users to execute these commands without password
 $USERNAME ALL=(ALL) NOPASSWD: SHUTDOWN_CMDS, /bin/dmesg
 _EOL_
