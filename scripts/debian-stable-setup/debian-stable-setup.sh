@@ -20,6 +20,7 @@ RELEASE="stretch"           # Debian stable release _codename_ to track
 FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
 PKG_LIST="foo"  # Install packages from LIST; set with option '-p LISTNAME'
 USERNAME="foo"              # Setup machine for USERNAME
+SLEEP="8"                   # Pause for X seconds
 
 Hello_you() {
 L_echo_yellow "\n$( L_penguin ) .: Howdy!"
@@ -96,7 +97,7 @@ done
 Conf_apt_src() {
 clear
 L_banner_begin "Configure sources.list for '$RELEASE'"
-# Add `backports` repository, update package list, upgrade packages.
+# Add backports repository, update package list, upgrade packages."
 # "Minimal Debian -- Main, non-free, contrib, and backports"
 #   https://www.circuidipity.com/minimal-debian/#8-main-non-free-contrib-and-backports
 local FILE="/etc/apt/sources.list"
@@ -121,16 +122,17 @@ deb-src $MIRROR $RELEASE-updates $COMP
 deb $MIRROR $RELEASE-backports $COMP
 deb-src $MIRROR $RELEASE-backports $COMP
 _EOL_
+#
 echo "Update packages and upgrade $HOSTNAME ..."
 apt-get update && apt-get -y dist-upgrade
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Conf_ssh() {
 clear
 L_banner_begin "Create SSH directory for $USERNAME"
-# Install SSH server, create $HOME/.ssh.
+# Install SSH server and create $HOME/.ssh.
 # "Secure remote access using SSH keys"
 #   https://www.circuidipity.com/ssh-keys/
 local SSH_DIR="/home/$USERNAME/.ssh"
@@ -144,7 +146,7 @@ else
     chown -R ${USERNAME}:${USERNAME} $SSH_DIR
 fi
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Conf_trim() {
@@ -162,13 +164,13 @@ cp $TIMER $DEST
 echo "Enabling timer ..."
 systemctl enable fstrim.timer
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Conf_grub() {
 clear
 L_banner_begin "Configure GRUB extras"
-# Add a bit of colour, a bit of sound, and wallpaper!
+# Add a bit of colour, a bit of sound, and wallpaper.
 # "GNU GRUB"
 #   https://www.circuidipity.com/grub/
 local GRUB_DEFAULT="/etc/default/grub"
@@ -209,7 +211,7 @@ else
 fi
 update-grub
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Conf_sudoersd() {
@@ -217,7 +219,7 @@ clear
 L_banner_begin "Configure sudo"
 # Add config files to /etc/sudoers.d/ to allow members of the sudo group
 # extra privileges; the ability to shutdown/reboot the system and read 
-# the kernel buffer using `dmesg` without a password for example.
+# the kernel buffer using 'dmesg' without a password for example.
 # "Minimal Debian -- Sudo"
 #   https://www.circuidipity.com/minimal-debian/#10-sudo
 local ALIAS="/etc/sudoers.d/00-alias"
@@ -242,26 +244,25 @@ L_sig_ok
 echo "Create $NOPASSWD ..."
 cat << _EOL_ > $NOPASSWD
 # Allow ADMIN to run any command as any user without password
-ADMIN ALL=(ALL) NOPASSWD: ALL
+#ADMIN ALL=(ALL) NOPASSWD: ALL
 
 # Allow specified users to execute these commands without password
 $USERNAME ALL=(ALL) NOPASSWD: SHUTDOWN_CMDS, /bin/dmesg
 _EOL_
 adduser $USERNAME sudo
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Conf_unattended_upgrades() {
 clear
 L_banner_begin "Configure automatic security updates"
-# Install security updates automatically courtesy of `unattended-upgrades`
+# Install security updates automatically courtesy of 'unattended-upgrades'
 # package with options set in /etc/apt/apt.conf.d/50unattended-upgrades.
 #
 # Activate tracking with details provided in /etc/apt/apt.conf.d/02periodic.
-# 
-# Upgrade information is logged under /var/log/unattended-upgrades.
 #
+# Upgrade information is logged under /var/log/unattended-upgrades.
 # "Automatic security updates on Debian"
 #   https://www.circuidipity.com/unattended-upgrades/
 local UNATTENDED_UPGRADES="/etc/apt/apt.conf.d/50unattended-upgrades"
@@ -279,7 +280,35 @@ L_sig_ok
 echo "Setup $PERIODIC ..."
 cp "$FILE_DIR/etc/apt/apt.conf.d/02periodic" $PERIODIC
 L_sig_ok
-sleep 4
+sleep $SLEEP
+}
+
+Conf_swapfile() {
+clear
+L_banner_begin "Configure swapfile"
+# File that holds data transferred out of RAM to free up extra memory.
+local SWAPFILE="/swapfile"
+if [[ -f $SWAPFILE ]]; then
+    echo "Swap file $SWAPFILE already exists. Skipping ..."
+else
+    echo "Create a (2G) file to be used for swap ..."
+    fallocate -l 2G $SWAPFILE
+    # Only root should be granted read/write access.
+    chmod 600 $SWAPFILE
+    # Create the swap area
+    mkswap $SWAPFILE
+    echo "Activating $SWAPFILE ..."
+    swapon $SWAPFILE
+    echo ""
+    swapon -s
+    echo ""
+    free -h
+    # Make the change permanent in /etc/fstab.
+    L_bak_file /etc/fstab
+    echo "$SWAPFILE none swap sw 0 0" | tee -a /etc/fstab
+fi
+L_sig_ok
+sleep $SLEEP
 }
 
 Inst_pkg_list() {
@@ -296,11 +325,11 @@ rm -f "$AVAIL"
 # Update the dpkg selections
 dpkg --set-selections < "$PKG_LIST"
 L_sig_ok
-sleep 4
+sleep $SLEEP
 # Use apt-get to install the selected packages
 apt-get -y dselect-upgrade
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Inst_console_pkg() {
@@ -319,7 +348,7 @@ apt-file update
 # Create the mlocate database
 /etc/cron.daily/mlocate
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Inst_server_pkg() {
@@ -329,7 +358,7 @@ local PKG="fail2ban logwatch"
 # shellcheck disable=SC2086
 apt-get -y install $PKG
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Inst_xorg() {
@@ -340,7 +369,7 @@ xserver-xorg-input-all xterm xvkbd fonts-liberation rxvt-unicode-256color"
 # shellcheck disable=SC2086
 apt-get -y install $XORG
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Inst_openbox() {
@@ -356,16 +385,12 @@ network-manager-gnome i3lock"
 # shellcheck disable=SC2086
 apt-get -y install $WM $WM_HELP
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Inst_theme() {
 clear
 L_banner_begin "Install theme"
-# Use the 'Arc' theme for Openbox, GTK2+3, and QT;
-# 'Papirus' icons; and 'Ubuntu' fonts.
-# "Openbox -- Themes"
-#   https://www.circuidipity.com/openbox/#6-themes
 local GTK="arc-theme"
 local THEME_DIR="/home/$USERNAME/.themes"
 local OB="https://github.com/dglava/arc-openbox.git"
@@ -377,6 +402,9 @@ local FONT="fonts-liberation fonts-noto-mono"
 local FONT_UB="fonts-ubuntu_0.83-4_all.deb"
 local FONT_UB_SRC="http://ftp.us.debian.org/debian/pool/non-free/f/fonts-ubuntu/$FONT_UB"
 local TOOL="lxappearance lxappearance-obconf"
+# Install the *Arc* theme for Openbox, GTK2+3, and QT.
+# "Openbox -- Themes"
+#   https://www.circuidipity.com/openbox/#6-themes
 # GTK2+3
 apt-get -y install $GTK
 # Openbox
@@ -394,7 +422,7 @@ else
 fi
 # QT
 apt-get -y install $QT
-# I like the "Papirus" icon set. Install in `~/.icons` ...
+# Install the *Papirus* icon set in `~/.icons`.
 if [[ -d $ICON_DIR ]]; then
     echo "$ICON_DIR already exist. Skipping ..."
 else
@@ -403,26 +431,25 @@ else
 fi
 wget -qO- $ICON_SRC | DESTDIR="$ICON_DIR" sh
 chown -R ${USERNAME}:${USERNAME} $ICON_DIR
-# Install a few extra fonts (including the nice **Ubuntu** fonts) ...
+# Install a few extra fonts (including the nice *Ubuntu* fonts).
 # shellcheck disable=SC2086
 apt-get -y install $FONT
 wget -c $FONT_UB_SRC
 dpkg -i $FONT_UB
-# Use the **lxappearance** graphical config utility (with the extra openbox 
-# plugin) to setup your new theme (details stored in `~/.gtkrc-2.0`).
+echo "Use the *lxappearance* graphical config utility (with the extra openbox" 
+echo "plugin) to setup your new theme (details stored in ~/.gtkrc-2.0)."
 # shellcheck disable=SC2086
 apt-get -y install $TOOL
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Inst_nonpkg_firefox() {
 clear
 L_banner_begin "Install Firefox"
-# Install the latest Firefox Stable on Debian Stretch.
-# Create ~/opt directory to store programs in $HOME. Download and unpack the 
-# latest binaries from the official website, and create a link to the
-# executable in my PATH
+# Install the latest Firefox Stable. Create ~/opt directory to store
+# programs in $HOME. Download and unpack the latest binaries from
+# official website, and create a link to the executable in my PATH.
 local DIR="/home/$USERNAME/opt"
 local FF="FirefoxSetup.tar.bz2"
 local FF_SRC="https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"
@@ -444,7 +471,7 @@ else
     ln -s $DIR/firefox/firefox $LINK
 fi
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Inst_desktop_pkg() {
@@ -475,7 +502,7 @@ local VB_DEP="dkms module-assistant linux-headers-$KERNEL"
 apt-get -y install $VB_DEP && apt-get -y install virtualbox
 adduser $USERNAME vboxusers
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Conf_terminal() {
@@ -489,7 +516,7 @@ if [[ -x $TERM ]]; then
     cp "$FILE_DIR/usr/lib/urxvt/perl/tabbed" $TERM_TAB
 fi
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Conf_alt_workstation() {
@@ -498,7 +525,7 @@ L_banner_begin "Configure default commands"
 update-alternatives --config editor
 update-alternatives --config x-terminal-emulator
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Conf_alt_server() {
@@ -506,16 +533,17 @@ clear
 L_banner_begin "Configure default commands"
 update-alternatives --config editor
 L_sig_ok
-sleep 4
+sleep $SLEEP
 }
 
 Goto_work() {
-local NUM_Q="7"
+local NUM_Q="8"
 local PROFILE="foo"
 local SSD="foo"
 local GRUB_X="foo"
 local SUDO_X="foo"
 local AUTO_UP="foo"
+local SWAPFILE="foo"
 while :
 do
     clear
@@ -609,6 +637,23 @@ do
     done
     clear
     L_banner_begin "Question 7 of $NUM_Q"
+    while :
+    do
+        echo "If not using a swap partition, creating a swap file is recommended."
+        echo "This allows data to be transferred out of RAM to free up extra memory."
+        echo ""; read -r -n 1 -p "Create a 2GB swapfile? [Yn] > "
+        if [[ $REPLY == [nN] ]]; then
+            SWAPFILE="no"
+            break
+        elif [[ $REPLY == [yY] || $REPLY == "" ]]; then
+            SWAPFILE="yes"
+            break
+        else
+            L_invalid_reply_yn
+        fi
+    done
+    clear
+    L_banner_begin "Question 8 of $NUM_Q"
     L_echo_purple "Username: $USERNAME"
     L_echo_purple "Profile: $PROFILE"
     if [[ $SSD == "yes" ]]; then
@@ -630,6 +675,11 @@ do
         L_echo_green "Auto-Updates: $AUTO_UP"
     else
         L_echo_red "Auto-Updates: $AUTO_UP"
+    fi
+    if [[ $SWAPFILE == "yes" ]]; then
+        L_echo_green "Swap File: $SWAPFILE"
+    else
+        L_echo_red "Swap File: $SWAPFILE"
     fi
     if [[ $PKG_LIST != "foo" ]]; then
         L_echo_purple "Package List: $PKG_LIST"
@@ -665,6 +715,10 @@ fi
 # Automatic security updates
 if [[ $AUTO_UP == "yes" ]]; then
     Conf_unattended_upgrades
+fi
+# Swap file
+if [[ $SWAPFILE == "yes" ]]; then
+    Conf_swapfile
 fi
 # Workstation setup
 if [[ $PROFILE == "workstation" ]]; then
