@@ -364,8 +364,9 @@ sleep $SLEEP
 Inst_xorg() {
 clear
 L_banner_begin "Install X environment"
-local XORG="xorg xbacklight xbindkeys xfonts-terminus xinput 
-xserver-xorg-input-all xterm xvkbd fonts-liberation rxvt-unicode-256color"
+local XORG="xorg xbacklight xbindkeys xfonts-terminus xvkbd fonts-liberation 
+xinput xserver-xorg-input-all xserver-xorg-input-synaptics fonts-liberation 
+rxvt-unicode-256color"
 # shellcheck disable=SC2086
 apt-get -y install $XORG
 L_sig_ok
