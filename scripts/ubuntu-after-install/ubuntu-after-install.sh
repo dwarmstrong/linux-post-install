@@ -264,8 +264,8 @@ sleep $SLEEP
 Inst_desktop_pkg() {
 clear
 L_banner_begin "Install some favourite desktop packages"
-local DESKTOP="build-essential clipit dconf-editor ffmpeg flashplugin-installer 
-geeqie gimp gimp-help-en gimp-data-extras qpdfview rofi rxvt-unicode sox vlc"
+local DESKTOP="build-essential clipit dconf-editor ffmpeg geeqie gimp 
+gimp-help-en gimp-data-extras qpdfview rofi rxvt-unicode sox vlc"
 # Virtualbox - more: https://www.circuidipity.com/virtualbox-debian-stretch/
 local KERNEL
 KERNEL=$(uname -r)
