@@ -265,7 +265,8 @@ Inst_desktop_pkg() {
 clear
 L_banner_begin "Install some favourite desktop packages"
 local DESKTOP="build-essential clipit dconf-editor ffmpeg geeqie gimp 
-gimp-help-en gimp-data-extras qpdfview rofi rxvt-unicode sox vlc"
+gimp-help-en gimp-data-extras pulseaudio-utils qpdfview rofi rxvt-unicode 
+sox vlc xbindkeys xbacklight xvkbd"
 # Virtualbox - more: https://www.circuidipity.com/virtualbox-debian-stretch/
 local KERNEL
 KERNEL=$(uname -r)
