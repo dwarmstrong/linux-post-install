@@ -226,8 +226,7 @@ Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
 local CONSOLE="apt-file apt-show-versions apt-utils aptitude cowsay git htop 
-keychain neovim openssh-server pylint pylint3 shellcheck rsync sl tmux unzip 
-wget whois"
+neovim openssh-server pylint pylint3 shellcheck rsync sl tmux unzip wget whois"
 # shellcheck disable=SC2086
 apt-get -y install $CONSOLE
 apt-file update
@@ -264,20 +263,19 @@ sleep $SLEEP
 Inst_desktop_pkg() {
 clear
 L_banner_begin "Install some favourite desktop packages"
-local DESKTOP="build-essential clipit dconf-editor ffmpeg geeqie gimp 
-gimp-help-en gimp-data-extras pulseaudio-utils qpdfview rofi rxvt-unicode 
-sox vlc xbindkeys xbacklight xvkbd"
+local DESKTOP="build-essential chrome-gnome-shell clipit dconf-editor ffmpeg 
+flashplugin-installer fonts-noto fonts-roboto geeqie gimp gimp-help-en 
+gimp-data-extras gnome-shell-extensions gnome-system-monitor gnome-tweak-tool
+papirus-icon-theme qpdfview rofi rxvt-unicode sox vlc"
 # Virtualbox - more: https://www.circuidipity.com/virtualbox-debian-stretch/
 local KERNEL
 KERNEL=$(uname -r)
 local VB_DEP="dkms module-assistant linux-headers-$KERNEL"
 # *-restricted extras -- metapackage requires end-user consent before install
 RESTRICT="ubuntu-restricted-extras"
-# Sometimes apt gets stuck on a slow download ... breaking up downloads
-# speeds things up ...
 # shellcheck disable=SC2086
-apt-get -y install $DESKTOP && \
-#apt-get -y install $VB_DEP && apt-get -y install virtualbox \
+apt-get -y install $DESKTOP
+#apt-get -y install $VB_DEP && apt-get -y install virtualbox
 #adduser $USERNAME vboxusers
 # shellcheck disable=SC2086
 apt-get -y install $RESTRICT
