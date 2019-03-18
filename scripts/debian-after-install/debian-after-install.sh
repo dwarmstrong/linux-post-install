@@ -433,7 +433,7 @@ pulseaudio pulseaudio-utils rhythmbox sox vlc"
 local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome 
 hunspell-en-ca qpdfview"
 local IMAGE="mirage scrot geeqie gimp gimp-help-en gimp-data-extras"
-local NET="chromium network-manager-gnome transmission-gtk"
+local NET="chromium network-manager-gnome newsboat transmission-gtk"
 local SYS="dunst rofi rxvt-unicode"
 local DEV="autoconf automake bc build-essential devscripts fakeroot 
 libncurses5-dev python-dev python-pip python3-dev python3-pip 
