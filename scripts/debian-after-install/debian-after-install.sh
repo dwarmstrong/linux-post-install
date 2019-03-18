@@ -414,9 +414,9 @@ else
     else
         echo "Create $DIR ..."
         mkdir $DIR
-        chown ${USERNAME}:${USERNAME} $DIR
         mv $FF_EXE $FF_TAR
         tar xvf $FF_TAR -C $DIR
+        chown -R ${USERNAME}:${USERNAME} $DIR
         echo "Create symbolic link $LINK to firefox installed in $DIR ..."
         ln -s $DIR/firefox/firefox $LINK
     fi
