@@ -48,10 +48,7 @@ GPLv2. See ``LICENSE`` for more details.
 
 ### SEE ALSO
 
-TODO
-```
-1. [Console tools: debian-after-install](https://www.circuidipity.com/.../)
-```
+1. "More Debian: debian-after-install" (work-in-progress)
 
 2. [Minimal Debian](https://www.circuidipity.com/minimal-debian/)
 
