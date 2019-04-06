@@ -1,7 +1,8 @@
 #!/bin/bash
 NAME="debian-after-install.sh"
 BLURB="Configure a device after a fresh install of Debian"
-SOURCE="https://github.com/vonbrownie/linux-post-install/tree/master/scripts/debian-after-install"
+SRC_DIR="https://github.com/vonbrownie/linux-post-install"
+SOURCE="$SRC_DIR/tree/master/scripts/debian-after-install"
 set -eu
 
 # Copyright (c) 2019 Daniel Wayne Armstrong. All rights reserved.
@@ -124,6 +125,15 @@ do
 done
 }
 
+L_test_required_file() {
+local FILE=$1
+local ERR="ERROR: file '$FILE' required but not found."
+if [[ ! -f "$FILE" ]]; then
+    L_echo_red "\\n$( L_penguin ) .: $ERR"
+    exit 1
+fi
+}
+
 L_bak_file() {
 for f in "$@"; do cp "$f" "$f.$(date +%FT%H%M%S).bak"; done
 }
@@ -135,9 +145,6 @@ do
     if [[ $REPLY == [yY] ]]; then
         echo -e "\\nLet's roll then ..."
         sleep 4
-        if [[ -x "/usr/games/sl" ]]; then
-            /usr/games/sl
-        fi
         break
     elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
         echo -e "\\n$( L_penguin )"
@@ -313,9 +320,8 @@ if [[ -d $SSH_DIR ]]; then
     echo "SSH directory $SSH_DIR already exists. Skipping ..."
 else
     echo "Create $SSH_DIR and set permissions ..."
-    mkdir $SSH_DIR && chmod 700 $SSH_DIR && \
-    touch $AUTH_KEY && chmod 600 $AUTH_KEY && \
-    chown -R ${USERNAME}:${USERNAME} $SSH_DIR
+    mkdir $SSH_DIR && chmod 700 $SSH_DIR && touch $AUTH_KEY
+    chmod 600 $AUTH_KEY && chown -R ${USERNAME}:${USERNAME} $SSH_DIR
 fi
 
 L_sig_ok
@@ -409,6 +415,7 @@ L_banner_begin "Configure GRUB extras"
 # Add some extras. See "GNU GRUB" -- https://www.circuidipity.com/grub/
 local GRUB_DEFAULT="/etc/default/grub"
 local WALLPAPER="/boot/grub/wallpaper-grub.tga"
+local DWNLD="$SRC_DIR/blob/master/config/boot/grub/wallpaper-grub.tga?raw=true"
 local CUSTOM="/boot/grub/custom.cfg"
 
 # Backup config
@@ -437,15 +444,22 @@ if ! grep -q ^GRUB_BACKGROUND $GRUB_DEFAULT; then
 GRUB_BACKGROUND='$WALLPAPER'
 _EOL_
 fi
+
+# Install wallpaper
 if [[ -f $WALLPAPER ]]; then
     L_bak_file $WALLPAPER
 fi
-cp "$FILE_DIR/boot/grub/wallpaper-grub.tga" $WALLPAPER
+wget -c "$DWNLD" -O "$WALLPAPER"
 
+# Menu colours
 if [[ -f $CUSTOM ]]; then
     L_bak_file $CUSTOM
 fi
-cp "$FILE_DIR/boot/grub/custom.cfg" $CUSTOM
+cat << _EOL_ > $CUSTOM
+set color_normal=white/black
+set menu_color_normal=white/black
+set menu_color_highlight=white/blue
+_EOL_
 
 # Apply changes
 update-grub
@@ -532,17 +546,23 @@ Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
 
-local PKG_TOOLS="apt-file apt-listchanges apt-show-versions apt-utils aptitude"
+local PKG_TOOLS="apt-file apt-listchanges apt-show-versions apt-utils 
+aptitude command-not-found"
 local CONSOLE="bsd-mailx cowsay cryptsetup git gnupg htop mlocate net-tools 
-pmount rsync sl tmux unzip vrms whois"
+pmount rsync sl tmux unzip vrms wget whois"
 local EDITOR="neovim shellcheck"
 
 # shellcheck disable=SC2086
 apt-get -y install $PKG_TOOLS $CONSOLE $EDITOR
-apt-file update
+apt-file update && update-command-not-found
 
 # Create the mlocate database
 /etc/cron.daily/mlocate
+
+# Train kept a rollin' ...
+if [[ -x "/usr/games/sl" ]]; then
+    /usr/games/sl
+fi
 
 L_sig_ok
 sleep $SLEEP
@@ -602,9 +622,10 @@ local QT="qt5-style-plugins"
 local TOOL="lxappearance obconf"
 local THEME="Shades-of-gray-theme"
 local THEMEDIR="/home/$USERNAME/.themes"
-local THEMEGIT="https://github.com/WernerFP/Shades-of-gray-theme.git"
+local DWNLD_THEME="https://github.com/WernerFP/Shades-of-gray-theme.git"
 local ICONDIR="/home/$USERNAME/.icons"
-local ICONGIT="https://raw.githubusercontent.com/gusbemacbe/suru-plus/master/install.sh"
+local ICONGIT="https://raw.githubusercontent.com"
+local DWNLD_ICON="$ICONGIT/gusbemacbe/suru-plus/master/install.sh"
 
 # shellcheck disable=SC2086 
 apt-get -y install $GTK $QT $TOOL
@@ -615,7 +636,7 @@ if [[ -d $THEMEDIR ]]; then
 else
     mkdir $THEMEDIR
 fi
-git clone $THEMEGIT
+git clone $DWNLD_THEME
 cp -r $THEME/Shades-of-* $THEMEDIR
 chown -R $USERNAME:$USERNAME $THEMEDIR
 
@@ -625,7 +646,7 @@ if [[ -d $ICONDIR ]]; then
 else
     mkdir $ICONDIR
 fi
-wget -qO- $ICONGIT | env DESTDIR="$ICONDIR" sh
+wget -qO- $DWNLD_ICON | env DESTDIR="$ICONDIR" sh
 chown -R $USERNAME:$USERNAME $ICONDIR
 
 L_sig_ok
@@ -642,7 +663,8 @@ L_banner_begin "Install Firefox"
 local DIR="/home/$USERNAME/opt"
 local FF_EXE="FirefoxSetup.exe"
 local FF_TAR="firefox.tar.bz2"
-local FF_SRC="https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"
+local FF_SRC="https://download.mozilla.org"
+local DWNLD="$FF_SRC/?product=firefox-latest&os=linux64&lang=en-US"
 local LINK="/usr/local/bin/firefox"
 
 if [[ -a $LINK ]]; then
@@ -890,8 +912,6 @@ sleep 4
 L_test_root                     # Script run with root priviliges?
 L_test_internet                 # Internet access available?
 L_test_datetime                 # Confirm date + timezone
-L_test_systemd_fail             # Any failed units?
-L_test_priority_err             # Identify high priority errors
 # ... rollin' rollin' rollin' ...
 Hello_you
 L_run_script
