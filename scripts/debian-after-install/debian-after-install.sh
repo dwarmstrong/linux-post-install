@@ -1,6 +1,6 @@
 #!/bin/bash
 NAME="debian-after-install.sh"
-BLURB="Configure a device after a fresh install of Debian *Buster*"
+BLURB="Configure a device after a fresh install of Debian"
 SOURCE="https://github.com/vonbrownie/linux-post-install/tree/master/scripts/debian-after-install"
 set -eu
 
@@ -15,20 +15,156 @@ set -eu
 
 # Import some helpful functions, prefixed 'L_'
 # shellcheck disable=SC1091
-source ./Library.sh
+#source ./Library.sh
 
 RELEASE="buster"           # Debian release _codename_ to track
-FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
+#FILE_DIR="$(pwd)/files"     # Directory tree contents to be copied to machine
 PKG_LIST="foo"  # Install packages from LIST; set with option '-p LISTNAME'
 USERNAME="foo"              # Setup machine for USERNAME
 SLEEP="8"                   # Pause for X seconds
+# ANSI escape codes
+RED="\\033[1;31m"
+GREEN="\\033[1;32m"
+YELLOW="\\033[1;33m"
+PURPLE="\\033[1;35m"
+NC="\\033[0m" # no colour
+
+L_echo_red() {
+echo -e "${RED}$1${NC}"
+}
+
+L_echo_green() {
+echo -e "${GREEN}$1${NC}"
+}
+
+L_echo_yellow() {
+echo -e "${YELLOW}$1${NC}"
+}
+
+L_echo_purple() {
+echo -e "${PURPLE}$1${NC}"
+}
+
+L_banner_begin() {
+L_echo_yellow "\\n--------[  $1  ]--------\\n"
+}
+
+L_banner_end() {
+L_echo_green "\\n--------[  $1 END  ]--------\\n"
+}
+
+L_sig_ok() {
+L_echo_green "\\n--> [ OK ]"
+}
+
+L_sig_fail() {
+L_echo_red "\\n--> [ FAIL ]"
+}
+
+L_invalid_reply() {
+L_echo_red "\\n'${REPLY}' is invalid input..."
+}
+
+L_invalid_reply_yn() {
+L_echo_red "\\n'${REPLY}' is invalid input. Please select 'Y(es)' or 'N(o)'..."
+}
+
+L_penguin() {
+cat << _EOF_
+(O<
+(/)_
+_EOF_
+}
+
+L_test_announce() {
+    echo -e "\\n$( L_penguin ) .: Let's run a few tests before we begin ..."
+}
+
+L_test_root() {
+local ERR="ERROR: script must be run with root privileges. $OPT_HELP"
+if (( EUID != 0 )); then
+    L_echo_red "\\n$( L_penguin ) .: $ERR"
+    exit 1
+fi
+}
+
+L_test_internet() {
+local ERR="ERROR: script requires internet access to do its job. $OPT_HELP"
+local UP
+export UP
+UP=$( nc -z 8.8.8.8 53; echo $? ) # Google DNS is listening?
+if [[ $UP -ne 0 ]]; then
+    L_echo_red "\\n$( L_penguin ) .: $ERR"
+    exit 1
+fi
+}
+
+L_test_datetime() {
+clear
+L_banner_begin "Confirm date + timezone"
+local LINK="<https://wiki.archlinux.org/index.php/time>"
+if [[ -x "/usr/bin/timedatectl" ]]; then
+    timedatectl
+else
+    echo -e "Current date is $( date -I'minutes' )"
+fi
+while :
+do
+    echo ""; read -r -n 1 -p "Modify? [yN] > "
+    if [[ $REPLY == [yY] ]]; then
+        echo -e "\\n\\n$( L_penguin ) .: Check out datetime in Arch Wiki $LINK" 
+        echo "plus 'dpkg-reconfigure tzdata' for setting default timezone."
+        exit
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+        clear
+        break
+    else
+        L_invalid_reply_yn
+    fi
+done
+}
+
+L_bak_file() {
+for f in "$@"; do cp "$f" "$f.$(date +%FT%H%M%S).bak"; done
+}
+
+L_run_script() {
+while :
+do
+    read -r -n 1 -p "Run script now? [yN] > "
+    if [[ $REPLY == [yY] ]]; then
+        echo -e "\\nLet's roll then ..."
+        sleep 4
+        if [[ -x "/usr/games/sl" ]]; then
+            /usr/games/sl
+        fi
+        break
+    elif [[ $REPLY == [nN] || $REPLY == "" ]]; then
+        echo -e "\\n$( L_penguin )"
+        exit
+    else
+        L_invalid_reply_yn
+    fi
+done
+}
+
+L_all_done() {
+local MSG="All done!"
+if [[ -x "/usr/games/cowsay" ]]; then
+    L_echo_green "$( /usr/games/cowsay "$MSG" )"
+else
+    echo -e "$( L_penguin ) .: $MSG"
+fi
+}
 
 Hello_you() {
 L_echo_yellow "\\n$( L_penguin ) .: Howdy!"
-##local LINK1="https://www.circuidipity.com/debian-after-install/"
+
+local LINK1="https://www.circuidipity.com/debian-after-install/"
 local LINK2="https://www.circuidipity.com/minimal-debian/"
 local LINK3="https://www.circuidipity.com/openbox/"
 local LINK4="https://www.circuidipity.com/debian-package-list/"
+
 cat << _EOF_
 NAME
     $NAME
@@ -45,10 +181,10 @@ DESCRIPTION
     and a range of desktop applications.
     
     Alternately, in lieu of a pre-defined list of Debian packages, the user may
-    specify their own custom list of packages to be installed.
+    specify their own custom list of packages to be installed. [4]
 OPTIONS
     -h              print details
-    -p PKG_LIST     install packages from PKG_LIST [4]
+    -p PKG_LIST     install packages from PKG_LIST
 EXAMPLES
     Run script (requires superuser privileges) ...
         # ./$NAME
@@ -57,10 +193,8 @@ EXAMPLES
 SOURCE
     $SOURCE
 SEE ALSO
-    TODO
-    ###[1] "Console tools: debian-after-install"
-        ##LINK1
-    #####
+    [1] "More Debian: debian-after-install"
+        $LINK1 TODO
     [2] "Minimal Debian"
         $LINK2
     [3] "Roll your own Linux desktop using Openbox"
@@ -96,17 +230,45 @@ do
 done
 }
 
+Conf_keyboard() {
+clear
+L_banner_begin "Configure keyboard"
+
+# Select a custom keymap
+dpkg-reconfigure keyboard-configuration
+setupcon
+cat /etc/default/keyboard
+
+L_sig_ok
+sleep $SLEEP
+}
+
+Conf_consolefont() {
+clear
+L_banner_begin "Configure console font"
+
+# Select a custom font and size for the console
+dpkg-reconfigure console-setup
+cat /etc/default/console-setup
+
+L_sig_ok
+sleep $SLEEP
+}
+
 Conf_apt_sources() {
 clear
 L_banner_begin "Configure sources.list for '$RELEASE'"
-# Add backports repository, update package list, upgrade packages."
-# "Minimal Debian -- Main, non-free, contrib, and backports"
-#   https://www.circuidipity.com/minimal-debian/#8-main-non-free-contrib-and-backports
+
+# Add backports repository, update package list, upgrade packages.
 local FILE="/etc/apt/sources.list"
 local MIRROR="http://deb.debian.org/debian/"
 local MIRROR1="http://security.debian.org/debian-security"
 local COMP="main contrib non-free"
+
+# Backup previous config
 L_bak_file $FILE
+
+# Create a new config
 cat << _EOL_ > $FILE
 # Base repository
 deb $MIRROR $RELEASE $COMP
@@ -124,9 +286,11 @@ deb-src $MIRROR1 $RELEASE/updates $COMP
 #deb $MIRROR $RELEASE-backports $COMP
 #deb-src $MIRROR $RELEASE-backports $COMP
 _EOL_
-#
-echo "Update packages and upgrade $HOSTNAME ..."
+
+# Update/upgrade
+echo "Update list of packages available and upgrade $HOSTNAME ..."
 apt-get update && apt-get -y dist-upgrade
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -134,13 +298,17 @@ sleep $SLEEP
 Conf_ssh() {
 clear
 L_banner_begin "Create SSH directory for $USERNAME"
+
 # Install SSH server and create $HOME/.ssh.
 # "Secure remote access using SSH keys"
 #   https://www.circuidipity.com/ssh-keys/
 local SSH_DIR="/home/$USERNAME/.ssh"
 local AUTH_KEY="$SSH_DIR/authorized_keys"
+
 # Install ssh server and keychain
 apt-get -y install openssh-server keychain
+
+# Create ~/.ssh
 if [[ -d $SSH_DIR ]]; then
     echo "SSH directory $SSH_DIR already exists. Skipping ..."
 else
@@ -149,6 +317,7 @@ else
     touch $AUTH_KEY && chmod 600 $AUTH_KEY && \
     chown -R ${USERNAME}:${USERNAME} $SSH_DIR
 fi
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -156,35 +325,42 @@ sleep $SLEEP
 Conf_sudoersd() {
 clear
 L_banner_begin "Configure sudo"
+
 # Add config files to /etc/sudoers.d/ to allow members of the sudo group
 # extra privileges. 
-# "Minimal Debian -- Sudo"
-#   https://www.circuidipity.com/minimal-debian/#10-sudo
 local ALIAS="/etc/sudoers.d/00-alias"
 local NOPASSWD="/etc/sudoers.d/01-nopasswd"
+local OFF="/usr/bin/systemctl poweroff"
+local REBOOT="/usr/bin/systemctl reboot"
+local SUSPEND="/usr/bin/systemctl suspend"
+
 # Install sudo
 apt-get -y install sudo
+
+# Backup configs
 if [[ -f $ALIAS ]]; then
     L_bak_file $ALIAS
 fi
 if [[ -f $NOPASSWD ]]; then
     L_bak_file $NOPASSWD
 fi
+
+# Create new configs
 echo "Create $ALIAS ..."
 cat << _EOL_ > $ALIAS
-# User alias
 User_Alias ADMIN = $USERNAME
-
-# Cmnd alias specification
-Cmnd_Alias SHUTDOWN_CMDS = /sbin/poweroff, /sbin/reboot, /sbin/shutdown
+Cmnd_Alias SYS_CMDS = $OFF, $REBOOT, $SUSPEND
 _EOL_
 L_sig_ok
 echo "Create $NOPASSWD ..."
 cat << _EOL_ > $NOPASSWD
 # Allow specified users to execute these commands without password
-$USERNAME ALL=(ALL) NOPASSWD: SHUTDOWN_CMDS
+ADMIN ALL=(ALL) NOPASSWD: SYS_CMDS
 _EOL_
+
+# Add user to sudo group
 adduser $USERNAME sudo
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -192,21 +368,23 @@ sleep $SLEEP
 Conf_sysctl() {
 clear
 L_banner_begin "Configure sysctl"
+
 local SYSCTL="/etc/sysctl.conf"
 local DMESG="kernel.dmesg_restrict"
+
 if grep -q "$DMESG" $SYSCTL; then
     echo "Option $DMESG already set. Skipping ..."
 else
     L_bak_file $SYSCTL
-    # dmesg
-cat << _EOL_ >> $SYSCTL
+    cat << _EOL_ >> $SYSCTL
 
-# Allow non-root access to 'dmesg' command
-kernel.dmesg_restrict = 0
+# Allow non-root access to dmesg
+$DMESG = 0
 _EOL_
     # Reload configuration.
     sysctl -p
 fi
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -214,13 +392,12 @@ sleep $SLEEP
 Conf_trim() {
 clear
 L_banner_begin "Configure periodic trim for SSD"
+
 # Periodic TRIM optimizes performance on SSD storage. Enable a weekly task
 # that discards unused blocks on the drive.
-# "Minimal Debian -- SSD"
-#   https://www.circuidipity.com/minimal-debian/#11-ssd
-local TIMER="fstrim.timer"
 echo "Enabling timer ..."
-systemctl enable $TIMER
+systemctl enable fstrim.timer
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -228,46 +405,51 @@ sleep $SLEEP
 Conf_grub() {
 clear
 L_banner_begin "Configure GRUB extras"
-# Add a bit of colour, a bit of sound, and wallpaper.
-# "GNU GRUB"
-#   https://www.circuidipity.com/grub/
+
+# Add some extras. See "GNU GRUB" -- https://www.circuidipity.com/grub/
 local GRUB_DEFAULT="/etc/default/grub"
 local WALLPAPER="/boot/grub/wallpaper-grub.tga"
-local GRUB_CUSTOM="/boot/grub/custom.cfg"
+local CUSTOM="/boot/grub/custom.cfg"
+
+# Backup config
 L_bak_file $GRUB_DEFAULT
+
+if ! grep -q ^GRUB_DISABLE_SUBMENU $GRUB_DEFAULT; then
+    cat << _EOL_ >> $GRUB_DEFAULT
+
+# Kernel list as a single menu
+GRUB_DISABLE_SUBMENU=y
+_EOL_
+fi
+
 if ! grep -q ^GRUB_INIT_TUNE $GRUB_DEFAULT; then
-    echo "Put the BEEP in the grub start beep ..."
     cat << _EOL_ >> $GRUB_DEFAULT
-        
-# Get a beep at grub start ... how about 'Close Encounters'?
-GRUB_INIT_TUNE="480 900 2 1000 2 800 2 400 2 600 3"
+
+# Start off with a bit of "Close Encounters"
+GRUB_INIT_TUNE='480 900 2 1000 2 800 2 400 2 600 3'
 _EOL_
-    L_sig_ok
-else
-    echo "Grub already includes sound effects. Skipping ..."
-    L_sig_ok
 fi
+
 if ! grep -q ^GRUB_BACKGROUND $GRUB_DEFAULT; then
-    echo "Include some wallpaper and colour ..."
     cat << _EOL_ >> $GRUB_DEFAULT
-        
+
 # Wallpaper
-GRUB_BACKGROUND="$WALLPAPER"
+GRUB_BACKGROUND='$WALLPAPER'
 _EOL_
-    if [[ -f $WALLPAPER ]]; then
-        L_bak_file $WALLPAPER
-    fi
-    cp "$FILE_DIR/boot/grub/wallpaper-grub.tga" $WALLPAPER
-    if [[ -f $GRUB_CUSTOM ]]; then
-        L_bak_file $GRUB_CUSTOM
-    fi
-    cp "$FILE_DIR/boot/grub/custom.cfg" $GRUB_CUSTOM
-    L_sig_ok
-else
-    echo "Grub already includes wallpaper and colour. Skipping ..."
-    L_sig_ok
 fi
+if [[ -f $WALLPAPER ]]; then
+    L_bak_file $WALLPAPER
+fi
+cp "$FILE_DIR/boot/grub/wallpaper-grub.tga" $WALLPAPER
+
+if [[ -f $CUSTOM ]]; then
+    L_bak_file $CUSTOM
+fi
+cp "$FILE_DIR/boot/grub/custom.cfg" $CUSTOM
+
+# Apply changes
 update-grub
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -275,13 +457,14 @@ sleep $SLEEP
 Conf_swapfile() {
 clear
 L_banner_begin "Configure swapfile"
+
 # File that holds data transferred out of RAM to free up extra memory.
 local SWAPFILE="/swapfile"
 local SWAPSIZE="2G"
+
 if [[ -f $SWAPFILE ]]; then
     echo "Swap file $SWAPFILE already exists. Skipping ..."
 else
-    echo "Create a $SWAPSIZE file to be used for swap ..."
     fallocate -l $SWAPSIZE $SWAPFILE
     # Only root should be granted read/write access.
     chmod 600 $SWAPFILE
@@ -297,6 +480,7 @@ else
     L_bak_file /etc/fstab
     echo "$SWAPFILE none swap sw 0 0" | tee -a /etc/fstab
 fi
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -304,11 +488,13 @@ sleep $SLEEP
 Inst_pkg_list() {
 clear
 L_banner_begin "Install packages from '$PKG_LIST' list (option '-p')"
+
 # Update dpkg database of known packages.
 # "Install (almost) the same list of Debian packages on multiple machines"
 #   https://www.circuidipity.com/debian-package-list/
 local AVAIL
     AVAIL=$( mktemp )
+
 apt-cache dumpavail > "$AVAIL"
 dpkg --merge-avail "$AVAIL"
 rm -f "$AVAIL"
@@ -316,8 +502,28 @@ rm -f "$AVAIL"
 dpkg --set-selections < "$PKG_LIST"
 L_sig_ok
 sleep $SLEEP
+
 # Use apt-get to install the selected packages
 apt-get -y dselect-upgrade
+
+L_sig_ok
+sleep $SLEEP
+}
+
+Conf_microcode() {
+clear
+L_banner_begin "Install microcode"
+
+# Intel and AMD processors may periodically need updates to their microcode
+# firmware. Microcode can be updated (and kept in volatile memory) during
+# boot by installing either intel-microcode or amd64-microcode (AMD).
+local CPU="/proc/cpuinfo"
+if grep -q GenuineIntel $CPU; then
+    apt-get -y install intel-microcode
+elif grep -q AuthenticAMD $CPU; then
+    apt-get -y install amd64-microcode
+fi
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -325,16 +531,19 @@ sleep $SLEEP
 Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
+
 local PKG_TOOLS="apt-file apt-listchanges apt-show-versions apt-utils aptitude"
 local CONSOLE="bsd-mailx cowsay cryptsetup git gnupg htop mlocate net-tools 
 pmount rsync sl tmux unzip vrms whois"
-local EDITOR="neovim python-dev python-pip python3-dev python3-pip pylint 
-pylint3 shellcheck"
+local EDITOR="neovim shellcheck"
+
 # shellcheck disable=SC2086
 apt-get -y install $PKG_TOOLS $CONSOLE $EDITOR
 apt-file update
+
 # Create the mlocate database
 /etc/cron.daily/mlocate
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -342,9 +551,12 @@ sleep $SLEEP
 Inst_server_pkg() {
 clear
 L_banner_begin "Install server packages"
+
 local PKG="fail2ban logwatch"
+
 # shellcheck disable=SC2086
 apt-get -y install $PKG
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -352,9 +564,13 @@ sleep $SLEEP
 Inst_xorg() {
 clear
 L_banner_begin "Install X environment"
+
 local XORG="xorg xbacklight xbindkeys xvkbd xinput xserver-xorg-input-all"
+local FONT="fonts-dejavu fonts-liberation2 fonts-ubuntu"
+
 # shellcheck disable=SC2086
-apt-get -y install $XORG
+apt-get -y install $XORG $FONT
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -362,14 +578,17 @@ sleep $SLEEP
 Inst_openbox() {
 clear
 L_banner_begin "Install Openbox window manager"
+
 # "Roll your own Linux desktop using Openbox"
 #   https://www.circuidipity.com/openbox/
 local WM="openbox obconf menu"
 local WM_EXTRA="clipit compton compton-conf dunst dbus-x11 feh hsetroot i3lock 
-libnotify-bin mirage network-manager network-manager-gnome pavucontrol 
-pulseaudio-utils rofi scrot tint2 volumeicon-alsa xfce4-power-manager"
+libnotify-bin network-manager network-manager-gnome pavucontrol pulseaudio 
+pulseaudio-utils rofi scrot tint2 viewnior volumeicon-alsa xfce4-power-manager"
+
 # shellcheck disable=SC2086
 apt-get -y install $WM $WM_EXTRA
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -377,18 +596,38 @@ sleep $SLEEP
 Inst_theme() {
 clear
 L_banner_begin "Install theme"
-local GTK="adapta-gtk-theme"
+
+local GTK="gnome-themes-standard gtk2-engines-murrine gtk2-engines-pixbuf"
 local QT="qt5-style-plugins"
-local ICON="papirus-icon-theme"
-local FONT="fonts-liberation2 fonts-noto fonts-roboto fonts-ubuntu"
-local TOOL="lxappearance lxappearance-obconf"
-# Install the *Adapta* theme for Openbox, GTK2+3, and QT.
-# "Openbox -- Themes"
-#   https://www.circuidipity.com/openbox/#6-themes
+local TOOL="lxappearance obconf"
+local THEME="Shades-of-gray-theme"
+local THEMEDIR="/home/$USERNAME/.themes"
+local THEMEGIT="https://github.com/WernerFP/Shades-of-gray-theme.git"
+local ICONDIR="/home/$USERNAME/.icons"
+local ICONGIT="https://raw.githubusercontent.com/gusbemacbe/suru-plus/master/install.sh"
+
 # shellcheck disable=SC2086 
-apt-get -y install $GTK $QT $ICON $FONT $TOOL
-echo "Use the *lxappearance* graphical config utility to setup your new theme"
-echo "(details stored in ~/.gtkrc-2.0)."
+apt-get -y install $GTK $QT $TOOL
+
+# Install the *Shades-of-gray* theme
+if [[ -d $THEMEDIR ]]; then
+    echo "$THEMEDIR exists."
+else
+    mkdir $THEMEDIR
+fi
+git clone $THEMEGIT
+cp -r $THEME/Shades-of-* $THEMEDIR
+chown -R $USERNAME:$USERNAME $THEMEDIR
+
+# Install Suru++ icons
+if [[ -d $ICONDIR ]]; then
+    echo "$ICONDIR exists."
+else
+    mkdir $ICONDIR
+fi
+wget -qO- $ICONGIT | env DESTDIR="$ICONDIR" sh
+chown -R $USERNAME:$USERNAME $ICONDIR
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -396,6 +635,7 @@ sleep $SLEEP
 Inst_nonpkg_firefox() {
 clear
 L_banner_begin "Install Firefox"
+
 # Install the latest Firefox Stable. Create ~/opt directory to store
 # programs in $HOME. Download and unpack the latest binaries from
 # official website, and create a link to the executable in my PATH.
@@ -404,6 +644,7 @@ local FF_EXE="FirefoxSetup.exe"
 local FF_TAR="firefox.tar.bz2"
 local FF_SRC="https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"
 local LINK="/usr/local/bin/firefox"
+
 if [[ -a $LINK ]]; then
     echo "$LINK already exists. Skipping ..."
 else
@@ -421,6 +662,7 @@ else
         ln -s $DIR/firefox/firefox $LINK
     fi
 fi
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -428,47 +670,24 @@ sleep $SLEEP
 Inst_workstation_pkg() {
 clear
 L_banner_begin "Install some favourite workstation packages"
+
 local AV="alsa-utils default-jre ffmpeg gstreamer1.0-plugins-ugly pavucontrol 
 pulseaudio pulseaudio-utils rhythmbox sox vlc"
-local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome 
-hunspell-en-ca qpdfview"
-local IMAGE="mirage scrot geeqie gimp gimp-help-en gimp-data-extras"
-local NET="chromium network-manager-gnome newsboat transmission-gtk"
+local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome hunspell-en-ca 
+qpdfview"
+local IMAGE="scrot viewnior geeqie gimp gimp-help-en gimp-data-extras"
+local NET="firefox-esr network-manager-gnome newsboat transmission-gtk"
 local SYS="dunst rofi rxvt-unicode"
-local DEV="autoconf automake bc build-essential devscripts fakeroot 
-libncurses5-dev python-dev python-pip python3-dev python3-pip 
-python-pygments python3-pygments"
-# Sometimes apt gets stuck on a slow download ... breaking up downloads
-# speeds things up ...
+local DEV="build-essential dkms libncurses5-dev linux-headers-amd64 
+module-assistant python3-dev python3-pip python3-pygments"
+
+# Sometimes apt gets stuck on a slow download. Breaking up downloads tends to
+# speeds things up.
 # shellcheck disable=SC2086
 apt-get -y install $AV && apt-get -y install $DOC && \
-    apt-get -y install $IMAGE && apt-get -y install $NET && \
-    apt-get -y install $SYS && apt-get -y install $DEV
-# Virtualbox - more: https://www.circuidipity.com/virtualbox-debian-stretch/
-local KERNEL
-KERNEL=$(uname -r)
-local VB_DEP="dkms module-assistant linux-headers-$KERNEL"
-# shellcheck disable=SC2086
-apt-get -y install $VB_DEP
-apt-get -y install virtualbox
-adduser $USERNAME vboxusers
-# Remove packages ...
-local REMOVE="firefox-esr"
-apt-get -y --purge remove $REMOVE
-L_sig_ok
-sleep $SLEEP
-}
+apt-get -y install $IMAGE && apt-get -y install $NET && \
+apt-get -y install $SYS && apt-get -y install $DEV
 
-Conf_terminal() {
-clear
-L_banner_begin "Configure terminal"
-local TERM="/usr/bin/urxvt"
-local TERM_TAB="/usr/lib/x86_64-linux-gnu/urxvt/perl/tabbed"
-if [[ -x $TERM ]]; then
-    L_bak_file $TERM_TAB
-    echo "Modify $TERM_TAB ..."
-    cp "$FILE_DIR/usr/lib/x86_64-linux-gnu/urxvt/perl/tabbed" $TERM_TAB
-fi
 L_sig_ok
 sleep $SLEEP
 }
@@ -476,8 +695,10 @@ sleep $SLEEP
 Conf_alt_workstation() {
 clear
 L_banner_begin "Configure default commands"
+
 update-alternatives --config editor
 update-alternatives --config x-terminal-emulator
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -485,7 +706,9 @@ sleep $SLEEP
 Conf_alt_server() {
 clear
 L_banner_begin "Configure default commands"
+
 update-alternatives --config editor
+
 L_sig_ok
 sleep $SLEEP
 }
@@ -496,12 +719,14 @@ local PROFILE="foo"
 local SSD="foo"
 local GRUB_X="foo"
 local SWAPFILE="foo"
+
 while :
 do
     clear
     L_banner_begin "Question 1 of $NUM_Q"
     read -r -p "What is your non-root username? > " FOO; USERNAME="$FOO"
     L_test_homedir "$USERNAME"        # $HOME exists for USERNAME?
+    
     clear
     L_banner_begin "Question 2 of $NUM_Q"
     while :
@@ -517,6 +742,7 @@ do
             L_invalid_reply
         fi
     done
+    
     clear
     L_banner_begin "Question 3 of $NUM_Q"
     while :
@@ -534,6 +760,7 @@ do
             L_invalid_reply_yn
         fi
     done
+    
     clear
     L_banner_begin "Question 4 of $NUM_Q"
     while :
@@ -550,6 +777,7 @@ do
             L_invalid_reply_yn
         fi
     done
+    
     clear
     L_banner_begin "Question 5 of $NUM_Q"
     while :
@@ -567,6 +795,7 @@ do
             L_invalid_reply_yn
         fi
     done
+    
     clear
     L_banner_begin "Question 6 of $NUM_Q"
     L_echo_purple "Username: $USERNAME"
@@ -602,23 +831,31 @@ do
         sleep 4
     fi
 done
+
 # Common tasks
+Conf_keyboard
+Conf_consolefont
 Conf_apt_sources
 Conf_sudoersd
 Conf_ssh
 Conf_sysctl
+Conf_microcode
+
 # Periodic trim
 if [[ $SSD == "yes" ]]; then
     Conf_trim
 fi
+
 # Custon grub
 if [[ $GRUB_X == "yes" ]]; then
     Conf_grub
 fi
+
 # Swap file
 if [[ $SWAPFILE == "yes" ]]; then
     Conf_swapfile
 fi
+
 # Workstation setup
 if [[ $PROFILE == "workstation" ]]; then
     if [[ $PKG_LIST != "foo" ]]; then
@@ -628,12 +865,12 @@ if [[ $PROFILE == "workstation" ]]; then
         Inst_xorg
         Inst_openbox
         Inst_theme
-        Inst_nonpkg_firefox
+        #Inst_nonpkg_firefox	# Install firefox-esr instead
         Inst_workstation_pkg
-        Conf_terminal
         Conf_alt_workstation
     fi
 fi
+
 # Server setup
 if [[ $PROFILE == "server" ]]; then
     if [[ $PKG_LIST != "foo" ]]; then
