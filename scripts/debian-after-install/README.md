@@ -22,7 +22,7 @@ Alternately, in lieu of a pre-defined list of Debian packages, the user may spec
 
 ```bash
 -h              print details
--p PKG_LIST     install packages from PKG_LIST [4]
+-p PKG_LIST     install packages from PKG_LIST
 ```
 
 ## EXAMPLES
