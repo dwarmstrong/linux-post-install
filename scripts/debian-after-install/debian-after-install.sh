@@ -176,28 +176,25 @@ fi
 
 Hello_you() {
 L_echo_yellow "\\n$( L_penguin ) .: Howdy!"
-local LINK1="https://www.circuidipity.com/debian-after-install"
-local LINK2="https://www.circuidipity.com/minimal-debian/"
-local LINK3="https://www.circuidipity.com/openbox/"
-local LINK4="https://www.circuidipity.com/debian-package-list/"
+local LINK="https://www.circuidipity.com"
 cat << _EOF_
 
 NAME
     $NAME
-        $BLURB [1]
+        $BLURB
 SYNOPSIS
     $NAME [OPTION]
 DESCRIPTION
-    Script '$NAME' is ideally run after the first successful boot
-    into a minimal install [2] of Debian's _testing_ aka "$RELEASE" release.
+    Script '$NAME' is ideally run after the first successful
+    boot into a minimal install of Debian's _testing_ aka "$RELEASE" release.
 
     A choice of either [w]orkstation or [s]erver setup is available. [S]erver
     is a basic console setup, whereas [w]orkstation is a more complete setup
-    using Xorg and the lightweight _Openbox_ [3] window manager plus a range
+    using Xorg and the lightweight _Openbox_ window manager plus a range
     of desktop applications.
     
     Alternately, in lieu of a pre-defined list of Debian packages, the user may
-    specify their own custom list of packages to be installed. [4]
+    specify their own custom list of packages to be installed.
 OPTIONS
     -h              print details
     -p PKG_LIST     install packages from PKG_LIST
@@ -206,17 +203,23 @@ EXAMPLES
         # ./$NAME
     Install the list of packages specified in 'my-pkg-list' ...
         # ./$NAME -p my-pkg-list
+AUTHOR
+    Daniel Wayne Armstrong
+        $LINK
 SOURCE
     $SOURCE
+LICENSE
+    GPLv2. See LICENSE for more details.
+        https://github.com/vonbrownie/linux-post-install/blob/master/LICENSE
 SEE ALSO
-    [1] "More Debian: debian-after-install"
-        $LINK1
-    [2] "Minimal Debian"
-        $LINK2
-    [3] "Roll your own Linux desktop using Openbox"
-        $LINK3
-    [4] "Install (almost) the same list of Debian packages on multiple machines"
-        $LINK4
+    * More Debian: debian-after-install
+        ${LINK}/debian-after-install/
+    * Minimal Debian
+        ${LINK}/minimal-debian/
+    * Roll your own Linux desktop using Openbox
+        ${LINK}/openbox/
+    * Install (almost) the same list of Debian packages on multiple machines
+        ${LINK}/debian-package-list/
 
 _EOF_
 }
