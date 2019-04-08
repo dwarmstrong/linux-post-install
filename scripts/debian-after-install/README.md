@@ -2,15 +2,15 @@
 
 ![Debian](debian-banner.png)
 
-## NAME
+#### NAME
 
 **debian-after-install.sh** - Configure a device after a fresh install of Debian's _testing_ release.
 
-## SYNOPSIS
+#### SYNOPSIS
 
 `debian-after-install.sh [OPTION]`
 
-## DESCRIPTION
+#### DESCRIPTION
 
 Script `debian-after-install.sh` is ideally run after the first successful boot into a [minimal install](https://www.circuidipity.com/minimal-debian/) of Debian _testing_ aka "buster" release.
 
@@ -18,14 +18,14 @@ A choice of either [w]orkstation or [s]erver setup is available. [S]erver is a b
     
 Alternately, in lieu of a pre-defined list of Debian packages, the user may specify their own [custom list of packages](https://www.circuidipity.com/debian-package-list/) to be installed.
 
-## OPTIONS
+#### OPTIONS
 
 ```bash
 -h              print details
 -p PKG_LIST     install packages from PKG_LIST
 ```
 
-## EXAMPLES
+#### EXAMPLES
 
 Run script (requires root privileges) ...
 
@@ -39,19 +39,19 @@ Install the list of packages specified in `my-pkg-list` ...
 ./debian-after-install.sh -p my-pkg-list
 ```
 
-## AUTHOR
+#### AUTHOR
 
 [Daniel Wayne Armstrong](https://www.circuidipity.com)
 
-## SOURCE
+#### SOURCE
 
 [debian-after-install](https://github.com/vonbrownie/linux-post-install/blob/master/scripts/debian-after-install)
 
-## LICENSE
+#### LICENSE
 
 GPLv2. See [LICENSE](https://github.com/vonbrownie/linux-post-install/blob/master/LICENSE) for more details.
 
-## SEE ALSO
+#### SEE ALSO
 
 * [More Debian: debian-after-install](https://www.circuidipity.com/debian-after-install/)
 * [Minimal Debian](https://www.circuidipity.com/minimal-debian/)
