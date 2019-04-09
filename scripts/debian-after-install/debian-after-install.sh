@@ -971,4 +971,4 @@ clear
 L_all_done
 L_echo_green "See 'dotfiles' <${DOTFILES}> for config file examples"
 L_echo_green "useful for ${USERNAME}'s HOME directory."
-L_echo_green "Thanks for using '${NAME}' and happy hacking!"
+L_echo_green "\\nThanks for using '${NAME}' and happy hacking!"
