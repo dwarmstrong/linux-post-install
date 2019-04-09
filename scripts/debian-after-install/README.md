@@ -27,16 +27,16 @@ Alternately, in lieu of a pre-defined list of Debian packages, the user may spec
 
 #### EXAMPLES
 
-Run script (requires root privileges) ...
+Run script ...
 
 ```bash
-./debian-after-install.sh
+# ./debian-after-install.sh
 ```
 
 Install the list of packages specified in `my-pkg-list` ...
 
 ```bash
-./debian-after-install.sh -p my-pkg-list
+# ./debian-after-install.sh -p my-pkg-list
 ```
 
 #### AUTHOR
