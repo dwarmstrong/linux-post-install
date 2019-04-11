@@ -1,53 +1,54 @@
 # Ubuntu-after-install
 
-### NAME
+#### NAME
 
-ubuntu-after-install.sh - Configure a device after a fresh install of Ubuntu 18.04 LTS
+ubuntu-after-install.sh - Configure a device after a fresh install of Ubuntu
 
-### SYNOPSIS
+#### SYNOPSIS
 
 `ubuntu-after-install.sh [OPTION]`
 
-### DESCRIPTION
+#### DESCRIPTION
 
-Script `ubuntu-after-install.sh` is a *setup script* ideally run immediately following the first successful boot into **Ubuntu "Bionic Beaver" 18.04 LTS** [1].
+Script 'ubuntu-after-install.sh' is ideally run after the first successful boot into a _desktop_ install of Ubuntu's _18.04 LTS_ aka "bionic beaver" release.
 
-A choice of either a **workstation** or **server** setup is available. *Server* is a basic console setup, whereas the *workstation* choice installs a range of desktop applications.
+A few tweaks will be made here and there, and a range of applications will be installed.
 
 Alternately, in lieu of a pre-defined list of Ubuntu packages, the user may specify their own custom list of packages to be installed.
 
-### OPTIONS
+#### OPTIONS
 
 ```bash
 -h              print details
--p PKG_LIST     install packages from PKG_LIST [2]
+-p PKG_LIST     install packages from PKG_LIST
 ```
 
-### EXAMPLES
+#### EXAMPLES
 
-Run script (requires superuser privileges) ...
+Run script ...
 
 ```bash
-./ubuntu-after-install.sh
+# ./ubuntu-after-install.sh
 ```
 
 Install the list of packages specified in `my-pkg-list` ...
 
 ```bash
-./ubuntu-after-install.sh -p my-pkg-list
+# ./ubuntu-after-install.sh -p my-pkg-list
 ```
 
-### AUTHOR
+#### AUTHOR
 
-Daniel Wayne Armstrong
-https://www.circuidipity.com
+[Daniel Wayne Armstrong](https://www.circuidipity.com)
 
-### LICENSE
+#### SOURCE
 
-GPLv2. See ``LICENSE`` for more details.
+[ubuntu-after-install](https://github.com/vonbrownie/linux-post-install/blob/master/scripts/ubuntu-after-install)
 
-### SEE ALSO
+#### LICENSE
 
-1. [Ubuntu MATE 18.04](https://www.circuidipity.com/ubuntu-mate-1804/)
+GPLv2. See [LICENSE](https://github.com/vonbrownie/linux-post-install/blob/master/LICENSE) for more details.
 
-2. [Install (almost) the same list of Debian packages on multiple machines](https://www.circuidipity.com/debian-package-list/)
+#### SEE ALSO
+
+* [Install (almost) the same list of Debian packages on multiple machines](https://www.circuidipity.com/debian-package-list/)
