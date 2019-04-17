@@ -6,10 +6,6 @@ Collection of scripts and configs for setting up Linux.
 
 [Daniel Wayne Armstrong](https://www.circuidipity.com)
 
-#### SOURCE
-
-[debian-after-install](https://github.com/vonbrownie/linux-post-install/blob/master/scripts/debian-after-install)
-
 #### LICENSE
 
 GPLv2. See [LICENSE](https://github.com/vonbrownie/linux-post-install/blob/master/LICENSE) for more details.
