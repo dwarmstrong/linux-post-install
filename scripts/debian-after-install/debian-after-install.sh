@@ -681,7 +681,7 @@ Inst_workstation_pkg() {
 clear
 L_banner_begin "Install some favourite workstation packages"
 local AV="alsa-utils default-jre espeak ffmpeg gstreamer1.0-plugins-ugly 
-pavucontrol pulseaudio pulseaudio-utils rhythmbox sox vlc"
+mpg321 pavucontrol pulseaudio pulseaudio-utils rhythmbox sox vlc"
 local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome hunspell-en-ca 
 qpdfview"
 local IMAGE="scrot viewnior geeqie gimp gimp-help-en gimp-data-extras"
