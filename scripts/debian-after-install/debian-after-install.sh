@@ -618,6 +618,7 @@ local GTK="gnome-themes-standard gtk2-engines-murrine gtk2-engines-pixbuf"
 local QT="qt5-style-plugins"
 local TOOL="lxappearance obconf"
 local THEME="Shades-of-gray-theme"
+local THEME_EXTRA="arc-theme papirus-icon-theme"
 local THEMEDIR="/home/${USERNAME}/.themes"
 local DWNLD_THEME="https://github.com/WernerFP/Shades-of-gray-theme.git"
 local ICON="Suru++"
@@ -651,6 +652,9 @@ else
     wget -qO- $DWNLD_ICON | env DESTDIR="$ICONDIR" sh
     chown -R ${USERNAME}:${USERNAME} $ICONDIR
 fi
+# Install extra themes and icons
+# shellcheck disable=SC2086
+apt-get -y install $THEME_EXTRA
 L_sig_ok
 sleep $SLEEP
 }
