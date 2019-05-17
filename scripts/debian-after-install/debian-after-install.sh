@@ -600,6 +600,17 @@ L_sig_ok
 sleep $SLEEP
 }
 
+Inst_xfce() {
+clear
+L_banner_begin "Install Xfce desktop"
+local DESKTOP="task-xfce-desktop"
+local DESKTOP_EXTRA="clipit lightdm-gtk-greeter-settings"
+# shellcheck disable=SC2086
+apt-get -y install $DESKTOP $DESKTOP_EXTRA
+L_sig_ok
+sleep $SLEEP
+}
+
 Inst_theme() {
 clear
 L_banner_begin "Install theme"
