@@ -190,8 +190,8 @@ DESCRIPTION
 
     A choice of either [w]orkstation or [s]erver setup is available. [S]erver
     is a basic console setup, whereas [w]orkstation is a more complete setup
-    using Xorg and the lightweight _Openbox_ window manager plus a range
-    of desktop applications.
+    using Xorg and a choice of the lightweight _Openbox_ window manager or the
+    _Xfce_ desktop (or both) plus a range of desktop applications.
     
     Alternately, in lieu of a pre-defined list of Debian packages, the user may
     specify their own custom list of packages to be installed.
@@ -208,9 +208,6 @@ AUTHOR
         $LINK
 SOURCE
     $SOURCE
-LICENSE
-    GPLv2. See LICENSE for more details.
-        https://github.com/vonbrownie/linux-post-install/blob/master/LICENSE
 SEE ALSO
     * More Debian: debian-after-install
         ${LINK}/debian-after-install/
@@ -731,9 +728,39 @@ L_sig_ok
 sleep $SLEEP
 }
 
+Conf_desktop() {
+cat << _EOF_
+
+Please select a desktop:
+
+0. Openbox - lightweight window manager
+1. Xfce - middleweight desktop environment
+2. Openbox _and_ Xfce - install both
+
+_EOF_
+while :
+do
+read -r -p "Enter selection [0-2] > "
+case "$REPLY" in
+    0)  DESKTOP="Openbox"
+        break
+        ;;
+    1)  DESKTOP="Xfce"
+        break
+        ;;
+    2)  DESKTOP="Openbox and Xfce"
+        break
+        ;;
+    *)  L_invalid_reply
+        ;;
+esac
+done
+}
+
 Goto_work() {
 local NUM="9"
 local PROFILE="foo"
+local DESKTOP="foo"
 local AUTO="foo"
 local KEY="foo"
 local FONT="foo"
@@ -753,7 +780,8 @@ do
         read -r -n 1 -p "Are you configuring a [w]orkstation or [s]erver? > "
         if [[ "$REPLY" == [wW] ]]; then
             PROFILE="workstation"
-             break
+            Conf_desktop
+            break
         elif [[ "$REPLY" == [sS] ]]; then
             PROFILE="server"
             break
@@ -867,6 +895,9 @@ do
     L_banner_begin "Question 9 of $NUM"
     L_echo_purple "Username: $USERNAME"
     L_echo_purple "Profile: $PROFILE"
+    if [[ "$DESKTOP" != "foo" ]]; then
+        L_echo_purple "Desktop: $DESKTOP"
+    fi
     if [[ "$AUTO" == "yes" ]]; then
         L_echo_green "Automatic Update: $AUTO"
     else
@@ -952,7 +983,14 @@ if [[ "$PROFILE" == "workstation" ]]; then
     else
         Inst_console_pkg
         Inst_xorg
-        Inst_openbox
+        if [[ "$DESKTOP" == "Openbox" ]]; then
+            Inst_openbox
+        elif [[ "$DESKTOP" == "Xfce" ]]; then
+            Inst_xfce
+        else
+            Inst_openbox
+            Inst_xfce
+        fi
         Inst_theme
         #Inst_nonpkg_firefox	# Install firefox-esr instead
         Inst_workstation_pkg
