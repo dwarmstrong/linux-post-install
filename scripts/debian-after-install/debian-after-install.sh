@@ -1,6 +1,6 @@
 #!/bin/bash
 NAME="debian-after-install.sh"
-BLURB="Configure a device after a fresh install of Debian's _testing_ release"
+BLURB="Configure a device after a fresh install of Debian"
 SRC_DIR="https://github.com/vonbrownie/linux-post-install"
 SOURCE="${SRC_DIR}/tree/master/scripts/debian-after-install"
 set -eu
@@ -14,6 +14,7 @@ set -eu
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 # or FITNESS FOR A PARTICULAR PURPOSE. See the LICENSE file for more details.
 
+VERSION="10"
 RELEASE="buster"           # Debian release _codename_ to track
 SRC_RAW="https://raw.githubusercontent.com/vonbrownie/linux-post-install"
 DOTFILES="https://github.com/vonbrownie/dotfiles"
@@ -186,12 +187,12 @@ SYNOPSIS
     $NAME [OPTION]
 DESCRIPTION
     Script '$NAME' is ideally run after the first successful
-    boot into a minimal install of Debian's _testing_ aka "$RELEASE" release.
+    boot into a minimal install of Debian $VERSION aka "$RELEASE" release.
 
     A choice of either [w]orkstation or [s]erver setup is available. [S]erver
     is a basic console setup, whereas [w]orkstation is a more complete setup
-    using Xorg and a choice of the lightweight _Openbox_ window manager or the
-    _Xfce_ desktop (or both) plus a range of desktop applications.
+    using Xorg and the lightweight _Openbox_ window manager, plus a range of
+    desktop applications will be installed.
     
     Alternately, in lieu of a pre-defined list of Debian packages, the user may
     specify their own custom list of packages to be installed.
@@ -597,17 +598,6 @@ L_sig_ok
 sleep $SLEEP
 }
 
-Inst_xfce() {
-clear
-L_banner_begin "Install Xfce desktop"
-local DESKTOP="task-xfce-desktop"
-local DESKTOP_EXTRA="clipit lightdm-gtk-greeter-settings"
-# shellcheck disable=SC2086
-apt-get -y install $DESKTOP $DESKTOP_EXTRA
-L_sig_ok
-sleep $SLEEP
-}
-
 Inst_theme() {
 clear
 L_banner_begin "Install theme"
@@ -615,13 +605,9 @@ local GTK="gnome-themes-standard gtk2-engines-murrine gtk2-engines-pixbuf"
 local QT="qt5-style-plugins"
 local TOOL="lxappearance obconf"
 local THEME="Shades-of-gray-theme"
-local THEME_EXTRA="arc-theme papirus-icon-theme"
 local THEMEDIR="/home/${USERNAME}/.themes"
 local DWNLD_THEME="https://github.com/WernerFP/Shades-of-gray-theme.git"
-local ICON="Suru++"
-local ICONDIR="/home/${USERNAME}/.icons"
-local ICONGIT="https://raw.githubusercontent.com"
-local DWNLD_ICON="${ICONGIT}/gusbemacbe/suru-plus/master/install.sh"
+local ICON="papirus-icon-theme"
 # shellcheck disable=SC2086 
 apt-get -y install $GTK $QT $TOOL
 # Install the *Shades-of-gray* theme
@@ -637,21 +623,8 @@ else
     cp -r ${THEME}/Shades-of-* $THEMEDIR
     chown -R ${USERNAME}:${USERNAME} $THEMEDIR
 fi
-# Install Suru++ icons
-if [[ -d "$ICONDIR" ]]; then
-    echo "$ICONDIR already exists."
-else
-    mkdir $ICONDIR
-fi
-if [[ -d "${ICONDIR}/${ICON}" ]]; then
-    echo "${ICON} icons already installed."
-else
-    wget -qO- $DWNLD_ICON | env DESTDIR="$ICONDIR" sh
-    chown -R ${USERNAME}:${USERNAME} $ICONDIR
-fi
-# Install extra themes and icons
-# shellcheck disable=SC2086
-apt-get -y install $THEME_EXTRA
+# Install icons
+apt-get -y install $ICON
 L_sig_ok
 sleep $SLEEP
 }
@@ -728,39 +701,9 @@ L_sig_ok
 sleep $SLEEP
 }
 
-Conf_desktop() {
-cat << _EOF_
-
-Please select a desktop:
-
-0. Openbox - lightweight window manager
-1. Xfce - middleweight desktop environment
-2. Openbox _and_ Xfce - install both
-
-_EOF_
-while :
-do
-read -r -p "Enter selection [0-2] > "
-case "$REPLY" in
-    0)  DESKTOP="Openbox"
-        break
-        ;;
-    1)  DESKTOP="Xfce"
-        break
-        ;;
-    2)  DESKTOP="Openbox and Xfce"
-        break
-        ;;
-    *)  L_invalid_reply
-        ;;
-esac
-done
-}
-
 Goto_work() {
 local NUM="9"
 local PROFILE="foo"
-local DESKTOP="foo"
 local AUTO="foo"
 local KEY="foo"
 local FONT="foo"
@@ -780,7 +723,6 @@ do
         read -r -n 1 -p "Are you configuring a [w]orkstation or [s]erver? > "
         if [[ "$REPLY" == [wW] ]]; then
             PROFILE="workstation"
-            Conf_desktop
             break
         elif [[ "$REPLY" == [sS] ]]; then
             PROFILE="server"
@@ -895,9 +837,6 @@ do
     L_banner_begin "Question 9 of $NUM"
     L_echo_purple "Username: $USERNAME"
     L_echo_purple "Profile: $PROFILE"
-    if [[ "$DESKTOP" != "foo" ]]; then
-        L_echo_purple "Desktop: $DESKTOP"
-    fi
     if [[ "$AUTO" == "yes" ]]; then
         L_echo_green "Automatic Update: $AUTO"
     else
@@ -983,14 +922,7 @@ if [[ "$PROFILE" == "workstation" ]]; then
     else
         Inst_console_pkg
         Inst_xorg
-        if [[ "$DESKTOP" == "Openbox" ]]; then
-            Inst_openbox
-        elif [[ "$DESKTOP" == "Xfce" ]]; then
-            Inst_xfce
-        else
-            Inst_openbox
-            Inst_xfce
-        fi
+        Inst_openbox
         Inst_theme
         #Inst_nonpkg_firefox	# Install firefox-esr instead
         Inst_workstation_pkg

@@ -4,7 +4,7 @@
 
 #### NAME
 
-**debian-after-install.sh** - Configure a device after a fresh install of Debian's _testing_ release.
+**debian-after-install.sh** - Configure a device after a fresh install of Debian.
 
 #### SYNOPSIS
 
@@ -12,7 +12,7 @@
 
 #### DESCRIPTION
 
-Script `debian-after-install.sh` is ideally run after the first successful boot into a [minimal install](https://www.circuidipity.com/minimal-debian/) of Debian _testing_ aka "buster" release.
+Script `debian-after-install.sh` is ideally run after the first successful boot into a [minimal install](https://www.circuidipity.com/minimal-debian/) of Debian 10 aka "buster" release.
 
 A choice of either [w]orkstation or [s]erver setup is available. [S]erver is a basic console setup, whereas [w]orkstation is a more complete setup using Xorg and the lightweight [Openbox](https://www.circuidipity.com/openbox/) window manager plus a range of desktop applications.
     
