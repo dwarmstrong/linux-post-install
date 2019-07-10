@@ -291,12 +291,12 @@ deb $MIRROR1 ${RELEASE}/updates $COMP
 deb-src $MIRROR1 ${RELEASE}/updates $COMP
 
 # Stable updates
-#deb $MIRROR ${RELEASE}-updates $COMP
-#deb-src $MIRROR ${RELEASE}-updates $COMP
+deb $MIRROR ${RELEASE}-updates $COMP
+deb-src $MIRROR ${RELEASE}-updates $COMP
 
 # Stable backports
-#deb $MIRROR ${RELEASE}-backports $COMP
-#deb-src $MIRROR ${RELEASE}-backports $COMP
+deb $MIRROR ${RELEASE}-backports $COMP
+deb-src $MIRROR ${RELEASE}-backports $COMP
 _EOL_
 # Update/upgrade
 echo "Update list of packages available and upgrade $HOSTNAME ..."
