@@ -98,31 +98,6 @@ if [[ "$UP" -ne 0 ]]; then
 fi
 }
 
-L_test_datetime() {
-clear
-L_banner_begin "Confirm date + timezone"
-local LINK="<https://wiki.archlinux.org/index.php/time>"
-if [[ -x "/usr/bin/timedatectl" ]]; then
-    timedatectl
-else
-    echo -e "Current date is $( date -I'minutes' )"
-fi
-while :
-do
-    echo ""; read -r -n 1 -p "Modify? [yN] > "
-    if [[ "$REPLY" == [yY] ]]; then
-        echo -e "\\n\\n$( L_penguin ) .: Check out datetime in Arch Wiki $LINK" 
-        echo "plus 'dpkg-reconfigure tzdata' for setting default timezone."
-        exit
-    elif [[ "$REPLY" == [nN] || "$REPLY" == "" ]]; then
-        clear
-        break
-    else
-        L_invalid_reply_yn
-    fi
-done
-}
-
 L_test_required_file() {
 local FILE=$1
 local ERR="ERROR: file '$FILE' not found."
@@ -546,8 +521,8 @@ clear
 L_banner_begin "Install console packages"
 local PKG_TOOLS="apt-file apt-listchanges apt-show-versions apt-utils 
 aptitude command-not-found"
-local CONSOLE="bc bsd-mailx cowsay cryptsetup curl git gnupg htop mlocate 
-net-tools pmount rsync sl tmux unzip vrms wget whois"
+local CONSOLE="bc bsd-mailx cowsay cryptsetup curl firmware-misc-nonfree git 
+gnupg htop mlocate net-tools pmount rsync sl tmux unzip vrms wget whois"
 local EDITOR="neovim shellcheck"
 # shellcheck disable=SC2086
 apt-get -y install $PKG_TOOLS $CONSOLE $EDITOR
@@ -594,6 +569,19 @@ libnotify-bin network-manager network-manager-gnome pavucontrol pulseaudio
 pulseaudio-utils rofi scrot tint2 viewnior volumeicon-alsa xfce4-power-manager"
 # shellcheck disable=SC2086
 apt-get -y install $WM $WM_EXTRA
+L_sig_ok
+sleep $SLEEP
+}
+
+Inst_gnome() {
+clear
+L_banner_begin "Install GNOME desktop"
+local PKG="chrome-gnome-shell dconf-editor gnome-tweaks papirus-icon-theme 
+qt5-style-plugins"
+tasksel install gnome-desktop desktop print-server
+# shellcheck disable=SC2086
+apt-get -y install $PKG
+apt-get -y autoremove gnome-games
 L_sig_ok
 sleep $SLEEP
 }
@@ -702,7 +690,7 @@ sleep $SLEEP
 }
 
 Goto_work() {
-local NUM="9"
+local NUM="10"
 local PROFILE="foo"
 local AUTO="foo"
 local KEY="foo"
@@ -710,6 +698,7 @@ local FONT="foo"
 local SSD="foo"
 local GRUB_X="foo"
 local SWAPFILE="foo"
+local GUI="foo"
 while :
 do
     clear
@@ -835,6 +824,36 @@ do
     done
     clear
     L_banner_begin "Question 9 of $NUM"
+    while :
+    do
+        echo "Choice of desktops:"
+        echo "[1] Openbox"
+        echo "[2] GNOME"
+        echo "[3] Openbox + GNOME"
+        echo "[4] Xorg (install X but no desktop)"
+        echo -e "[5] None\\n"
+        read -r -n 1 -p "Your choice? [1-5] > "
+        if [[ "$REPLY" == "1" ]]; then
+            GUI="openbox"
+            break
+        elif [[ "$REPLY" == "2" ]]; then
+            GUI="gnome"
+            break
+        elif [[ "$REPLY" == "3" ]]; then
+            GUI="both"
+            break
+        elif [[ "$REPLY" == "4" ]]; then
+            GUI="xorg"
+            break
+        elif [[ "$REPLY" == "5" ]]; then
+            GUI="none"
+            break
+        else
+            L_invalid_reply_yn
+        fi
+    done
+    clear
+    L_banner_begin "Question 10 of $NUM"
     L_echo_purple "Username: $USERNAME"
     L_echo_purple "Profile: $PROFILE"
     if [[ "$AUTO" == "yes" ]]; then
@@ -866,6 +885,11 @@ do
         L_echo_green "Swap File: $SWAPFILE"
     else
         L_echo_red "Swap File: $SWAPFILE"
+    fi
+    if [[ "$GUI" != "none" ]]; then
+        L_echo_green "Desktop: $GUI"
+    else
+        L_echo_red "Desktop: $GUI"
     fi
     if [[ "$PKG_LIST" != "foo" ]]; then
         L_echo_green "Package List: $PKG_LIST"
@@ -921,9 +945,22 @@ if [[ "$PROFILE" == "workstation" ]]; then
         Inst_pkg_list
     else
         Inst_console_pkg
-        Inst_xorg
-        Inst_openbox
-        Inst_theme
+        if [[ "$GUI" == "openbox" ]]; then
+            Inst_xorg
+            Inst_openbox
+            Inst_theme
+        elif [[ "$GUI" == "gnome" ]]; then
+            Inst_gnome
+        elif [[ "$GUI" == "both" ]]; then
+            Inst_xorg
+            Inst_openbox
+            Inst_theme
+            Inst_gnome
+        elif [[ "$GUI" == "xorg" ]]; then
+            Inst_xorg
+        else
+            :
+        fi
         #Inst_nonpkg_firefox	# Install firefox-esr instead
         Inst_workstation_pkg
         Conf_alt_workstation
@@ -947,7 +984,6 @@ L_test_announce
 sleep 4
 L_test_root			# Script run with root priviliges?
 L_test_internet		# Internet access available?
-L_test_datetime		# Confirm date + timezone
 # ... rollin' rollin' rollin' ...
 Hello_you
 L_run_script
