@@ -75,10 +75,6 @@ cat << _EOF_
 _EOF_
 }
 
-L_test_announce() {
-    L_echo_yellow "\\n$( L_penguin ) .: Let's first run a few tests ..."
-}
-
 L_test_root() {
 local ERR="ERROR: script must be run with root privileges."
 if (( EUID != 0 )); then
@@ -166,8 +162,8 @@ DESCRIPTION
 
     A choice of either [w]orkstation or [s]erver setup is available. [S]erver
     is a basic console setup, whereas [w]orkstation is a more complete setup
-    using Xorg and the lightweight _Openbox_ window manager, plus a range of
-    desktop applications will be installed.
+    using Xorg and a choice of [1] Openbox; [2] GNOME; [3] Openbox + GNOME; or
+    [4] none.
     
     Alternately, in lieu of a pre-defined list of Debian packages, the user may
     specify their own custom list of packages to be installed.
@@ -830,9 +826,8 @@ do
         echo "[1] Openbox"
         echo "[2] GNOME"
         echo "[3] Openbox + GNOME"
-        echo "[4] Xorg (install X but no desktop)"
-        echo -e "[5] None\\n"
-        read -r -n 1 -p "Your choice? [1-5] > "
+        echo -e "[4] None\\n"
+        read -r -n 1 -p "Your choice? [1-4] > "
         if [[ "$REPLY" == "1" ]]; then
             GUI="openbox"
             break
@@ -843,9 +838,6 @@ do
             GUI="both"
             break
         elif [[ "$REPLY" == "4" ]]; then
-            GUI="xorg"
-            break
-        elif [[ "$REPLY" == "5" ]]; then
             GUI="none"
             break
         else
@@ -956,14 +948,14 @@ if [[ "$PROFILE" == "workstation" ]]; then
             Inst_openbox
             Inst_theme
             Inst_gnome
-        elif [[ "$GUI" == "xorg" ]]; then
-            Inst_xorg
-        else
+        elif [[ "$GUI" == "none" ]]; then
             :
         fi
-        #Inst_nonpkg_firefox	# Install firefox-esr instead
-        Inst_workstation_pkg
-        Conf_alt_workstation
+        if [[ "$GUI" != "none" ]]; then
+            #Inst_nonpkg_firefox	# Install firefox-esr instead
+            Inst_workstation_pkg
+            Conf_alt_workstation
+        fi
     fi
 fi
 # Server setup
@@ -980,8 +972,6 @@ fi
 
 #: START
 Run_options "$@"
-L_test_announce
-sleep 4
 L_test_root			# Script run with root priviliges?
 L_test_internet		# Internet access available?
 # ... rollin' rollin' rollin' ...
@@ -990,6 +980,4 @@ L_run_script
 Goto_work
 clear
 L_all_done
-L_echo_green "See 'dotfiles' <${DOTFILES}> for config file examples"
-L_echo_green "useful for ${USERNAME}'s HOME directory."
 L_echo_green "\\nThanks for using '${NAME}' and happy hacking!"
