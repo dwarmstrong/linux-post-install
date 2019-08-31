@@ -15,12 +15,14 @@ set -eu
 # or FITNESS FOR A PARTICULAR PURPOSE. See the LICENSE file for more details.
 
 VERSION="10"
-RELEASE="buster"           # Debian release _codename_ to track
+RELEASE="buster"            # stable release codename
+RELEASE_UNST="unstable"     # unstable codenamed 'sid'
+TRACK="foo"                 # package repository
+PKG_LIST="foo"              # packages from LIST; set with option '-p LISTNAME'
+USERNAME="foo"              # setup machine for USERNAME
+SLEEP="5"                   # pause for X seconds
 SRC_RAW="https://raw.githubusercontent.com/vonbrownie/linux-post-install"
 DOTFILES="https://github.com/vonbrownie/dotfiles"
-PKG_LIST="foo"  # Install packages from LIST; set with option '-p LISTNAME'
-USERNAME="foo"              # Setup machine for USERNAME
-SLEEP="8"                   # Pause for X seconds
 # ANSI escape codes
 RED="\\033[1;31m"
 GREEN="\\033[1;32m"
@@ -160,10 +162,13 @@ DESCRIPTION
     Script '$NAME' is ideally run after the first successful
     boot into a minimal install of Debian $VERSION aka "$RELEASE" release.
 
+    User may choose to remain with the stable release or track the $RELEASE_UNST
+    aka "sid" package repository.
+
     A choice of either [w]orkstation or [s]erver setup is available. [S]erver
     is a basic console setup, whereas [w]orkstation is a more complete setup
-    using Xorg and a choice of [1] Openbox; [2] GNOME; [3] Openbox + GNOME; or
-    [4] none.
+    using Xorg with the option of installing Openbox window manager plus a
+    selection of applications suitable for a desktop environment.
     
     Alternately, in lieu of a pre-defined list of Debian packages, the user may
     specify their own custom list of packages to be installed.
@@ -222,7 +227,7 @@ Conf_keyboard() {
 clear
 L_banner_begin "Configure keyboard"
 echo "Choose a different keymap ..."
-sleep 4
+sleep $SLEEP
 dpkg-reconfigure keyboard-configuration
 setupcon
 cat /etc/default/keyboard
@@ -234,7 +239,7 @@ Conf_consolefont() {
 clear
 L_banner_begin "Configure console font"
 echo "Choose a different font for the console ..."
-sleep 4
+sleep $SLEEP
 dpkg-reconfigure console-setup
 cat /etc/default/console-setup
 L_sig_ok
@@ -268,6 +273,28 @@ deb-src $MIRROR ${RELEASE}-updates $COMP
 # Stable backports
 deb $MIRROR ${RELEASE}-backports $COMP
 deb-src $MIRROR ${RELEASE}-backports $COMP
+_EOL_
+# Update/upgrade
+echo "Update list of packages available and upgrade $HOSTNAME ..."
+apt-get update && apt-get -y dist-upgrade
+L_sig_ok
+sleep $SLEEP
+}
+
+Conf_apt_sources_unst() {
+clear
+L_banner_begin "Configure sources.list for '$RELEASE_UNST'"
+# Add unstable repository, update package list, upgrade packages.
+local FILE="/etc/apt/sources.list"
+local MIRROR="http://deb.debian.org/debian/"
+local COMP="main contrib non-free"
+# Backup previous config
+L_bak_file $FILE
+# Create a new config
+cat << _EOL_ > $FILE
+# Base repository
+deb $MIRROR $RELEASE_UNST $COMP
+deb-src $MIRROR $RELEASE_UNST $COMP
 _EOL_
 # Update/upgrade
 echo "Update list of packages available and upgrade $HOSTNAME ..."
@@ -569,19 +596,6 @@ L_sig_ok
 sleep $SLEEP
 }
 
-Inst_gnome() {
-clear
-L_banner_begin "Install GNOME desktop"
-local PKG="chrome-gnome-shell dconf-editor gnome-tweaks papirus-icon-theme 
-qt5-style-plugins"
-tasksel install gnome-desktop desktop print-server
-# shellcheck disable=SC2086
-apt-get -y install $PKG
-apt-get -y autoremove gnome-games
-L_sig_ok
-sleep $SLEEP
-}
-
 Inst_theme() {
 clear
 L_banner_begin "Install theme"
@@ -613,39 +627,6 @@ L_sig_ok
 sleep $SLEEP
 }
 
-Inst_nonpkg_firefox() {
-clear
-L_banner_begin "Install Firefox"
-# Install the latest Firefox Stable. Create ~/opt directory to store
-# programs in $HOME. Download and unpack the latest binaries from
-# official website, and create a link to the executable in my PATH.
-local DIR="/home/${USERNAME}/opt"
-local FF_EXE="FirefoxSetup.exe"
-local FF_TAR="firefox.tar.bz2"
-local FF_SRC="https://download.mozilla.org"
-local DWNLD="${FF_SRC}/?product=firefox-latest&os=linux64&lang=en-US"
-local LINK="/usr/local/bin/firefox"
-if [[ -a "$LINK" ]]; then
-    echo "$LINK already exists. Skipping ..."
-else
-    # shellcheck disable=SC2086
-    wget -c -O $FF_EXE $FF_SRC 
-    if [[ -d "$DIR" ]]; then
-        echo "$DIR already exists. Skipping ..."
-    else
-        echo "Create $DIR ..."
-        mkdir $DIR
-        mv $FF_EXE $FF_TAR
-        tar xvf $FF_TAR -C $DIR
-        chown -R ${USERNAME}:${USERNAME} $DIR
-        echo "Create symbolic link $LINK to firefox installed in $DIR ..."
-        ln -s ${DIR}/firefox/firefox $LINK
-    fi
-fi
-L_sig_ok
-sleep $SLEEP
-}
-
 Inst_workstation_pkg() {
 clear
 L_banner_begin "Install some favourite workstation packages"
@@ -654,13 +635,18 @@ mpg321 pavucontrol pulseaudio pulseaudio-utils rhythmbox sox vlc"
 local DOC="libreoffice libreoffice-help-en-us libreoffice-gnome hunspell-en-ca 
 qpdfview"
 local IMAGE="scrot viewnior geeqie gimp gimp-help-en gimp-data-extras"
-local NET="firefox-esr network-manager-gnome newsboat transmission-gtk"
+local NET="network-manager-gnome newsboat transmission-gtk"
 local SYS="dunst rofi rxvt-unicode"
 local DEV="build-essential dkms libncurses5-dev linux-headers-amd64 
 module-assistant python3-dev python3-pip python3-pygments"
 # Sometimes apt gets stuck on a slow download. Breaking up downloads tends to
 # speeds things up.
 # shellcheck disable=SC2086
+if [[ "$TRACK" == "stable" ]]; then
+    apt-get -y install firefox-esr
+else
+    apt-get -y install firefox
+fi
 apt-get -y install $AV && apt-get -y install $DOC && \
 apt-get -y install $IMAGE && apt-get -y install $NET && \
 apt-get -y install $SYS && apt-get -y install $DEV
@@ -686,7 +672,7 @@ sleep $SLEEP
 }
 
 Goto_work() {
-local NUM="10"
+local NUM="11"
 local PROFILE="foo"
 local AUTO="foo"
 local KEY="foo"
@@ -705,6 +691,25 @@ do
     L_banner_begin "Question 2 of $NUM"
     while :
     do
+        echo "Track packages from:"
+        echo "[1] stable/$RELEASE"
+        echo "[2] unstable/sid"
+        echo ""
+	read -r -n 1 -p "Your choice? [1-2] > "
+        if [[ "$REPLY" == "1" ]]; then
+            TRACK="stable"
+            break
+        elif [[ "$REPLY" == "2" ]]; then
+            TRACK="unstable"
+            break
+        else
+            L_invalid_reply_yn
+        fi
+    done
+    clear
+    L_banner_begin "Question 3 of $NUM"
+    while :
+    do
         read -r -n 1 -p "Are you configuring a [w]orkstation or [s]erver? > "
         if [[ "$REPLY" == [wW] ]]; then
             PROFILE="workstation"
@@ -717,7 +722,7 @@ do
         fi
     done
 	clear
-	L_banner_begin "Question 3 of $NUM"
+	L_banner_begin "Question 4 of $NUM"
 	while :
 	do
 		echo "Fetch and install the latest security fixes courtesy of package"
@@ -734,7 +739,7 @@ do
         fi
     done
 	clear
-	L_banner_begin "Question 4 of $NUM"
+	L_banner_begin "Question 5 of $NUM"
 	while :
 	do
 		echo "Change the model of keyboard and/or the keyboard map. Example:"
@@ -751,7 +756,7 @@ do
         fi
     done
 	clear
-	L_banner_begin "Question 5 of $NUM"
+	L_banner_begin "Question 6 of $NUM"
 	while :
 	do
 		echo "Change the font or font-size used in the console. Example:"
@@ -768,7 +773,7 @@ do
         fi
     done
     clear
-    L_banner_begin "Question 6 of $NUM"
+    L_banner_begin "Question 7 of $NUM"
 	while :
     do
         echo "Periodic TRIM optimizes performance on solid-state storage. If"
@@ -785,7 +790,7 @@ do
         fi
     done
     clear
-    L_banner_begin "Question 7 of $NUM"
+    L_banner_begin "Question 8 of $NUM"
     while :
     do
         echo -e "GRUB extras: Add a bit of colour, sound, and wallpaper!\\n"
@@ -801,7 +806,7 @@ do
         fi
     done
     clear
-    L_banner_begin "Question 8 of $NUM"
+    L_banner_begin "Question 9 of $NUM"
     while :
     do
         echo "If not using a swap partition, creating a *swapfile* is a good"
@@ -819,34 +824,28 @@ do
         fi
     done
     clear
-    L_banner_begin "Question 9 of $NUM"
+    L_banner_begin "Question 10 of $NUM"
     while :
     do
         echo "Choice of desktops:"
         echo "[1] Openbox"
-        echo "[2] GNOME"
-        echo "[3] Openbox + GNOME"
-        echo -e "[4] None\\n"
-        read -r -n 1 -p "Your choice? [1-4] > "
+        echo "[2] Xorg (no desktop)"
+        echo ""
+	read -r -n 1 -p "Your choice? [1-4] > "
         if [[ "$REPLY" == "1" ]]; then
             GUI="openbox"
             break
         elif [[ "$REPLY" == "2" ]]; then
-            GUI="gnome"
-            break
-        elif [[ "$REPLY" == "3" ]]; then
-            GUI="both"
-            break
-        elif [[ "$REPLY" == "4" ]]; then
-            GUI="none"
+            GUI="xorg"
             break
         else
             L_invalid_reply_yn
         fi
     done
     clear
-    L_banner_begin "Question 10 of $NUM"
+    L_banner_begin "Question 11 of $NUM"
     L_echo_purple "Username: $USERNAME"
+    L_echo_purple "Track: $TRACK"
     L_echo_purple "Profile: $PROFILE"
     if [[ "$AUTO" == "yes" ]]; then
         L_echo_green "Automatic Update: $AUTO"
@@ -910,7 +909,12 @@ fi
 if [[ "$FONT" == "yes" ]]; then
     Conf_consolefont || true
 fi
-Conf_apt_sources
+# Packages
+if [[ "$TRACK" == "stable" ]]; then
+    Conf_apt_sources
+elif [[ "$TRACK" == "unstable" ]]; then
+    Conf_apt_sources_unst
+fi
 Conf_sudoersd
 Conf_ssh
 Conf_sysctl
@@ -941,20 +945,10 @@ if [[ "$PROFILE" == "workstation" ]]; then
             Inst_xorg
             Inst_openbox
             Inst_theme
-        elif [[ "$GUI" == "gnome" ]]; then
-            Inst_gnome
-        elif [[ "$GUI" == "both" ]]; then
-            Inst_xorg
-            Inst_openbox
-            Inst_theme
-            Inst_gnome
-        elif [[ "$GUI" == "none" ]]; then
-            :
-        fi
-        if [[ "$GUI" != "none" ]]; then
-            #Inst_nonpkg_firefox	# Install firefox-esr instead
             Inst_workstation_pkg
             Conf_alt_workstation
+        elif [[ "$GUI" == "xorg" ]]; then
+            Inst_xorg
         fi
     fi
 fi
