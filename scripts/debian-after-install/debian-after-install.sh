@@ -831,7 +831,7 @@ do
         echo "[1] Openbox"
         echo "[2] Xorg (no desktop)"
         echo ""
-	read -r -n 1 -p "Your choice? [1-4] > "
+	read -r -n 1 -p "Your choice? [1-2] > "
         if [[ "$REPLY" == "1" ]]; then
             GUI="openbox"
             break
