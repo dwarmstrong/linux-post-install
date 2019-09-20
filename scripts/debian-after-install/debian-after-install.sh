@@ -393,7 +393,7 @@ clear
 L_banner_begin "Configure GRUB extras"
 # Add some extras. See "GNU GRUB" -- https://www.circuidipity.com/grub/
 local GRUB_DEFAULT="/etc/default/grub"
-local WALLPAPER="/boot/grub/wallpaper-grub.tga"
+local WALLPAPER="/boot/grub/grub_wallpaper.png"
 local DWNLD="${SRC_DIR}/blob/master/config${WALLPAPER}?raw=true"
 local CUSTOM="/boot/grub/custom.cfg"
 # Backup config
