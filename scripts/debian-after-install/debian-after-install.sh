@@ -542,8 +542,8 @@ sleep $SLEEP
 Inst_console_pkg() {
 clear
 L_banner_begin "Install console packages"
-local PKG_TOOLS="apt-file apt-listchanges apt-show-versions apt-utils 
-aptitude command-not-found"
+local PKG_TOOLS="apt-file apt-listbugs apt-listchanges apt-show-versions 
+apt-utils aptitude command-not-found"
 local CONSOLE="bc bsd-mailx cowsay cryptsetup curl firmware-misc-nonfree git 
 gnupg htop mlocate net-tools pmount rsync sl tmux unzip vrms wget whois"
 local EDITOR="neovim shellcheck"
