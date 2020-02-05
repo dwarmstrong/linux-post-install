@@ -545,7 +545,8 @@ L_banner_begin "Install console packages"
 local PKG_TOOLS="apt-file apt-listbugs apt-listchanges apt-show-versions 
 apt-utils aptitude command-not-found"
 local CONSOLE="bc bsd-mailx cowsay cryptsetup curl firmware-misc-nonfree git 
-gnupg htop mlocate net-tools pmount rsync sl tmux unzip vrms wget whois"
+gnupg htop mlocate net-tools pmount rsync sl speedtest-cli tmux unzip vrms 
+wget whois"
 local EDITOR="neovim shellcheck"
 # shellcheck disable=SC2086
 apt-get -y install $PKG_TOOLS $CONSOLE $EDITOR
