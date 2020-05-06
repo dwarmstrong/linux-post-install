@@ -517,7 +517,7 @@ inst_console_pkg() {
     clear
     banner_begin "Install console packages"
     local PKG_TOOLS
-    PKG_TOOLS="apt-file apt-listbugs apt-listchanges apt-show-versions 
+    PKG_TOOLS="apt-file apt-show-versions 
     apt-utils aptitude command-not-found"
     local CONSOLE
     CONSOLE="bc bsd-mailx cowsay cryptsetup curl firmware-misc-nonfree git 
@@ -596,7 +596,7 @@ inst_theme() {
     local GTK
     GTK="gnome-themes-standard gtk2-engines-murrine gtk2-engines-pixbuf"
     local QT
-    QT="qt5-style-plugins"
+    QT="adwaita-qt qt5-style-plugins"
     local TOOL
     TOOL="lxappearance obconf"
     local THEME
