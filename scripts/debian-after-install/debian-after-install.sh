@@ -634,7 +634,7 @@ inst_backports() {
     PKG="firefox"
     
     apt-get -y purge $REMOVE
-    #apt-get -y -t ${RELEASE}-backports install $PKG    # not available (yet)
+    #apt-get -y -t ${RELEASE}-backports install $PKG    # not available
 }
 
 inst_workstation_pkg() {
