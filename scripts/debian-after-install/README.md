@@ -57,7 +57,6 @@ GPLv3. See [LICENSE](https://github.com/dwarmstrong/linux-post-install/blob/mast
 SEE ALSO
 --------
 
-* [More Debian: debian-after-install](https://www.dwarmstrong.org/debian-after-install/)
 * [Minimal Debian](https://www.dwarmstrong.org/minimal-debian/)
 * [Roll your own Linux desktop using Openbox](https://www.dwarmstrong.org/openbox/)
 * [Install (almost) the same list of Debian packages on multiple machines](https://www.dwarmstrong.org/debian-package-list/)
