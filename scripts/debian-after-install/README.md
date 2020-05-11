@@ -49,11 +49,6 @@ Install the list of packages specified in `my-pkg-list` ...
 # ./debian-after-install.sh -p my-pkg-list
 ```
 
-AUTHOR
-------
-
-[Daniel Wayne Armstrong](https://www.dwarmstrong.org)
-
 LICENSE
 -------
 
