@@ -18,8 +18,6 @@ DESCRIPTION
 
 Script `debian-after-install.sh` is ideally run after the first successful boot into a [minimal install](https://www.circuidipity.com/minimal-debian/) of Debian 10 aka "buster" release.
 
-User may choose to remain with the stable release or track the unstable aka "sid" package repository.
-
 A choice of either [w]orkstation or [s]erver setup is available. [S]erver is a basic console setup, whereas [w]orkstation is a more complete setup with the option of installing:
     * [Openbox](https://www.circuidipity.com/openbox/)
     * GNOME desktop environment
