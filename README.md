@@ -2,19 +2,17 @@
 
 Collection of scripts and configs for setting up Linux.
 
-#### AUTHOR
+## AUTHOR
 
-[Daniel Wayne Armstrong](https://www.circuidipity.com)
+[Daniel Wayne Armstrong](https://www.dwarmstrong.org)
 
-#### LICENSE
+## LICENSE
 
-GPLv2. See [LICENSE](https://github.com/vonbrownie/linux-post-install/blob/master/LICENSE) for more details.
+GPLv2. See [LICENSE](https://github.com/dwarmstrong/linux-post-install/blob/master/LICENSE.md) for more details.
 
-#### SEE ALSO
+## SEE ALSO
 
-* [Minimal Debian](https://www.circuidipity.com/minimal-debian/)
-* [More Debian: debian-after-install](https://www.circuidipity.com/debian-after-install/)
-* [Minimal Ubuntu](https://www.circuidipity.com/minimal-ubuntu/)
-* [Roll your own Linux desktop using Openbox](https://www.circuidipity.com/openbox/)
-* [Install (almost) the same list of Debian packages on multiple machines](https://www.circuidipity.com/debian-package-list/)
-* [Chromebook to Jessiebook](http://www.circuidipity.com/c720-chromebook-to-jessiebook/)
+* [Minimal Debian](https://www.dwarmstrong.org/minimal-debian/)
+* [Roll your own Linux desktop using Openbox](https://www.dwarmstrong.org/openbox/)
+* [Install (almost) the same list of Debian packages on multiple machines](https://www.dwarmstrong.org/debian-package-list/)
+* [Chromebook to Jessiebook](http://www.dwarmstrong.org/c720-chromebook-to-jessiebook/)
